@@ -1,0 +1,1252 @@
+{
+  "default_publication": {
+    "auto_publish": false
+  },
+  "exclusions": [
+    {
+      "candidate_key": "aeboli/gpt-image2-studio",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "aeboli-gpt-image2-studio"
+    },
+    {
+      "candidate_key": "angchow/gpt-image-2-style-library",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "angchow-gpt-image-2-style-library"
+    },
+    {
+      "candidate_key": "gokuscraper/gpt-image-2-prompts-skill",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "gokuscraper-gpt-image-2-prompts-skill"
+    },
+    {
+      "candidate_key": "gongnyang/gongnyang-prompt-kit",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "gongnyang-gongnyang-prompt-kit"
+    },
+    {
+      "candidate_key": "imaginevid/awesome-gpt-image-2-prompts-and-skills",
+      "reason": "Auto-updated list/metadata project; no fixed, extractable prompt-and-output corpus was established from its current tree.",
+      "source_id": "imaginevid-awesome-gpt-image-2-prompts-and-skills"
+    },
+    {
+      "candidate_key": "jackvidal/image-prompt-architect",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "jackvidal-image-prompt-architect"
+    },
+    {
+      "candidate_key": "jau123/meigen-ai-design-mcp",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "jau123-meigen-ai-design-mcp"
+    },
+    {
+      "candidate_key": "jezweb/claude-skills",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "jezweb-claude-skills"
+    },
+    {
+      "candidate_key": "juneyaooo/gpt-image2-ppt-skills",
+      "reason": "PPT workflow/implementation project, not an independently extractable long-term prompt-and-output case corpus under the no-repository-code rule.",
+      "source_id": "juneyaooo-gpt-image2-ppt-skills"
+    },
+    {
+      "candidate_key": "junyeo217/codex-gpt-image-2-skill",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "junyeo217-codex-gpt-image-2-skill"
+    },
+    {
+      "candidate_key": "leonxlnx/taste-skill",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "leonxlnx-taste-skill"
+    },
+    {
+      "candidate_key": "lidge-jun/ima2-gen",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "lidge-jun-ima2-gen"
+    },
+    {
+      "candidate_key": "litreily/codex-skill-eastern-beauty-director",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "litreily-codex-skill-eastern-beauty-director"
+    },
+    {
+      "candidate_key": "ningzimu/codex-ppt-skill",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "ningzimu-codex-ppt-skill"
+    },
+    {
+      "candidate_key": "noxx/visual-atelier-skill",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "noxx-visual-atelier-skill"
+    },
+    {
+      "candidate_key": "oakplank/claude-gpt-image-bridge",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "oakplank-claude-gpt-image-bridge"
+    },
+    {
+      "candidate_key": "openai/codex",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "openai-codex"
+    },
+    {
+      "candidate_key": "openai/openai-cookbook",
+      "reason": "Official methods and notebooks are retained as a standards baseline, not admitted as a single long-term case corpus in sources-v1.",
+      "source_id": "openai-openai-cookbook"
+    },
+    {
+      "candidate_key": "shannon4science/postermeld",
+      "reason": "Benchmark and poster-generation implementation project; it is not a long-term prompt-and-output source registry candidate.",
+      "source_id": "shannon4science-postermeld"
+    },
+    {
+      "candidate_key": "shaowen-ye/image-prompt-builder",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "shaowen-ye-image-prompt-builder"
+    },
+    {
+      "candidate_key": "smixs/visual-skills",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "smixs-visual-skills"
+    },
+    {
+      "candidate_key": "stevenflyai/multi-agent-image-gen-evals",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "stevenflyai-multi-agent-image-gen-evals"
+    },
+    {
+      "candidate_key": "trin-zenityx/image-craft-lv",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "trin-zenityx-image-craft-lv"
+    },
+    {
+      "candidate_key": "verycooltimo/imagegen-skills",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "verycooltimo-imagegen-skills"
+    },
+    {
+      "candidate_key": "wangnov/gpt-image-2-skill",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "wangnov-gpt-image-2-skill"
+    },
+    {
+      "candidate_key": "yun-666-666/image-prompt-skill",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "yun-666-666-image-prompt-skill"
+    },
+    {
+      "candidate_key": "zhouwei713/gpt-image-2-prompting-skill",
+      "reason": "This repository appears only in the Skill/tool research track, not as a candidate case-source corpus; it is mapped to prevent silent omission but is excluded from sources-v1.",
+      "source_id": "zhouwei713-gpt-image-2-prompting-skill"
+    }
+  ],
+  "pilots": [
+    {
+      "source_id": "g0dam-work-prompts",
+      "structure_type": "structured_manifest_json"
+    },
+    {
+      "source_id": "joesai-commercial-prompts",
+      "structure_type": "markdown_prompt_pages_with_manifest"
+    },
+    {
+      "source_id": "conardli-gpt-image-2-101",
+      "structure_type": "compiled_multi_category_case_gallery"
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "structure_type": "centralized_case_manifest"
+    },
+    {
+      "source_id": "erickkkyt-awesome-gptimage2-prompts",
+      "structure_type": "structured_prompt_image_manifest"
+    },
+    {
+      "source_id": "vigozhao-ai-visual-prompt-cookbook",
+      "structure_type": "style_json_with_preview_assets"
+    }
+  ],
+  "registry_format": "yaml-1.2-json-profile",
+  "registry_version": "v1",
+  "sources": [
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "0aicoder0-gpt-image-2-prompt-gallery",
+        "verified_commit_sha": "ae0738b08d79f85b92e633d991e8c52a9de551a2"
+      },
+      "candidate_key": "0aicoder0/gpt-image-2-prompt-gallery",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_no_content_adapter",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": "wuyoscar-gpt-image2-skill",
+        "family_id": "family-wuyoscar-gpt-image2-skill",
+        "role": "mirror"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1301926418",
+        "url": "https://github.com/0aicoder0/gpt-image-2-prompt-gallery",
+        "verified_commit_sha": "ae0738b08d79f85b92e633d991e8c52a9de551a2"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "0aicoder0-gpt-image-2-prompt-gallery",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "atlascloudai-awesome-gpt-image-2-prompts",
+        "verified_commit_sha": "191b709200b96e3b1ae3c3d006b586668da93ec5"
+      },
+      "candidate_key": "atlascloudai/awesome-gpt-image-2-prompts",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_aggregator_hold",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": null,
+        "family_id": "family-atlascloudai-awesome-gpt-image-2-prompts",
+        "role": "aggregator"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1219040524",
+        "url": "https://github.com/AtlasCloudAI/awesome-gpt-image-2-prompts",
+        "verified_commit_sha": "191b709200b96e3b1ae3c3d006b586668da93ec5"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "atlascloudai-awesome-gpt-image-2-prompts",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "conardli-gpt-image-2-101",
+        "verified_commit_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99"
+      },
+      "candidate_key": "conardli/gpt-image-2-101",
+      "content": {
+        "adapter_complexity": "low",
+        "adapter_strategy": "conardli_compiled_case_manifest_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "compiled_multi_category_case_gallery"
+      },
+      "family": {
+        "canonical_source_id": "conardli-gpt-image-2-101",
+        "family_id": "family-conardli-gpt-image-2-101",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": true
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "full"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1222461120",
+        "url": "https://github.com/ConardLi/gpt-image-2-101",
+        "verified_commit_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "conardli-gpt-image-2-101",
+      "status": "active",
+      "sync": {
+        "enabled": true
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "davidwuw0811-boop-awesome-gpt-image2-prompts",
+        "verified_commit_sha": "228edb6341d978aa2572911adf7e7e147ebf95d3"
+      },
+      "candidate_key": "davidwuw0811-boop/awesome-gpt-image2-prompts",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_aggregator_hold",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": null,
+        "family_id": "family-davidwuw0811-boop-awesome-gpt-image2-prompts",
+        "role": "aggregator"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1221976173",
+        "url": "https://github.com/davidwuw0811-boop/awesome-gpt-image2-prompts",
+        "verified_commit_sha": "228edb6341d978aa2572911adf7e7e147ebf95d3"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "davidwuw0811-boop-awesome-gpt-image2-prompts",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "eddietyp-image-prompt-library",
+        "verified_commit_sha": "71a17248303057b5d0b7f37ebc2562fe22028582"
+      },
+      "candidate_key": "eddietyp/image-prompt-library",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_aggregator_hold",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": null,
+        "family_id": "family-eddietyp-image-prompt-library",
+        "role": "aggregator"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1221558912",
+        "url": "https://github.com/EddieTYP/image-prompt-library",
+        "verified_commit_sha": "71a17248303057b5d0b7f37ebc2562fe22028582"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "eddietyp-image-prompt-library",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 20
+      },
+      "audit_ref": {
+        "source_id": "eugeniughelbur-gpt-image-cookbook",
+        "verified_commit_sha": "1e4ae093cd26818013c5462fbdff170e51cfc0a1"
+      },
+      "candidate_key": "eugeniughelbur/gpt-image-cookbook",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "not_authorized_pending_full_static_mapping",
+        "model_scope": "unknown",
+        "structure_type": "small_markdown_gallery"
+      },
+      "family": {
+        "canonical_source_id": "eugeniughelbur-gpt-image-cookbook",
+        "family_id": "family-eugeniughelbur-gpt-image-cookbook",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1232940911",
+        "url": "https://github.com/eugeniughelbur/gpt-image-cookbook",
+        "verified_commit_sha": "1e4ae093cd26818013c5462fbdff170e51cfc0a1"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "eugeniughelbur-gpt-image-cookbook",
+      "status": "probation",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "freestylefly-awesome-gpt-image-2",
+        "verified_commit_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270"
+      },
+      "candidate_key": "freestylefly/awesome-gpt-image-2",
+      "content": {
+        "adapter_complexity": "low",
+        "adapter_strategy": "freestylefly_cases_json_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "centralized_case_manifest"
+      },
+      "family": {
+        "canonical_source_id": "freestylefly-awesome-gpt-image-2",
+        "family_id": "family-freestylefly-awesome-gpt-image-2",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": true
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "full"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1220744720",
+        "url": "https://github.com/freestylefly/awesome-gpt-image-2",
+        "verified_commit_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "MIT"
+      },
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "status": "active",
+      "sync": {
+        "enabled": true
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 20
+      },
+      "audit_ref": {
+        "source_id": "fzfzerro-image2skill",
+        "verified_commit_sha": "9f7a5772189ec832b0e0cc5d212926908871f5f7"
+      },
+      "candidate_key": "fzfzerro/image2skill",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "not_authorized_pending_full_static_mapping",
+        "model_scope": "unknown",
+        "structure_type": "skill_examples_and_style_packs"
+      },
+      "family": {
+        "canonical_source_id": "fzfzerro-image2skill",
+        "family_id": "family-fzfzerro-image2skill",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1255560230",
+        "url": "https://github.com/fzfzerro/image2skill",
+        "verified_commit_sha": "9f7a5772189ec832b0e0cc5d212926908871f5f7"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "fzfzerro-image2skill",
+      "status": "probation",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "g0dam-work-prompts",
+        "verified_commit_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe"
+      },
+      "candidate_key": "g0dam/awesome-gpt-image-2-work-prompts",
+      "content": {
+        "adapter_complexity": "low",
+        "adapter_strategy": "g0dam_manifest_json_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "structured_manifest_json"
+      },
+      "family": {
+        "canonical_source_id": "g0dam-work-prompts",
+        "family_id": "family-g0dam-work-prompts",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": true
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "full"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1226388064",
+        "url": "https://github.com/g0dam/Awesome-GPT-Image-2-Work-Prompts",
+        "verified_commit_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "Creative-Commons-claimed"
+      },
+      "source_id": "g0dam-work-prompts",
+      "status": "active",
+      "sync": {
+        "enabled": true
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "hurris1-gpt-image2-explorer",
+        "verified_commit_sha": "c9be4502520e4a0a5b15cc8d1254bd8abd660ddf"
+      },
+      "candidate_key": "hurris1/gpt-image2-explorer",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_aggregator_hold",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": null,
+        "family_id": "family-hurris1-gpt-image2-explorer",
+        "role": "aggregator"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1226494963",
+        "url": "https://github.com/hurris1/gpt-image2-explorer",
+        "verified_commit_sha": "c9be4502520e4a0a5b15cc8d1254bd8abd660ddf"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "hurris1-gpt-image2-explorer",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "joesai-commercial-prompts",
+        "verified_commit_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b"
+      },
+      "candidate_key": "joesai/awesome-gpt-image-2-commercial-prompts",
+      "content": {
+        "adapter_complexity": "low",
+        "adapter_strategy": "joesai_manifest_markdown_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "markdown_prompt_pages_with_manifest"
+      },
+      "family": {
+        "canonical_source_id": "joesai-commercial-prompts",
+        "family_id": "family-joesai-commercial-prompts",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": true
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "full"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1218209672",
+        "url": "https://github.com/JoeSai/awesome-gpt-image-2-commercial-prompts",
+        "verified_commit_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "MIT"
+      },
+      "source_id": "joesai-commercial-prompts",
+      "status": "active",
+      "sync": {
+        "enabled": true
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "leonsoolab-awesome-gpt-image-2-api-and-prompts",
+        "verified_commit_sha": null
+      },
+      "candidate_key": "leonsoolab/awesome-gpt-image-2-api-and-prompts",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_no_content_adapter",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": "mageia-awesome-gpt-image-2-api-and-prompts",
+        "family_id": "family-mageia-awesome-gpt-image-2-api-and-prompts",
+        "role": "mirror"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": null,
+        "repository_id": null,
+        "url": "https://github.com/LeonSooLab/awesome-gpt-image-2-API-and-Prompts",
+        "verified_commit_sha": null
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "leonsoolab-awesome-gpt-image-2-api-and-prompts",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "lin351540-ship-it-prompt-atlas-jj",
+        "verified_commit_sha": "002f754977c4daf3c5d3da667482aa13edaeb498"
+      },
+      "candidate_key": "lin351540-ship-it/prompt-atlas-jj",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_aggregator_hold",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": null,
+        "family_id": "family-lin351540-ship-it-prompt-atlas-jj",
+        "role": "aggregator"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1316076878",
+        "url": "https://github.com/lin351540-ship-it/prompt-atlas-jj",
+        "verified_commit_sha": "002f754977c4daf3c5d3da667482aa13edaeb498"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "lin351540-ship-it-prompt-atlas-jj",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "mageia-awesome-gpt-image-2-api-and-prompts",
+        "verified_commit_sha": "09edfcc2bcf6c7e3bbcedf7136abac136e3fd84e"
+      },
+      "candidate_key": "mageia/awesome-gpt-image-2-api-and-prompts",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "not_authorized_pending_full_static_mapping",
+        "model_scope": "unknown",
+        "structure_type": "multilingual_markdown_cases_with_external_assets"
+      },
+      "family": {
+        "canonical_source_id": "mageia-awesome-gpt-image-2-api-and-prompts",
+        "family_id": "family-mageia-awesome-gpt-image-2-api-and-prompts",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1279737208",
+        "url": "https://github.com/mageia/awesome-gpt-image-2-API-and-Prompts",
+        "verified_commit_sha": "09edfcc2bcf6c7e3bbcedf7136abac136e3fd84e"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "mageia-awesome-gpt-image-2-api-and-prompts",
+      "status": "probation",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "michae1y-gpt-image2-skill-gallery",
+        "verified_commit_sha": "5c41386ec8e5cbcb0cd11e9636effa2bdbd79a38"
+      },
+      "candidate_key": "michae1y/gpt-image2-skill-gallery",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_no_content_adapter",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": "wuyoscar-gpt-image2-skill",
+        "family_id": "family-wuyoscar-gpt-image2-skill",
+        "role": "derived"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1257348158",
+        "url": "https://github.com/Michae1y/gpt-image2-skill-gallery",
+        "verified_commit_sha": "5c41386ec8e5cbcb0cd11e9636effa2bdbd79a38"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "michae1y-gpt-image2-skill-gallery",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "pixmind-io-awesome-gpt-image-2-prompts",
+        "verified_commit_sha": "4ac21d49915fffd5a5be56f2d5b674b6dda34568"
+      },
+      "candidate_key": "pixmind-io/awesome-gpt-image-2-prompts",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "not_authorized_pending_full_static_mapping",
+        "model_scope": "unknown",
+        "structure_type": "category_markdown_gallery"
+      },
+      "family": {
+        "canonical_source_id": "pixmind-io-awesome-gpt-image-2-prompts",
+        "family_id": "family-pixmind-io-awesome-gpt-image-2-prompts",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "master",
+        "repository_id": "1226542192",
+        "url": "https://github.com/Pixmind-io/awesome-gpt-image-2-prompts",
+        "verified_commit_sha": "4ac21d49915fffd5a5be56f2d5b674b6dda34568"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "pixmind-io-awesome-gpt-image-2-prompts",
+      "status": "probation",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "tigerowo-awesome-gpt-image-2-prompts",
+        "verified_commit_sha": "60e9c65baecfd6d6d51ac4e4d87f146af834bb64"
+      },
+      "candidate_key": "tigerowo/awesome-gpt-image-2-prompts",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_no_content_adapter",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": "mageia-awesome-gpt-image-2-api-and-prompts",
+        "family_id": "family-mageia-awesome-gpt-image-2-api-and-prompts",
+        "role": "backup"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1284712193",
+        "url": "https://github.com/tigerowo/awesome-gpt-image-2-prompts",
+        "verified_commit_sha": "60e9c65baecfd6d6d51ac4e4d87f146af834bb64"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "tigerowo-awesome-gpt-image-2-prompts",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "vigozhao-ai-visual-prompt-cookbook",
+        "verified_commit_sha": "9fa17042b392db28bb495f7208d37f1b9c416368"
+      },
+      "candidate_key": "vigozhao/ai-visual-prompt-cookbook",
+      "content": {
+        "adapter_complexity": "medium",
+        "adapter_strategy": "vigo_style_directory_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "style_json_with_preview_assets"
+      },
+      "family": {
+        "canonical_source_id": "vigozhao-ai-visual-prompt-cookbook",
+        "family_id": "family-vigozhao-ai-visual-prompt-cookbook",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": true
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "full"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1235254657",
+        "url": "https://github.com/VigoZhao/AI-Visual-Prompt-Cookbook",
+        "verified_commit_sha": "9fa17042b392db28bb495f7208d37f1b9c416368"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "MIT"
+      },
+      "source_id": "vigozhao-ai-visual-prompt-cookbook",
+      "status": "active",
+      "sync": {
+        "enabled": true
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "wuyoscar-gpt-image2-skill",
+        "verified_commit_sha": "ecc9c5420c265f6677edc5f4d255bca02497ef71"
+      },
+      "candidate_key": "wuyoscar/gpt-image2-skill",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "not_authorized_pending_full_static_mapping",
+        "model_scope": "unknown",
+        "structure_type": "markdown_gallery_and_skill"
+      },
+      "family": {
+        "canonical_source_id": "wuyoscar-gpt-image2-skill",
+        "family_id": "family-wuyoscar-gpt-image2-skill",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1217942969",
+        "url": "https://github.com/wuyoscar/GPT-Image2-Skill",
+        "verified_commit_sha": "ecc9c5420c265f6677edc5f4d255bca02497ef71"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "wuyoscar-gpt-image2-skill",
+      "status": "probation",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "yinxiaowai-awesome-gpt-image-2-vs-nano-banana-2-prompt-gallery",
+        "verified_commit_sha": "e0c1fad883a5a1ba6e98369258d15bd32cda5a07"
+      },
+      "candidate_key": "yinxiaowai/awesome-gpt-image-2-vs-nano-banana-2-prompt-gallery",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "not_authorized_pending_full_static_mapping",
+        "model_scope": "unknown",
+        "structure_type": "markdown_model_comparison_gallery"
+      },
+      "family": {
+        "canonical_source_id": "yinxiaowai-awesome-gpt-image-2-vs-nano-banana-2-prompt-gallery",
+        "family_id": "family-yinxiaowai-awesome-gpt-image-2-vs-nano-banana-2-prompt-gallery",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1276480525",
+        "url": "https://github.com/yinxiaowai/awesome-gpt-image-2-vs-nano-banana-2-prompt-gallery",
+        "verified_commit_sha": "e0c1fad883a5a1ba6e98369258d15bd32cda5a07"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "yinxiaowai-awesome-gpt-image-2-vs-nano-banana-2-prompt-gallery",
+      "status": "probation",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "youmind-openlab-awesome-gpt-image-2",
+        "verified_commit_sha": "de4ce23d10c38a211f286bfa88e1aa718af9fefd"
+      },
+      "candidate_key": "youmind-openlab/awesome-gpt-image-2",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_aggregator_hold",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": null,
+        "family_id": "family-youmind-openlab-awesome-gpt-image-2",
+        "role": "aggregator"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1212562200",
+        "url": "https://github.com/YouMind-OpenLab/awesome-gpt-image-2",
+        "verified_commit_sha": "de4ce23d10c38a211f286bfa88e1aa718af9fefd"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "youmind-openlab-awesome-gpt-image-2",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "youmind-openlab-gpt-image-2-prompts-search",
+        "verified_commit_sha": "32bfbf79453e412532de5a6e100bbd9d77bf5a45"
+      },
+      "candidate_key": "youmind-openlab/gpt-image-2-prompts-search",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_aggregator_hold",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": null,
+        "family_id": "family-youmind-openlab-gpt-image-2-prompts-search",
+        "role": "aggregator"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1218575008",
+        "url": "https://github.com/YouMind-OpenLab/gpt-image-2-prompts-search",
+        "verified_commit_sha": "32bfbf79453e412532de5a6e100bbd9d77bf5a45"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "youmind-openlab-gpt-image-2-prompts-search",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "zhuihunzhe-gpt-image2-prompt-skill",
+        "verified_commit_sha": "bc4b046e00a74c89756bdc62df1c5b6bce3293ca"
+      },
+      "candidate_key": "zhuihunzhe/gpt-image2-prompt-skill",
+      "content": {
+        "adapter_complexity": "not_assessed",
+        "adapter_strategy": "provenance_only_no_content_adapter",
+        "model_scope": "unknown",
+        "structure_type": "not_assessed"
+      },
+      "family": {
+        "canonical_source_id": "freestylefly-awesome-gpt-image-2",
+        "family_id": "family-freestylefly-awesome-gpt-image-2",
+        "role": "derived"
+      },
+      "pilot": {
+        "selected": false
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "provenance_only"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1285131453",
+        "url": "https://github.com/zhuihunzhe/gpt-image2-prompt-skill",
+        "verified_commit_sha": "bc4b046e00a74c89756bdc62df1c5b6bce3293ca"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "zhuihunzhe-gpt-image2-prompt-skill",
+      "status": "blocked",
+      "sync": {
+        "enabled": false
+      }
+    },
+    {
+      "admission": {
+        "minimum_pair_rate": 0.9,
+        "minimum_valid_cases": 50
+      },
+      "audit_ref": {
+        "source_id": "erickkkyt-awesome-gptimage2-prompts",
+        "verified_commit_sha": "1b5ec5f4f3409d2bf4cd2a4741070ce6c1429c6a"
+      },
+      "candidate_key": "erickkkyt/awesome-gptimage2-prompts",
+      "content": {
+        "adapter_complexity": "medium",
+        "adapter_strategy": "erickkkyt_prompts_json_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "structured_prompt_image_manifest"
+      },
+      "family": {
+        "canonical_source_id": "erickkkyt-awesome-gptimage2-prompts",
+        "family_id": "family-erickkkyt-awesome-gptimage2-prompts",
+        "role": "canonical"
+      },
+      "pilot": {
+        "selected": true
+      },
+      "publication": {
+        "auto_publish": false,
+        "ingestion_policy": "full"
+      },
+      "repository": {
+        "default_branch": "main",
+        "repository_id": "1213215604",
+        "url": "https://github.com/erickkkyt/awesome-gptimage2-prompts",
+        "verified_commit_sha": "1b5ec5f4f3409d2bf4cd2a4741070ce6c1429c6a"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "prompt_policy": "review_required",
+        "repository_license": "unknown"
+      },
+      "source_id": "erickkkyt-awesome-gptimage2-prompts",
+      "status": "active",
+      "sync": {
+        "enabled": true
+      }
+    }
+  ]
+}

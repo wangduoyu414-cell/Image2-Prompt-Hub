@@ -1,0 +1,19 @@
+{
+  "asset_media_type_counts": {
+    "image/png": 3
+  },
+  "broken_asset_count": 0,
+  "case_fingerprint_aggregate_sha256": "3e915e13f5462b38201c6da79428a266e10e94616a03654347dfdf10764a1dd3",
+  "duplicate_estimate": 0,
+  "exact_prompt_count": 3,
+  "generation_example_count": 3,
+  "observed_case_count": 3,
+  "pair_rate": 1.0,
+  "paired_output_count": 3,
+  "revision_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b",
+  "schema_version": "extraction-metrics/v1",
+  "semantic_digest": "3cc27e4242dc4d7a4f74ce8eafe2b49b5ff0f40f6858774c3a8b2b794192fd31",
+  "source_id": "joesai-commercial-prompts",
+  "unique_valid_case_count": 3,
+  "valid_case_count": 3
+}

@@ -1,0 +1,29 @@
+{
+  "name": "image2-public-web",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=24.14.0 <25"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "validate": "node -e \"const fs=require('node:fs'),path=require('node:path'),{spawnSync}=require('node:child_process');const source=process.cwd(),runtime=process.env.IMAGE2_WEB_RUNTIME_ROOT;if(!runtime)throw new Error('IMAGE2_WEB_RUNTIME_ROOT is required and must be outside apps/web.');const root=path.resolve(runtime),target=path.join(root,'offline-validate'),sourcePrefix=source.toLowerCase().endsWith(path.sep)?source.toLowerCase():source.toLowerCase()+path.sep;if(root.toLowerCase()===source.toLowerCase()||root.toLowerCase().startsWith(sourcePrefix))throw new Error('IMAGE2_WEB_RUNTIME_ROOT must be outside apps/web.');const npmCli=process.env.npm_execpath,npm=process.platform==='win32'?'npm.cmd':'npm';const ignored=new Set(['node_modules','.next','screenshots','logs']);const run=(args)=>{const result=spawnSync(npmCli?process.execPath:npm,npmCli?[npmCli,...args]:args,{cwd:target,env:{...process.env,NPM_CONFIG_CACHE:path.join(root,'npm-cache')},stdio:'inherit'});if(result.error)throw result.error;if(result.status!==0)process.exitCode=result.status||1;};fs.rmSync(target,{recursive:true,force:true});try{fs.cpSync(source,target,{recursive:true,filter:(entry)=>{const relative=path.relative(source,entry);return !relative||!relative.split(path.sep).some((part)=>ignored.has(part));}});run(['ci','--ignore-scripts','--no-audit','--no-fund']);if(!process.exitCode)run(['run','test']);if(!process.exitCode)run(['run','typecheck']);if(!process.exitCode)run(['run','build']);}finally{fs.rmSync(target,{recursive:true,force:true});}\""
+  },
+  "dependencies": {
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "playwright-core": "1.62.1",
+    "tsx": "4.23.11",
+    "typescript": "5.9.3"
+  }
+}

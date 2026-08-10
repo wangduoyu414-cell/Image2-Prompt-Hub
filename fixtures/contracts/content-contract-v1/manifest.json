@@ -1,0 +1,58 @@
+{
+  "schema_version": "content-contract-fixture-manifest/v1",
+  "contract_version": "v1",
+  "payload_policy": {
+    "positive_fixture_origin": "real_fixed_commit",
+    "stores_image_bytes": false,
+    "stores_full_upstream_data": false,
+    "network_required_by_validator": false
+  },
+  "pilots": [
+    {
+      "source_id": "g0dam-work-prompts",
+      "revision_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe",
+      "structure_profile": "structured_manifest_json",
+      "case_id": "gptimg2-work-002",
+      "origin_kind": "real_fixed_commit",
+      "adapter_fixture": "adapter-output/g0dam-work-prompts.valid.json",
+      "generation_fixture": "generation-example/g0dam-work-prompts.valid.json",
+      "historical_quality_sample": {
+        "prompt_source_path": "data/prompts.json",
+        "image_path": "images/gptimg2-work-002-search-ad-landing-hero.png",
+        "prompt_sha256": "c0e968db144b907890cb18c07b2b1897bdc8df15b7683fc2dce9fbea97ee3f06",
+        "asset_sha256": "6757e2297be0ba332307d3b35ba5d0bf56aed8e51c8753d42ad717c0af245900"
+      }
+    },
+    {
+      "source_id": "joesai-commercial-prompts",
+      "revision_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b",
+      "structure_profile": "markdown_prompt_pages_with_manifest",
+      "case_id": "boutique-hotel-lobby-editorial",
+      "origin_kind": "real_fixed_commit",
+      "adapter_fixture": "adapter-output/joesai-commercial-prompts.valid.json",
+      "generation_fixture": "generation-example/joesai-commercial-prompts.valid.json",
+      "historical_quality_sample": {
+        "prompt_source_path": "prompts/hospitality/boutique-hotel-lobby-editorial.md",
+        "image_path": "assets/examples/boutique-hotel-lobby-editorial.png",
+        "prompt_sha256": "5901d1412f68371ac3637c4322e9fae4abfbeb5891092329e6de264805ceec18",
+        "asset_sha256": "8a1645d856dff546847a2eb2f2eb3203755af6daea6c72685311dd77d26fc675"
+      }
+    },
+    {
+      "source_id": "conardli-gpt-image-2-101",
+      "revision_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99",
+      "structure_profile": "compiled_multi_category_case_gallery",
+      "case_id": "academic-figures/qualitative-comparison-grid/1",
+      "origin_kind": "real_fixed_commit",
+      "adapter_fixture": "adapter-output/conardli-gpt-image-2-101.valid.json",
+      "generation_fixture": "generation-example/conardli-gpt-image-2-101.valid.json",
+      "historical_quality_sample": {
+        "prompt_source_path": "academic-figures/qualitative-comparison-grid/1.json",
+        "image_path": "public/case/academic-figures/qualitative-comparison-grid/1.png",
+        "prompt_sha256": "09a3d781b65ecb4618ddaca62fcd096a8cb56fb4a1983bda1453e43d86922298",
+        "asset_sha256": "f64bd037f531c8889159df9e91627ebf8f158033dd428bb9d0dafc2e1830d660"
+      }
+    }
+  ],
+  "negative_cases_file": "negative-cases.json"
+}

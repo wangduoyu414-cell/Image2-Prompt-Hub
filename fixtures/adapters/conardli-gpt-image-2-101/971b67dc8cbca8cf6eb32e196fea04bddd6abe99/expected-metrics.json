@@ -1,0 +1,20 @@
+{
+  "schema_version": "extraction-metrics/v1",
+  "source_id": "conardli-gpt-image-2-101",
+  "revision_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99",
+  "observed_case_count": 3,
+  "exact_prompt_count": 3,
+  "paired_output_count": 3,
+  "valid_case_count": 3,
+  "unique_valid_case_count": 3,
+  "pair_rate": 1.0,
+  "broken_asset_count": 0,
+  "duplicate_estimate": 0,
+  "generation_example_count": 3,
+  "case_fingerprint_aggregate_sha256": "4b9af6806f957d7fe5e9322fe824d1373753ecae124ff45ae1b07502cc6d28ce",
+  "asset_media_type_counts": {
+    "image/png": 3
+  },
+  "semantic_digest": "b0c42ebf15845a805b84200b3933bb178844db198592473bc4931e9f8890f254"
+}
+

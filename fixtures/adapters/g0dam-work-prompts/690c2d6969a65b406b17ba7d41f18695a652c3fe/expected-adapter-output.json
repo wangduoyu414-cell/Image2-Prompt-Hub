@@ -1,0 +1,118 @@
+{
+  "schema_version": "adapter-output/v1",
+  "source_id": "g0dam-work-prompts",
+  "revision_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe",
+  "adapter_id": "g0dam_manifest_json_v1",
+  "adapter_version": "1.0.0",
+  "records": [
+    {
+      "source_case_key": "g0dam-work-prompts:gptimg2-work-002",
+      "source_case_locator": {
+        "source_path": "data/prompts.json",
+        "source_url": "https://raw.githubusercontent.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/690c2d6969a65b406b17ba7d41f18695a652c3fe/data/prompts.json",
+        "native_id": "gptimg2-work-002",
+        "selector": "prompts[id=gptimg2-work-002]"
+      },
+      "state": "contract_valid",
+      "prompt": {
+        "prompt_id": "prompt:sha256:c0e968db144b907890cb18c07b2b1897bdc8df15b7683fc2dce9fbea97ee3f06",
+        "raw_text": "Create a 干净的对比场景，旧的手工流程淡出，聚焦到清晰仪表盘，并预留一句 CTA 标题空间。 business-ready image for a growth marketer. Goal: Create a high-converting hero image for a search-ad landing page. Deliverable: Search ad landing hero. Visual direction: A clean comparison scene showing the old manual workflow fading into a focused dashboard, with one short CTA headline space. Use precise layout language, keep text short and legible, show realistic work context, include enough negative space for website cropping, avoid generic stock-photo smiles, fantasy elements, celebrity likenesses, copyrighted brands, unreadable text, clutter, warped hands, and exaggerated claims.",
+        "language": "en",
+        "source_location": {
+          "source_path": "data/prompts.json",
+          "source_url": "https://raw.githubusercontent.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/690c2d6969a65b406b17ba7d41f18695a652c3fe/data/prompts.json",
+          "native_id": "gptimg2-work-002",
+          "selector": "prompts[id=gptimg2-work-002].prompt.en"
+        }
+      },
+      "asset_references": [
+        {
+          "asset_ref_id": "asset-ref:g0dam-work-prompts:gptimg2-work-002:output-primary",
+          "role": "output_primary",
+          "resolution_state": "resolved",
+          "content_sha256": "104e1626b6061466891dc21bea2cbddf5291f40106e969a66f2df009c27febf2",
+          "source_location": {
+            "source_path": "images/gptimg2-work-002-search-ad-landing-hero.png",
+            "source_url": "https://raw.githubusercontent.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/690c2d6969a65b406b17ba7d41f18695a652c3fe/images/gptimg2-work-002-search-ad-landing-hero.png",
+            "native_id": "gptimg2-work-002",
+            "selector": "prompts[id=gptimg2-work-002].image_path"
+          },
+          "extensions": {
+            "ingestion.asset": {
+              "byte_size": 608,
+              "media_type": "image/png"
+            }
+          }
+        }
+      ],
+      "pairings": [
+        {
+          "prompt_id": "prompt:sha256:c0e968db144b907890cb18c07b2b1897bdc8df15b7683fc2dce9fbea97ee3f06",
+          "asset_ref_id": "asset-ref:g0dam-work-prompts:gptimg2-work-002:output-primary",
+          "method": "explicit_structured_reference",
+          "status": "strong",
+          "evidence": [
+            {
+              "source_path": "data/prompts.json",
+              "source_url": "https://raw.githubusercontent.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/690c2d6969a65b406b17ba7d41f18695a652c3fe/data/prompts.json",
+              "native_id": "gptimg2-work-002",
+              "selector": "one structured prompts[id=gptimg2-work-002] record binds prompt.en and image_path"
+            }
+          ]
+        }
+      ],
+      "source_claim": {
+        "evidence_status": "source_claimed",
+        "model_raw": "gpt-image-2 / ChatGPT Images 2.0",
+        "parameters_raw": null
+      },
+      "raw_tags": [
+        "16:9",
+        "growth-marketer",
+        "landing hero",
+        "marketing-growth"
+      ],
+      "rights_evidence": {
+        "prompt_rights_status": "unknown",
+        "asset_rights_status": "unknown",
+        "evidence_urls": [],
+        "note": "Registry rights are retained as source evidence; no approval or publication decision is implied."
+      },
+      "extensions": {
+        "g0dam.source": {
+          "title_raw": {
+            "en": "Search ad landing hero",
+            "zh": "搜索广告落地页首屏"
+          },
+          "prompt_zh_raw": "为增长营销人员生成一张 16:9 的工作场景图片。目标：搜索广告落地页转化导向首屏图。交付物：搜索广告落地页首屏。视觉方向：干净的对比场景，旧的手工流程淡出，聚焦到清晰仪表盘，并预留一句 CTA 标题空间。。请使用明确的版式语言，文字短且清晰可读，呈现真实工作语境，保留足够留白方便网站裁切；避免通用图库式假笑、奇幻元素、名人肖像、受版权保护品牌、乱码文字、杂乱构图、畸形手部和夸大承诺。",
+          "category_raw": {
+            "slug": "marketing-growth",
+            "en": "Marketing & Growth",
+            "zh": "营销增长"
+          },
+          "license_note_raw": "Original rewritten prompt synthesized from public prompt-pattern research; not a verbatim copy of any source prompt.",
+          "source_reference_ids_raw": [
+            "openai-model-doc",
+            "openai-images-20",
+            "evolink-awesome",
+            "zerolu-awesome",
+            "creativebloq-x-discussion",
+            "reddit-field-guide"
+          ],
+          "registry_rights": {
+            "repository_license": "Creative-Commons-claimed",
+            "prompt_policy": "review_required",
+            "asset_policy": "review_required"
+          }
+        }
+      }
+    }
+  ],
+  "parse_errors": [],
+  "coverage": {
+    "input_case_count": 1,
+    "extracted_candidate_count": 0,
+    "contract_valid_count": 1,
+    "quarantined_count": 0
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "g0dam-extraction-metrics/v1",
+  "source_id": "g0dam-work-prompts",
+  "revision_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe",
+  "observed_case_count": 1,
+  "exact_prompt_count": 1,
+  "paired_output_count": 1,
+  "valid_case_count": 1,
+  "unique_valid_case_count": 1,
+  "pair_rate": 1.0,
+  "broken_asset_count": 0,
+  "duplicate_estimate": 0,
+  "generation_example_count": 1,
+  "case_fingerprint_aggregate_sha256": "00ea7d1e6504911b0b3e82a50e1315ce3b226ff6d4b654a8e64f5193df2c71cf",
+  "asset_media_type_counts": {
+    "image/png": 1
+  },
+  "semantic_digest": "e4b6de1e710d263fde43388804eabf39d3fa07a86136182505d3bd875247276b"
+}

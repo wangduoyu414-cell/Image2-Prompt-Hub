@@ -1,0 +1,78 @@
+{
+  "schema_version": "adapter-output/v1",
+  "source_id": "conardli-gpt-image-2-101",
+  "revision_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99",
+  "adapter_id": "contract-fixture-conardli-gpt-image-2-101",
+  "adapter_version": "1.0.0",
+  "records": [
+    {
+      "source_case_key": "conardli-gpt-image-2-101:academic-figures/qualitative-comparison-grid/1",
+      "source_case_locator": {
+        "source_path": "src/data/cases.json",
+        "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+        "native_id": "academic-figures/qualitative-comparison-grid/1",
+        "selector": "cases[id=academic-figures/qualitative-comparison-grid/1]"
+      },
+      "state": "contract_valid",
+      "prompt": {
+        "prompt_id": "prompt:sha256:09a3d781b65ecb4618ddaca62fcd096a8cb56fb4a1983bda1453e43d86922298",
+        "raw_text": "{\n  \"type\": \"Qualitative Comparison Grid（论文级多方法多样本对比网格）\",\n  \"goal\": \"生成一张可直接放进论文 qualitative results 章节的文生图对比网格，严格对齐、Ours 列深红细边框、英文列首\",\n  \"canvas\": {\n    \"aspect_ratio\": \"4:3\",\n    \"background\": \"white #FFFFFF\",\n    \"outer_padding\": \"40px\"\n  },\n  \"grid\": {\n    \"rows\": \"4\",\n    \"cols\": \"5\",\n    \"cell_size_rule\": \"all cells identical size; gap between cells 4-6px\",\n    \"cell_aspect\": \"square\"\n  },\n  \"headers\": {\n    \"column_headers\": {\n      \"enabled\": true,\n      \"items\": [\n        {\n          \"id\": \"C1\",\n          \"label\": \"Text Prompt\"\n        },\n        {\n          \"id\": \"C2\",\n          \"label\": \"DALL·E 3 [1]\"\n        },\n        {\n          \"id\": \"C3\",\n          \"label\": \"Midjourney v6 [2]\"\n        },\n        {\n          \"id\": \"C4\",\n          \"label\": \"SDXL 1.0 [3]\"\n        },\n        {\n          \"id\": \"C5\",\n          \"label\": \"Ours (proposed)\",\n          \"highlight\": true\n        }\n      ],\n      \"style\": \"centered above each column, sans-serif bold 11pt, citations in [brackets]\"\n    },\n    \"row_labels\": {\n      \"enabled\": true,\n      \"items\": [\n        \"Prompt A: “a photorealistic red fox in snow, 85mm, shallow DoF”\",\n        \"Prompt B: “futuristic Tokyo alley at night, neon, rain, cinematic”\",\n        \"Prompt C: “ceramic mug on oak table, morning window light, product shot”\",\n        \"Prompt D: “watercolor botanical illustration, eucalyptus leaves, white background”\"\n      ],\n      \"style\": \"left margin, 10pt compact sans, two lines max per label\"\n    }\n  },\n  \"cell_content\": {\n    \"type\": \"rgb_image\",\n    \"options_explained\": {\n      \"note\": \"Col1: monospace text box rendering the prompt; Col2–5: model outputs for that row's prompt\"\n    },\n    \"consistency_rule\": \"each row shows the same prompt in column 1 and all generated images reflect that text only\"\n  },\n  \"highlights\": {\n    \"ours_column\": {\n      \"enabled\": true,\n      \"style\": \"thicker border 1.5px in deep red #DC2626 around each Ours cell\"\n    },\n    \"zoom_in_boxes\": {\n      \"enabled\": \"false\",\n      \"rule\": \"N/A\"\n    }\n  },\n  \"caption\": {\n    \"enabled\": true,\n    \"label\": \"Figure 5.\",\n    \"text\": \"Qualitative text-to-image comparison on fixed prompts. Our method (last column) better preserves specular highlights and text–image alignment; see supp. for more seeds.\",\n    \"style\": \"below the grid, italic smaller sans, justified\"\n  },\n  \"constraints\": {\n    \"must_keep\": [\n      \"Ours column clearly outlined\",\n      \"same semantic scene per row across methods\",\n      \"no decorative gradients in grid background\"\n    ],\n    \"avoid\": [\n      \"mismatched row content\",\n      \"unreadable prompt text in column 1\"\n    ]\n  }\n}\n",
+        "language": "mixed",
+        "source_location": {
+          "source_path": "academic-figures/qualitative-comparison-grid/1.json",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/academic-figures/qualitative-comparison-grid/1.json",
+          "native_id": "academic-figures/qualitative-comparison-grid/1",
+          "selector": "upstream prompt_path resolved from cases[id=academic-figures/qualitative-comparison-grid/1].prompt_content"
+        }
+      },
+      "asset_references": [
+        {
+          "asset_ref_id": "asset-ref:conardli-gpt-image-2-101:academic-figures/qualitative-comparison-grid/1:output-primary",
+          "role": "output_primary",
+          "resolution_state": "unresolved",
+          "source_location": {
+            "source_path": "public/case/academic-figures/qualitative-comparison-grid/1.png",
+            "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/qualitative-comparison-grid/1.png",
+            "native_id": "academic-figures/qualitative-comparison-grid/1",
+            "selector": "cases[id=academic-figures/qualitative-comparison-grid/1].image_url"
+          }
+        }
+      ],
+      "pairings": [
+        {
+          "prompt_id": "prompt:sha256:09a3d781b65ecb4618ddaca62fcd096a8cb56fb4a1983bda1453e43d86922298",
+          "asset_ref_id": "asset-ref:conardli-gpt-image-2-101:academic-figures/qualitative-comparison-grid/1:output-primary",
+          "method": "stable_native_mapping",
+          "status": "strong",
+          "evidence": [
+            {
+              "source_path": "src/data/cases.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+              "native_id": "academic-figures/qualitative-comparison-grid/1",
+              "selector": "one native case record binds prompt_content, prompt_path, and image_url"
+            }
+          ]
+        }
+      ],
+      "source_claim": {
+        "evidence_status": "unknown",
+        "model_raw": null,
+        "parameters_raw": null
+      },
+      "raw_tags": ["academic-figures"],
+      "rights_evidence": {
+        "prompt_rights_status": "unknown",
+        "asset_rights_status": "unknown",
+        "evidence_urls": [],
+        "note": null
+      }
+    }
+  ],
+  "parse_errors": [],
+  "coverage": {
+    "input_case_count": 1,
+    "extracted_candidate_count": 0,
+    "contract_valid_count": 1,
+    "quarantined_count": 0
+  }
+}

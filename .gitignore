@@ -1,0 +1,40 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Task-local execution evidence and scratch work
+.task-runs/
+.work/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.venv/
+venv/
+
+# JavaScript and build output
+node_modules/
+.next/
+dist/
+build/
+
+# Runtime data, caches, and logs
+.cache/
+*.log
+*.sqlite
+*.sqlite3
+tmp/
+temp/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

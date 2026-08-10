@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://image2.local/schemas/phase2-source-discovery-v1.schema.json",
+  "title": "Image2 Phase 2 Source Discovery v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "authority",
+    "thresholds",
+    "discovery",
+    "full_audits",
+    "adapter_ready_batch",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {"const": "phase2-source-discovery-v1"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase1_audit_sha256", "phase1_registry_sha256", "phase1_active_sources", "phase1_internal_cases", "phase1_real_public_cases"],
+      "properties": {
+        "phase1_audit_sha256": {"$ref": "#/$defs/sha256"},
+        "phase1_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "phase1_active_sources": {"const": 3},
+        "phase1_internal_cases": {"const": 312},
+        "phase1_real_public_cases": {"const": 0}
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_unique_valid_cases", "minimum_pair_rate", "maximum_broken_asset_rate", "maximum_duplicate_rate", "latest_substantive_update_days", "minimum_substantive_update_dates_365"],
+      "properties": {
+        "minimum_unique_valid_cases": {"const": 50},
+        "minimum_pair_rate": {"const": 0.9},
+        "maximum_broken_asset_rate": {"const": 0.05},
+        "maximum_duplicate_rate": {"const": 0.2},
+        "latest_substantive_update_days": {"const": 180},
+        "minimum_substantive_update_dates_365": {"const": 2}
+      }
+    },
+    "discovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executed_at", "query_runs", "existing_probation_refresh", "additional_phase1_refresh", "new_candidates"],
+      "properties": {
+        "executed_at": {"type": "string", "format": "date-time"},
+        "query_runs": {"type": "array", "minItems": 5, "items": {"$ref": "#/$defs/queryRun"}},
+        "existing_probation_refresh": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"$ref": "#/$defs/candidate"}},
+        "additional_phase1_refresh": {"type": "array", "items": {"$ref": "#/$defs/candidate"}},
+        "new_candidates": {"type": "array", "minItems": 20, "items": {"$ref": "#/$defs/candidate"}}
+      }
+    },
+    "full_audits": {"type": "array", "minItems": 8, "items": {"$ref": "#/$defs/fullAudit"}},
+    "adapter_ready_batch": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rank", "source_id", "fixed_commit_sha", "unique_valid_case_count", "recommended_adapter_strategy", "public_eligibility"],
+        "properties": {
+          "rank": {"type": "integer", "minimum": 1},
+          "source_id": {"$ref": "#/$defs/sourceId"},
+          "fixed_commit_sha": {"$ref": "#/$defs/commitSha"},
+          "unique_valid_case_count": {"type": "integer", "minimum": 50},
+          "recommended_adapter_strategy": {"type": "string", "minLength": 1},
+          "public_eligibility": {"const": "review_required"}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["existing_probation_count", "new_candidate_count", "full_audit_count", "adapter_ready_count", "adapter_ready_unique_cases", "phase1_files_modified", "real_public_cases"],
+      "properties": {
+        "existing_probation_count": {"const": 8},
+        "new_candidate_count": {"type": "integer", "minimum": 20},
+        "full_audit_count": {"type": "integer", "minimum": 8},
+        "adapter_ready_count": {"type": "integer", "minimum": 3},
+        "adapter_ready_unique_cases": {"type": "integer", "minimum": 150},
+        "phase1_files_modified": {"const": false},
+        "real_public_cases": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "commitSha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "sourceId": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "queryRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["query_id", "query", "method", "total_count", "incomplete_results"],
+      "properties": {
+        "query_id": {"type": "string", "pattern": "^Q-[0-9]{2}$"},
+        "query": {"type": "string", "minLength": 1},
+        "method": {"const": "github_search_api"},
+        "total_count": {"type": "integer", "minimum": 0},
+        "incomplete_results": {"const": false}
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "candidate_key", "repository_id", "url", "default_branch", "fixed_commit_sha", "status", "classification", "reason", "archived", "pushed_at", "license", "tree"],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/sourceId"},
+        "candidate_key": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+        "repository_id": {"type": ["integer", "null"], "minimum": 1},
+        "url": {"type": ["string", "null"]},
+        "default_branch": {"type": ["string", "null"]},
+        "fixed_commit_sha": {"anyOf": [{"$ref": "#/$defs/commitSha"}, {"type": "null"}]},
+        "status": {"enum": ["triaged", "blocked", "excluded", "unavailable"]},
+        "classification": {"enum": ["case_source", "skill_or_tool", "application", "aggregator", "mirror_or_derived", "multi_model_collection", "unavailable"]},
+        "reason": {"type": "string", "minLength": 1},
+        "archived": {"type": ["boolean", "null"]},
+        "pushed_at": {"type": ["string", "null"]},
+        "license": {"type": ["string", "null"]},
+        "tree": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["blob_count", "image_blob_count", "text_blob_count"],
+          "properties": {
+            "blob_count": {"type": "integer", "minimum": 0},
+            "image_blob_count": {"type": "integer", "minimum": 0},
+            "text_blob_count": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed_case_count", "exact_prompt_count", "paired_output_count", "valid_case_count", "unique_valid_case_count", "pair_rate", "image_reference_count", "broken_asset_count", "broken_asset_rate", "duplicate_count", "duplicate_rate"],
+      "properties": {
+        "observed_case_count": {"type": "integer", "minimum": 0},
+        "exact_prompt_count": {"type": "integer", "minimum": 0},
+        "paired_output_count": {"type": "integer", "minimum": 0},
+        "valid_case_count": {"type": "integer", "minimum": 0},
+        "unique_valid_case_count": {"type": "integer", "minimum": 0},
+        "pair_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "image_reference_count": {"type": "integer", "minimum": 0},
+        "broken_asset_count": {"type": "integer", "minimum": 0},
+        "broken_asset_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "duplicate_count": {"type": "integer", "minimum": 0},
+        "duplicate_rate": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "fullAudit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "candidate_key", "repository_id", "url", "fixed_commit_sha", "family_id", "canonical_source_id", "family_role", "status", "status_reason", "structure_type", "recommended_adapter_strategy", "metrics", "maintenance", "rights", "quality_sampling", "evidence"],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/sourceId"},
+        "candidate_key": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+        "repository_id": {"type": "integer", "minimum": 1},
+        "url": {"type": "string", "pattern": "^https://github\\.com/"},
+        "fixed_commit_sha": {"$ref": "#/$defs/commitSha"},
+        "family_id": {"$ref": "#/$defs/sourceId"},
+        "canonical_source_id": {"anyOf": [{"$ref": "#/$defs/sourceId"}, {"type": "null"}]},
+        "family_role": {"enum": ["canonical", "mirror", "derived", "aggregator"]},
+        "status": {"enum": ["adapter_ready", "probation", "blocked", "excluded"]},
+        "status_reason": {"type": "string", "minLength": 1},
+        "structure_type": {"type": "string", "minLength": 1},
+        "recommended_adapter_strategy": {"type": ["string", "null"]},
+        "metrics": {"$ref": "#/$defs/metrics"},
+        "maintenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["latest_substantive_update", "substantive_update_dates_365", "eligible", "evidence_commits"],
+          "properties": {
+            "latest_substantive_update": {"anyOf": [{"type": "string", "format": "date"}, {"type": "null"}]},
+            "substantive_update_dates_365": {"type": "integer", "minimum": 0},
+            "eligible": {"type": "boolean"},
+            "evidence_commits": {"type": "array", "items": {"$ref": "#/$defs/commitSha"}}
+          }
+        },
+        "rights": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["repository_license", "prompt_policy", "asset_policy", "public_eligibility", "auto_publish"],
+          "properties": {
+            "repository_license": {"type": ["string", "null"]},
+            "prompt_policy": {"enum": ["review_required", "internal_only", "blocked"]},
+            "asset_policy": {"enum": ["review_required", "internal_only", "blocked"]},
+            "public_eligibility": {"enum": ["review_required", "blocked"]},
+            "auto_publish": {"const": false}
+          }
+        },
+        "quality_sampling": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sample_size", "terminal_asset_checks", "result", "finding", "selection_method", "sample_ids", "terminal_results", "sample_ids_sha256"],
+          "properties": {
+            "sample_size": {"type": "integer", "minimum": 0},
+            "terminal_asset_checks": {"type": "integer", "minimum": 0},
+            "result": {"enum": ["pass", "not_run_gate_failed"]},
+            "finding": {"type": "string", "minLength": 1},
+            "selection_method": {"type": "string", "minLength": 1},
+            "sample_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+            "terminal_results": {"type": "array", "items": {"$ref": "#/$defs/terminalResult"}},
+            "sample_ids_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}
+          }
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tree_blob_count", "image_blob_count", "case_coverage_method", "fixed_source_paths", "maintenance_method", "record_ids", "record_ids_sha256", "asset_terminal_summary"],
+          "properties": {
+            "tree_blob_count": {"type": "integer", "minimum": 0},
+            "image_blob_count": {"type": "integer", "minimum": 0},
+            "case_coverage_method": {"type": "string", "minLength": 1},
+            "fixed_source_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "maintenance_method": {"type": "string", "minLength": 1},
+            "record_ids": {"type": "array", "items": {"type": "string"}},
+            "record_ids_sha256": {"$ref": "#/$defs/sha256"},
+            "asset_terminal_summary": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["checked_reference_count", "readable_reference_count", "broken_reference_count", "method"],
+              "properties": {
+                "checked_reference_count": {"type": "integer", "minimum": 0},
+                "readable_reference_count": {"type": "integer", "minimum": 0},
+                "broken_reference_count": {"type": "integer", "minimum": 0},
+                "method": {"type": "string", "minLength": 1}
+              }
+            }
+          }
+        }
+      }
+    },
+    "terminalResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "asset_path", "asset_sha256", "status"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "asset_path": {"type": "string", "minLength": 1},
+        "asset_sha256": {"$ref": "#/$defs/sha256"},
+        "status": {"const": "readable"}
+      }
+    }
+  }
+}

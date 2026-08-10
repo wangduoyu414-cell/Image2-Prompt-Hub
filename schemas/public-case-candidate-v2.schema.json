@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://image2.local/schemas/public-case-candidate-v2.schema.json",
+  "title": "Public Case Candidate v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "state", "source_case", "prompt", "generation_members", "rights_review", "candidate_content_digest"],
+  "properties": {
+    "schema_version": {"const": "public-case-candidate/v2"},
+    "state": {"enum": ["pending", "review_required", "publishable", "internal_only", "blocked"]},
+    "source_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_case_version_id", "source_id", "repository_id", "revision_sha", "source_case_key"],
+      "properties": {
+        "source_case_version_id": {"type": "integer", "minimum": 1},
+        "source_id": {"$ref": "#/$defs/publicIdentityText"},
+        "repository_id": {"$ref": "#/$defs/publicIdentityText"},
+        "revision_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "source_case_key": {"$ref": "#/$defs/publicIdentityText"}
+      }
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt_id", "raw_text", "language", "source_path", "source_url"],
+      "properties": {
+        "prompt_id": {"$ref": "#/$defs/publicIdentityText"},
+        "raw_text": {"type": "string", "minLength": 1},
+        "language": {"$ref": "#/$defs/publicIdentityText"},
+        "source_path": {"$ref": "#/$defs/sourcePath"},
+        "source_url": {"$ref": "#/$defs/publicHttpsUrl"}
+      }
+    },
+    "generation_members": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/generationMember"}
+    },
+    "rights_review": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/reviewSummary"}
+      ]
+    },
+    "candidate_content_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"state": {"const": "publishable"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "rights_review": {
+            "allOf": [
+              {"$ref": "#/$defs/reviewSummary"},
+              {"properties": {"prompt_rights": {"const": "approved"}}}
+            ]
+          },
+          "generation_members": {
+            "contains": {"$ref": "#/$defs/generationMemberWithPrimary"},
+            "minContains": 1,
+            "maxContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "pending"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "rights_review": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"state": {"enum": ["pending", "review_required", "internal_only", "blocked"]}},
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "generation_members": {
+            "items": {
+              "allOf": [
+                {"$ref": "#/$defs/generationMember"},
+                {"properties": {"public_outputs": {"maxItems": 0}}}
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"state": {"enum": ["review_required", "internal_only", "blocked"]}},
+        "required": ["state"]
+      },
+      "then": {"properties": {"rights_review": {"$ref": "#/$defs/reviewSummary"}}}
+    }
+  ],
+  "$defs": {
+    "sourcePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!\\s)(?!/)(?![a-zA-Z][a-zA-Z0-9+.-]*:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\s$).+$"
+    },
+    "publicMetadataText": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!\\s)(?![a-zA-Z][a-zA-Z0-9+.-]*:)(?!//)(?!.*\\s$).+$"
+    },
+    "publicIdentityText": {
+      "type": "string",
+      "minLength": 1,
+      "allOf": [
+        {"pattern": "^(?!\\s)(?![a-zA-Z][a-zA-Z0-9+.-]*://)(?!//)(?!.*\\s$).+$"},
+        {"not": {"pattern": "://"}},
+        {"not": {"pattern": "(?:[hH][tT][tT][pP][sS]?:|[fF][tT][pP][sS]?:|[wW][sS][sS]?:|[dD][aA][tT][aA]:|[jJ][aA][vV][aA][sS][cC][rR][iI][pP][tT]:|[bB][lL][oO][bB]:|[fF][iI][lL][eE][sS][yY][sS][tT][eE][mM]:|[vV][iI][eE][wW]-[sS][oO][uU][rR][cC][eE]:|[sS]3:|[gG][sS]:|[fF][iI][lL][eE]:|[pP][rR][iI][vV][aA][tT][eE]:|[mM][iI][nN][iI][oO]:|[aA][zZ][uU][rR][eE]:|[aA][rR][nN]:[aA][wW][sS]:[sS]3)"}},
+        {"not": {"pattern": "(?:[sS]3\\.[a-zA-Z0-9.-]*[aA][mM][aA][zZ][oO][nN][aA][wW][sS]\\.[cC][oO][mM]|[sS][tT][oO][rR][aA][gG][eE]\\.[gG][oO][oO][gG][lL][eE][aA][pP][iI][sS]\\.[cC][oO][mM]|[bB][lL][oO][bB]\\.[cC][oO][rR][eE]\\.[wW][iI][nN][dD][oO][wW][sS]\\.[nN][eE][tT]|[dD][iI][gG][iI][tT][aA][lL][oO][cC][eE][aA][nN][sS][pP][aA][cC][eE][sS]\\.[cC][oO][mM]|[rR]2\\.[cC][lL][oO][uU][dD][fF][lL][aA][rR][eE][sS][tT][oO][rR][aA][gG][eE]\\.[cC][oO][mM])"}},
+        {"not": {"pattern": "(?:[xX]-[aA][mM][zZ]-(?:[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL]|[sS][iI][gG][nN][aA][tT][uU][rR][eE]|[sS][eE][cC][uU][rR][iI][tT][yY]-[tT][oO][kK][eE][nN])|[xX]-[gG][oO][oO][gG]-(?:[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL]|[sS][iI][gG][nN][aA][tT][uU][rR][eE])|[aA][wW][sS][aA][cC][cC][eE][sS][sS][kK][eE][yY][iI][dD])="}}
+      ]
+    },
+    "publicHttpsUrl": {
+      "type": "string",
+      "allOf": [
+        {
+          "pattern": "^https://(?!(?:(?:0[xX][0-9a-fA-F]+|[0-9]+)\\.){0,3}(?:0[xX][0-9a-fA-F]+|[0-9]+)(?::443)?(?:/|#|$))[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+(?::443)?(?:/[^?\\s]*)?(?:#[^?\\s]*)?$"
+        },
+        {
+          "not": {
+            "pattern": "^https://(?:[a-z0-9-]+\\.)*(?:s3(?:[.-][a-z0-9-]+)*\\.amazonaws\\.com|storage\\.googleapis\\.com|blob\\.core\\.windows\\.net|digitaloceanspaces\\.com|r2\\.cloudflarestorage\\.com)(?::443)?(?:/|#|$)"
+          }
+        }
+      ]
+    },
+    "sourceClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_status", "model_raw"],
+      "properties": {
+        "evidence_status": {"enum": ["unknown", "source_claimed"]},
+        "model_raw": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/publicMetadataText"}
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"evidence_status": {"const": "source_claimed"}}},
+          "then": {"properties": {"model_raw": {"$ref": "#/$defs/publicMetadataText"}}}
+        }
+      ]
+    },
+    "sourceLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_path": {"$ref": "#/$defs/sourcePath"},
+        "source_url": {"$ref": "#/$defs/publicHttpsUrl"},
+        "native_id": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/publicMetadataText"}]},
+        "selector": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/publicMetadataText"}]}
+      },
+      "anyOf": [
+        {"required": ["source_path"]},
+        {"required": ["source_url"]}
+      ]
+    },
+    "generationMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation_example_row_id", "generation_example_id", "source_claim", "public_outputs", "hidden_outputs"],
+      "properties": {
+        "generation_example_row_id": {"type": "integer", "minimum": 1},
+        "generation_example_id": {"$ref": "#/$defs/publicIdentityText"},
+        "source_claim": {"$ref": "#/$defs/sourceClaim"},
+        "public_outputs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/publicOutput"},
+          "contains": {
+            "type": "object",
+            "properties": {"public_display_role": {"const": "public_primary"}},
+            "required": ["public_display_role"]
+          },
+          "minContains": 0,
+          "maxContains": 1
+        },
+        "hidden_outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["redacted"],
+            "properties": {"redacted": {"const": true}}
+          }
+        }
+      }
+    },
+    "generationMemberWithPrimary": {
+      "allOf": [
+        {"$ref": "#/$defs/generationMember"},
+        {
+          "properties": {
+            "public_outputs": {
+              "contains": {
+                "type": "object",
+                "properties": {"public_display_role": {"const": "public_primary"}},
+                "required": ["public_display_role"]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            }
+          }
+        }
+      ]
+    },
+    "publicOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation_output_id", "ordinal", "source_role", "public_display_role", "content_sha256", "media_type", "byte_size", "source_path", "source_url", "source_location", "rights"],
+      "properties": {
+        "generation_output_id": {"type": "integer", "minimum": 1},
+        "ordinal": {"type": "integer", "minimum": 0},
+        "source_role": {"enum": ["output_primary", "output_secondary"]},
+        "public_display_role": {"enum": ["public_primary", "public_gallery"]},
+        "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "media_type": {"type": "string", "pattern": "^image/"},
+        "byte_size": {"type": "integer", "minimum": 1},
+        "source_path": {"$ref": "#/$defs/sourcePath"},
+        "source_url": {"$ref": "#/$defs/publicHttpsUrl"},
+        "source_location": {"$ref": "#/$defs/sourceLocation"},
+        "rights": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["asset_rights", "display_policy"],
+          "properties": {
+            "asset_rights": {"const": "approved"},
+            "display_policy": {"enum": ["mirror_allowed", "attribution_required", "link_only"]}
+          }
+        }
+      }
+    },
+    "reviewSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rights_review_batch_id", "repository_license", "prompt_rights", "author", "original_url", "evidence_url", "reviewer", "reviewed_at"],
+      "properties": {
+        "rights_review_batch_id": {"type": "integer", "minimum": 1},
+        "repository_license": {"$ref": "#/$defs/publicIdentityText"},
+        "prompt_rights": {"enum": ["approved", "unknown", "internal_only", "blocked"]},
+        "author": {"$ref": "#/$defs/publicIdentityText"},
+        "original_url": {"$ref": "#/$defs/publicHttpsUrl"},
+        "evidence_url": {"$ref": "#/$defs/publicHttpsUrl"},
+        "reviewer": {"$ref": "#/$defs/publicIdentityText"},
+        "reviewed_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+        }
+      }
+    }
+  }
+}

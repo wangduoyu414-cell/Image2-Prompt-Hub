@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://image2.local/contracts/adapter-output-v1.schema.json",
+  "title": "Adapter Output v1",
+  "description": "A deterministic, fact-extraction batch. It may contain unresolved asset references and parse errors, but it contains no content-quality, rights-approval, or publication decision.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_id",
+    "revision_sha",
+    "adapter_id",
+    "adapter_version",
+    "records",
+    "parse_errors",
+    "coverage"
+  ],
+  "properties": {
+    "schema_version": { "const": "adapter-output/v1" },
+    "source_id": { "$ref": "#/$defs/nonemptyString" },
+    "revision_sha": { "$ref": "#/$defs/commitSha" },
+    "adapter_id": { "$ref": "#/$defs/nonemptyString" },
+    "adapter_version": { "$ref": "#/$defs/nonemptyString" },
+    "records": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/record" }
+    },
+    "parse_errors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/parseError" }
+    },
+    "coverage": { "$ref": "#/$defs/coverage" },
+    "extensions": { "$ref": "#/$defs/extensions" }
+  },
+  "$defs": {
+    "nonemptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "commitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sourceLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_path": { "$ref": "#/$defs/nonemptyString" },
+        "source_url": { "$ref": "#/$defs/nonemptyString" },
+        "native_id": { "type": ["string", "null"] },
+        "selector": { "type": ["string", "null"] }
+      },
+      "anyOf": [
+        { "required": ["source_path"] },
+        { "required": ["source_url"] }
+      ]
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_-]*\\.[a-z][a-z0-9_.-]*$"
+      },
+      "additionalProperties": true
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt_id", "raw_text", "language", "source_location"],
+      "properties": {
+        "prompt_id": { "$ref": "#/$defs/nonemptyString" },
+        "raw_text": { "$ref": "#/$defs/nonemptyString" },
+        "language": { "type": "string", "enum": ["unknown", "en", "zh", "mixed"] },
+        "source_location": { "$ref": "#/$defs/sourceLocation" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "assetReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_ref_id", "role", "resolution_state", "source_location"],
+      "properties": {
+        "asset_ref_id": { "$ref": "#/$defs/nonemptyString" },
+        "role": {
+          "type": "string",
+          "enum": ["input_reference", "output_primary", "output_secondary"]
+        },
+        "resolution_state": { "type": "string", "enum": ["unresolved", "resolved"] },
+        "content_sha256": { "$ref": "#/$defs/sha256" },
+        "source_location": { "$ref": "#/$defs/sourceLocation" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "pairing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt_id", "asset_ref_id", "method", "status", "evidence"],
+      "properties": {
+        "prompt_id": { "$ref": "#/$defs/nonemptyString" },
+        "asset_ref_id": { "$ref": "#/$defs/nonemptyString" },
+        "method": {
+          "type": "string",
+          "enum": [
+            "explicit_structured_reference",
+            "explicit_markdown_block",
+            "stable_native_mapping",
+            "inferred_local_order",
+            "ambiguous"
+          ]
+        },
+        "status": { "type": "string", "enum": ["strong", "review_required", "ambiguous"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/sourceLocation" }
+        }
+      }
+    },
+    "sourceClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_status", "model_raw", "parameters_raw"],
+      "properties": {
+        "evidence_status": { "type": "string", "enum": ["unknown", "source_claimed"] },
+        "model_raw": { "type": ["string", "null"] },
+        "parameters_raw": { "type": ["object", "null"], "additionalProperties": true }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "evidence_status": { "const": "source_claimed" } } },
+          "then": { "properties": { "model_raw": { "$ref": "#/$defs/nonemptyString" } } }
+        }
+      ]
+    },
+    "rightsEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt_rights_status", "asset_rights_status", "evidence_urls"],
+      "properties": {
+        "prompt_rights_status": { "type": "string", "enum": ["unknown", "source_claimed", "evidence_recorded"] },
+        "asset_rights_status": { "type": "string", "enum": ["unknown", "source_claimed", "evidence_recorded"] },
+        "evidence_urls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonemptyString" }
+        },
+        "note": { "type": ["string", "null"] }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_case_key",
+        "source_case_locator",
+        "state",
+        "prompt",
+        "asset_references",
+        "pairings",
+        "source_claim",
+        "raw_tags",
+        "rights_evidence"
+      ],
+      "properties": {
+        "source_case_key": { "$ref": "#/$defs/nonemptyString" },
+        "source_case_locator": { "$ref": "#/$defs/sourceLocation" },
+        "state": { "type": "string", "enum": ["extracted_candidate", "contract_valid"] },
+        "prompt": { "$ref": "#/$defs/prompt" },
+        "asset_references": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/assetReference" }
+        },
+        "pairings": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/pairing" }
+        },
+        "source_claim": { "$ref": "#/$defs/sourceClaim" },
+        "raw_tags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonemptyString" },
+          "uniqueItems": true
+        },
+        "rights_evidence": { "$ref": "#/$defs/rightsEvidence" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "parseError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_case_key", "source_case_locator", "state", "stage", "error_code", "message"],
+      "properties": {
+        "source_case_key": { "$ref": "#/$defs/nonemptyString" },
+        "source_case_locator": { "$ref": "#/$defs/sourceLocation" },
+        "state": { "const": "quarantined" },
+        "stage": { "type": "string", "enum": ["discovery", "prompt_extraction", "asset_extraction", "pairing"] },
+        "error_code": { "$ref": "#/$defs/nonemptyString" },
+        "message": { "$ref": "#/$defs/nonemptyString" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_case_count", "extracted_candidate_count", "contract_valid_count", "quarantined_count"],
+      "properties": {
+        "input_case_count": { "type": "integer", "minimum": 0 },
+        "extracted_candidate_count": { "type": "integer", "minimum": 0 },
+        "contract_valid_count": { "type": "integer", "minimum": 0 },
+        "quarantined_count": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

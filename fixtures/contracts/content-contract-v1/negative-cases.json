@@ -1,0 +1,151 @@
+{
+  "schema_version": "content-contract-negative-cases/v1",
+  "description": "Deterministic in-memory mutations. These are contract tests, not source-derived pilot facts and do not add upstream Prompt or image content.",
+  "cases": [
+    {
+      "id": "generation-empty-prompt",
+      "gate": "GATE-001",
+      "target": "generation-example/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/prompts/0/raw_text", "value": "" },
+      "expect": "reject",
+      "rule": "INV-001/RULE-004"
+    },
+    {
+      "id": "generation-no-output",
+      "gate": "GATE-001",
+      "target": "generation-example/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/generation_examples/0/output_asset_ids", "value": [] },
+      "expect": "reject",
+      "rule": "INV-002"
+    },
+    {
+      "id": "generation-dangling-prompt-reference",
+      "gate": "GATE-001",
+      "target": "generation-example/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/generation_examples/0/prompt_id", "value": "prompt:missing" },
+      "expect": "reject",
+      "rule": "INV-005"
+    },
+    {
+      "id": "generation-final-asset-without-hash",
+      "gate": "GATE-001",
+      "target": "generation-example/g0dam-work-prompts.valid.json",
+      "operation": { "op": "delete", "path": "/assets/0/content_sha256" },
+      "expect": "reject",
+      "rule": "INV-005/RULE-005"
+    },
+    {
+      "id": "generation-inferred-pairing-promoted",
+      "gate": "GATE-001",
+      "target": "generation-example/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/generation_examples/0/pairing/method", "value": "inferred_local_order" },
+      "expect": "reject",
+      "rule": "INV-006"
+    },
+    {
+      "id": "generation-guessed-model",
+      "gate": "GATE-001",
+      "target": "generation-example/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/generation_examples/0/generation_claim/model_raw", "value": "guessed-from-repository-name" },
+      "expect": "reject",
+      "rule": "INV-003/RULE-006"
+    },
+    {
+      "id": "generation-unsupported-version",
+      "gate": "GATE-001",
+      "target": "generation-example/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/schema_version", "value": "generation-example/v2" },
+      "expect": "reject",
+      "rule": "version-fail-closed"
+    },
+    {
+      "id": "generation-not-constructible-payload",
+      "gate": "GATE-001",
+      "target": "generation-example/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/state", "value": "not_constructible" },
+      "expect": "reject",
+      "rule": "STATE-002/REQ-003"
+    },
+    {
+      "id": "adapter-registry-commit-drift",
+      "gate": "GATE-002",
+      "target": "adapter-output/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/revision_sha", "value": "0000000000000000000000000000000000000000" },
+      "expect": "reject",
+      "rule": "INV-007/RULE-001"
+    },
+    {
+      "id": "adapter-ambiguous-promoted-to-strong",
+      "gate": "GATE-002",
+      "target": "adapter-output/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/records/0/pairings/0/method", "value": "ambiguous" },
+      "expect": "reject",
+      "rule": "INV-006"
+    },
+    {
+      "id": "adapter-duplicate-case-key",
+      "gate": "GATE-002",
+      "target": "adapter-output/g0dam-work-prompts.valid.json",
+      "operation": { "op": "duplicate_record" },
+      "expect": "reject",
+      "rule": "RULE-003"
+    },
+    {
+      "id": "adapter-extension-shadows-standard-field",
+      "gate": "GATE-002",
+      "target": "adapter-output/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/records/0/extensions/fixture.source_id", "value": "shadow" },
+      "expect": "reject",
+      "rule": "INV-009"
+    },
+    {
+      "id": "adapter-forbidden-publication-decision",
+      "gate": "GATE-002",
+      "target": "adapter-output/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/records/0/publication_status", "value": "approved" },
+      "expect": "reject",
+      "rule": "INV-004/INV-010"
+    },
+    {
+      "id": "adapter-dynamic-identity-field",
+      "gate": "GATE-002",
+      "target": "adapter-output/g0dam-work-prompts.valid.json",
+      "operation": { "op": "set", "path": "/run_timestamp", "value": "2030-01-01T00:00:00Z" },
+      "expect": "reject",
+      "rule": "INV-008"
+    },
+    {
+      "id": "adapter-synthetic-positive-origin",
+      "gate": "GATE-002",
+      "target": "manifest.json",
+      "operation": { "op": "set", "path": "/pilots/0/origin_kind", "value": "synthetic" },
+      "expect": "reject",
+      "rule": "REQ-005/RISK-007"
+    },
+    {
+      "id": "adapter-partial-failure-accounting",
+      "gate": "GATE-002",
+      "target": "adapter-output/g0dam-work-prompts.valid.json",
+      "operation": { "op": "append_controlled_parse_error" },
+      "expect": "accept",
+      "rule": "SCN-004/RULE-008",
+      "control_only": true
+    },
+    {
+      "id": "assembly-unresolved-asset-directly-used",
+      "gate": "GATE-003",
+      "target": "assembly",
+      "operation": { "op": "project_without_resolution" },
+      "expect": "reject",
+      "rule": "REQ-003/SCN-005"
+    },
+    {
+      "id": "assembly-parse-error-leakage",
+      "gate": "GATE-003",
+      "target": "assembly",
+      "operation": { "op": "project_quarantined_case" },
+      "expect": "reject",
+      "rule": "RULE-008/ASSEMBLY-001"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": "generation-example/v1",
+  "source_id": "g0dam-work-prompts",
+  "revision_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe",
+  "state": "contract_valid",
+  "source_case_key": "g0dam-work-prompts:gptimg2-work-002",
+  "source_case_locator": {
+    "source_path": "data/prompts.json",
+    "source_url": "https://raw.githubusercontent.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/690c2d6969a65b406b17ba7d41f18695a652c3fe/data/prompts.json",
+    "native_id": "gptimg2-work-002",
+    "selector": "prompts[id=gptimg2-work-002]"
+  },
+  "prompts": [
+    {
+      "prompt_id": "prompt:sha256:c0e968db144b907890cb18c07b2b1897bdc8df15b7683fc2dce9fbea97ee3f06",
+      "raw_text": "Create a 干净的对比场景，旧的手工流程淡出，聚焦到清晰仪表盘，并预留一句 CTA 标题空间。 business-ready image for a growth marketer. Goal: Create a high-converting hero image for a search-ad landing page. Deliverable: Search ad landing hero. Visual direction: A clean comparison scene showing the old manual workflow fading into a focused dashboard, with one short CTA headline space. Use precise layout language, keep text short and legible, show realistic work context, include enough negative space for website cropping, avoid generic stock-photo smiles, fantasy elements, celebrity likenesses, copyrighted brands, unreadable text, clutter, warped hands, and exaggerated claims.",
+      "language": "mixed",
+      "source_location": {
+        "source_path": "data/prompts.json",
+        "source_url": "https://raw.githubusercontent.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/690c2d6969a65b406b17ba7d41f18695a652c3fe/data/prompts.json",
+        "native_id": "gptimg2-work-002",
+        "selector": "prompts[id=gptimg2-work-002].prompt.en"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "asset_id": "asset:sha256:6757e2297be0ba332307d3b35ba5d0bf56aed8e51c8753d42ad717c0af245900",
+      "role": "output_primary",
+      "content_sha256": "6757e2297be0ba332307d3b35ba5d0bf56aed8e51c8753d42ad717c0af245900",
+      "source_location": {
+        "source_path": "images/gptimg2-work-002-search-ad-landing-hero.png",
+        "source_url": "https://raw.githubusercontent.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/690c2d6969a65b406b17ba7d41f18695a652c3fe/images/gptimg2-work-002-search-ad-landing-hero.png",
+        "native_id": "gptimg2-work-002",
+        "selector": "prompts[id=gptimg2-work-002].image_path"
+      }
+    }
+  ],
+  "generation_examples": [
+    {
+      "generation_example_id": "generation:g0dam-work-prompts:gptimg2-work-002:output-primary",
+      "prompt_id": "prompt:sha256:c0e968db144b907890cb18c07b2b1897bdc8df15b7683fc2dce9fbea97ee3f06",
+      "input_asset_ids": [],
+      "output_asset_ids": ["asset:sha256:6757e2297be0ba332307d3b35ba5d0bf56aed8e51c8753d42ad717c0af245900"],
+      "generation_claim": {
+        "evidence_status": "unknown",
+        "model_raw": null,
+        "parameters_raw": null
+      },
+      "pairing": {
+        "method": "explicit_structured_reference",
+        "status": "strong",
+        "evidence": [
+          {
+            "source_path": "data/prompts.json",
+            "source_url": "https://raw.githubusercontent.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/690c2d6969a65b406b17ba7d41f18695a652c3fe/data/prompts.json",
+            "native_id": "gptimg2-work-002",
+            "selector": "one structured record binds prompt.en and image_path"
+          }
+        ]
+      }
+    }
+  ],
+  "rights_evidence": {
+    "prompt_rights_status": "unknown",
+    "asset_rights_status": "unknown",
+    "evidence_urls": [],
+    "note": null
+  }
+}

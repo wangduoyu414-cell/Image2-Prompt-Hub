@@ -1,0 +1,346 @@
+{
+  "adapter_id": "joesai_manifest_markdown_v1",
+  "adapter_version": "1.0.0",
+  "coverage": {
+    "contract_valid_count": 3,
+    "extracted_candidate_count": 0,
+    "input_case_count": 3,
+    "quarantined_count": 0
+  },
+  "parse_errors": [],
+  "records": [
+    {
+      "asset_references": [
+        {
+          "asset_ref_id": "asset-ref:joesai-commercial-prompts:beauty-campaign-kv-editorial:output-primary",
+          "content_sha256": "61a98d4cfe650a094515c0e199c757ee0a24cca4296e32c44c181187a942a999",
+          "extensions": {
+            "ingestion.asset": {
+              "byte_size": 2248,
+              "media_type": "image/png"
+            }
+          },
+          "resolution_state": "resolved",
+          "role": "output_primary",
+          "source_location": {
+            "native_id": "beauty-campaign-kv-editorial",
+            "selector": "manifest entry example_image",
+            "source_path": "assets/examples/beauty-campaign-kv-editorial.png",
+            "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/assets/examples/beauty-campaign-kv-editorial.png"
+          }
+        }
+      ],
+      "extensions": {
+        "joesai.source": {
+          "best_for_raw": "- beauty launch campaign\n- homepage key visual\n- premium social ad",
+          "manifest": {
+            "asset_type": "campaign key visual",
+            "category": "beauty",
+            "example_image": "assets/examples/beauty-campaign-kv-editorial.png",
+            "featured": false,
+            "languages": [
+              "en",
+              "zh-CN"
+            ],
+            "slug": "beauty-campaign-kv-editorial",
+            "title": "Beauty Campaign KV Editorial",
+            "title_zh": "美妆 Campaign KV",
+            "use_case": "beauty brand launch KV"
+          },
+          "manifest_location": {
+            "native_id": "beauty-campaign-kv-editorial",
+            "selector": "manifest[slug=beauty-campaign-kv-editorial]",
+            "source_path": "data/prompts.json",
+            "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/data/prompts.json"
+          },
+          "prompt_zh_raw": "目标：生成一张高端美妆 campaign KV，让画面兼具编辑感、向往感和品牌发布气质。\n资产类型：奢华护肤或美妆新品发布的 campaign 主视觉。\n场景：带雕塑感的摄影棚环境，一个主产品作为核心，辅以轻量 set design 和可用于 campaign 的高级留白。\n主体：一个高端美妆产品作为主角，搭配少量能抬升品牌气质的辅助线索，但不能分散产品注意力。\n构图：强主视觉 framing，平衡但有戏剧性，产品清晰可读，像高级杂志广告，不要左重右轻。\n光线：通透编辑光，边缘高光干净，阴影过渡柔和，有精致护肤广告的抛光感。\n材质与风格：磨砂玻璃、拉丝金属、奶油石材、柔雾或光影投射、安静高奢配色。\n约束：不要 logo，不要大量文字，不要手，不要杂乱，不要廉价闪光特效，不要水印。",
+          "why_it_works_raw": null
+        }
+      },
+      "pairings": [
+        {
+          "asset_ref_id": "asset-ref:joesai-commercial-prompts:beauty-campaign-kv-editorial:output-primary",
+          "evidence": [
+            {
+              "native_id": "beauty-campaign-kv-editorial",
+              "selector": "manifest[slug=beauty-campaign-kv-editorial]",
+              "source_path": "data/prompts.json",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/data/prompts.json"
+            },
+            {
+              "native_id": "beauty-campaign-kv-editorial",
+              "selector": "## Prompt (EN) fenced block",
+              "source_path": "prompts/beauty/beauty-campaign-kv-editorial.md",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/beauty/beauty-campaign-kv-editorial.md"
+            },
+            {
+              "native_id": "beauty-campaign-kv-editorial",
+              "selector": "manifest entry example_image",
+              "source_path": "assets/examples/beauty-campaign-kv-editorial.png",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/assets/examples/beauty-campaign-kv-editorial.png"
+            }
+          ],
+          "method": "explicit_markdown_block",
+          "prompt_id": "prompt:sha256:e653af0528f7ce46104307ca6a76cdde2e8b2cf82b511cd3618001d50070b0c5",
+          "status": "strong"
+        }
+      ],
+      "prompt": {
+        "language": "en",
+        "prompt_id": "prompt:sha256:e653af0528f7ce46104307ca6a76cdde2e8b2cf82b511cd3618001d50070b0c5",
+        "raw_text": "Goal: Create a beauty campaign key visual that feels editorial, aspirational, and premium-brand ready.\nAsset: Campaign KV for a luxury skincare or beauty launch.\nScene: Sculptural studio environment with one hero product, soft atmospheric set design, and elegant negative space for campaign use.\nSubject: One premium beauty product as the hero object, supported by subtle styling cues that elevate brand mood without distracting from the product.\nComposition: Strong hero framing, balanced but dramatic, product clearly readable, premium magazine-ad pacing, not left-heavy.\nLighting: Luminous editorial light with clean highlights, soft shadow transitions, and refined skin-care beauty polish.\nMaterials and styling: Frosted glass, brushed metal, creamy stone, soft haze or shadow play, quiet luxury palette.\nConstraints: No logo, no dense text, no hands, no clutter, no cheap sparkle effects, no watermark.",
+        "source_location": {
+          "native_id": "beauty-campaign-kv-editorial",
+          "selector": "## Prompt (EN) fenced block",
+          "source_path": "prompts/beauty/beauty-campaign-kv-editorial.md",
+          "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/beauty/beauty-campaign-kv-editorial.md"
+        }
+      },
+      "raw_tags": [
+        "beauty"
+      ],
+      "rights_evidence": {
+        "asset_rights_status": "unknown",
+        "evidence_urls": [],
+        "note": "Registry review_required evidence is retained without approval or publication authorization.",
+        "prompt_rights_status": "unknown"
+      },
+      "source_case_key": "joesai-commercial-prompts:beauty-campaign-kv-editorial",
+      "source_case_locator": {
+        "native_id": "beauty-campaign-kv-editorial",
+        "selector": "manifest slug=beauty-campaign-kv-editorial",
+        "source_path": "prompts/beauty/beauty-campaign-kv-editorial.md",
+        "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/beauty/beauty-campaign-kv-editorial.md"
+      },
+      "source_claim": {
+        "evidence_status": "unknown",
+        "model_raw": null,
+        "parameters_raw": null
+      },
+      "state": "contract_valid"
+    },
+    {
+      "asset_references": [
+        {
+          "asset_ref_id": "asset-ref:joesai-commercial-prompts:boutique-hotel-lobby-editorial:output-primary",
+          "content_sha256": "991982dc04e083bcbb9858ac7b02b02c7f2c3a47476d24b757a249ec23996aa4",
+          "extensions": {
+            "ingestion.asset": {
+              "byte_size": 2408,
+              "media_type": "image/png"
+            }
+          },
+          "resolution_state": "resolved",
+          "role": "output_primary",
+          "source_location": {
+            "native_id": "boutique-hotel-lobby-editorial",
+            "selector": "manifest entry example_image",
+            "source_path": "assets/examples/boutique-hotel-lobby-editorial.png",
+            "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/assets/examples/boutique-hotel-lobby-editorial.png"
+          }
+        }
+      ],
+      "extensions": {
+        "joesai.source": {
+          "best_for_raw": "- hospitality campaign\n- brand deck cover\n- boutique hotel homepage hero",
+          "manifest": {
+            "asset_type": "space campaign image",
+            "category": "hospitality",
+            "example_image": "assets/examples/boutique-hotel-lobby-editorial.png",
+            "featured": true,
+            "languages": [
+              "en",
+              "zh-CN"
+            ],
+            "slug": "boutique-hotel-lobby-editorial",
+            "title": "Boutique Hotel Lobby Editorial",
+            "title_zh": "精品酒店大堂编辑图",
+            "use_case": "hospitality brand hero visual"
+          },
+          "manifest_location": {
+            "native_id": "boutique-hotel-lobby-editorial",
+            "selector": "manifest[slug=boutique-hotel-lobby-editorial]",
+            "source_path": "data/prompts.json",
+            "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/data/prompts.json"
+          },
+          "prompt_zh_raw": "目标：生成一张精品酒店品牌视觉图，气质要克制、温暖、有编辑感，而不是普通地产照片。\n资产类型：酒店品牌首页 hero 或品牌提案封面图。\n场景：精致的酒店大堂，带策展感家具、雕塑灯具、石材地面和温暖的傍晚氛围。\n主体：大堂空间本身作为主角，中间有一个清晰的会客区场景，传达高端 hospitality 感。\n构图：宽画幅但有亲密感，空间层次清楚，构图平衡，预留文案留白。\n光线：建筑暖光与傍晚自然光混合，电影感但可信。\n材质与风格：胡桃木、洞石、羊羔绒面料、拉丝黄铜、肌理灰泥墙面，整体像精品酒店品牌 campaign。\n约束：不要可读标识，不要品牌 logo，不要拥挤人群，不要凌乱前台，不要透视畸变，不要水印。",
+          "why_it_works_raw": "It avoids generic real-estate listing aesthetics by explicitly asking for editorial restraint, layered materials, and hospitality mood."
+        }
+      },
+      "pairings": [
+        {
+          "asset_ref_id": "asset-ref:joesai-commercial-prompts:boutique-hotel-lobby-editorial:output-primary",
+          "evidence": [
+            {
+              "native_id": "boutique-hotel-lobby-editorial",
+              "selector": "manifest[slug=boutique-hotel-lobby-editorial]",
+              "source_path": "data/prompts.json",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/data/prompts.json"
+            },
+            {
+              "native_id": "boutique-hotel-lobby-editorial",
+              "selector": "## Prompt (EN) fenced block",
+              "source_path": "prompts/hospitality/boutique-hotel-lobby-editorial.md",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/hospitality/boutique-hotel-lobby-editorial.md"
+            },
+            {
+              "native_id": "boutique-hotel-lobby-editorial",
+              "selector": "manifest entry example_image",
+              "source_path": "assets/examples/boutique-hotel-lobby-editorial.png",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/assets/examples/boutique-hotel-lobby-editorial.png"
+            }
+          ],
+          "method": "explicit_markdown_block",
+          "prompt_id": "prompt:sha256:5901d1412f68371ac3637c4322e9fae4abfbeb5891092329e6de264805ceec18",
+          "status": "strong"
+        }
+      ],
+      "prompt": {
+        "language": "en",
+        "prompt_id": "prompt:sha256:5901d1412f68371ac3637c4322e9fae4abfbeb5891092329e6de264805ceec18",
+        "raw_text": "Goal: Create a boutique-hotel campaign image that feels intentional, warm, and editorial rather than generic real estate photography.\nAsset: Hospitality brand hero image.\nScene: Sophisticated hotel lobby with curated furniture, sculptural lighting, stone flooring, and warm evening ambience.\nSubject: The lobby itself as the hero environment, with one central seating vignette and a clear sense of premium hospitality.\nComposition: Wide but intimate framing, layered depth, balanced symmetry, usable negative space for campaign copy.\nLighting: Warm architectural lighting mixed with soft natural dusk spill, cinematic but believable.\nMaterials and styling: Walnut wood, travertine, boucle upholstery, brushed brass, textured plaster walls, refined boutique styling.\nConstraints: No readable signage, no visible brand marks, no crowd, no messy reception desk, no distortion, no watermark.",
+        "source_location": {
+          "native_id": "boutique-hotel-lobby-editorial",
+          "selector": "## Prompt (EN) fenced block",
+          "source_path": "prompts/hospitality/boutique-hotel-lobby-editorial.md",
+          "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/hospitality/boutique-hotel-lobby-editorial.md"
+        }
+      },
+      "raw_tags": [
+        "hospitality"
+      ],
+      "rights_evidence": {
+        "asset_rights_status": "unknown",
+        "evidence_urls": [],
+        "note": "Registry review_required evidence is retained without approval or publication authorization.",
+        "prompt_rights_status": "unknown"
+      },
+      "source_case_key": "joesai-commercial-prompts:boutique-hotel-lobby-editorial",
+      "source_case_locator": {
+        "native_id": "boutique-hotel-lobby-editorial",
+        "selector": "manifest slug=boutique-hotel-lobby-editorial",
+        "source_path": "prompts/hospitality/boutique-hotel-lobby-editorial.md",
+        "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/hospitality/boutique-hotel-lobby-editorial.md"
+      },
+      "source_claim": {
+        "evidence_status": "unknown",
+        "model_raw": null,
+        "parameters_raw": null
+      },
+      "state": "contract_valid"
+    },
+    {
+      "asset_references": [
+        {
+          "asset_ref_id": "asset-ref:joesai-commercial-prompts:luxury-jewelry-campaign:output-primary",
+          "content_sha256": "4580bbe9509e986aab92bdbb5eb8c5b6c23930c1603f6879a892f9a1feb577b4",
+          "extensions": {
+            "ingestion.asset": {
+              "byte_size": 1848,
+              "media_type": "image/png"
+            }
+          },
+          "resolution_state": "resolved",
+          "role": "output_primary",
+          "source_location": {
+            "native_id": "luxury-jewelry-campaign",
+            "selector": "manifest entry example_image",
+            "source_path": "assets/examples/luxury-jewelry-campaign-necklace.png",
+            "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/assets/examples/luxury-jewelry-campaign-necklace.png"
+          }
+        }
+      ],
+      "extensions": {
+        "joesai.source": {
+          "best_for_raw": "- jewelry launch campaign\n- homepage hero\n- premium social ad",
+          "manifest": {
+            "asset_type": "luxury campaign visual",
+            "category": "jewelry",
+            "example_image": "assets/examples/luxury-jewelry-campaign-necklace.png",
+            "featured": true,
+            "languages": [
+              "en",
+              "zh-CN"
+            ],
+            "slug": "luxury-jewelry-campaign",
+            "title": "Luxury Jewelry Campaign",
+            "title_zh": "高级珠宝 Campaign 图",
+            "use_case": "premium jewelry launch visual"
+          },
+          "manifest_location": {
+            "native_id": "luxury-jewelry-campaign",
+            "selector": "manifest[slug=luxury-jewelry-campaign]",
+            "source_path": "data/prompts.json",
+            "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/data/prompts.json"
+          },
+          "prompt_zh_raw": "目标：生成一张高级珠宝 campaign 图，既要体现工艺，又要让珠宝闪耀真实可信。\n资产类型：用于首页 hero 或社媒投放的高级珠宝主视觉。\n场景：深炭黑到黑色的奢华背景，搭配高光黑色底座和克制的反射面。\n主体：一条钻石项链作为唯一主角，摆放优雅。\n构图：近景到中近景构图，项链核心部分必须清晰可见，整体像高级杂志广告。\n光线：戏剧化但可控的聚光，钻石高光锐利，阴影柔和下沉。\n材质与风格：抛光贵金属、精细切割宝石、黑色漆面反射、亲密而高端的编辑感。\n约束：不要模特，不要手，不要文字，不要 logo，不要夸张星芒特效，不要杂乱，不要廉价饰品感，不要水印。",
+          "why_it_works_raw": "It tells the model to prioritize believable jewelry photography, not generic glitter effects."
+        }
+      },
+      "pairings": [
+        {
+          "asset_ref_id": "asset-ref:joesai-commercial-prompts:luxury-jewelry-campaign:output-primary",
+          "evidence": [
+            {
+              "native_id": "luxury-jewelry-campaign",
+              "selector": "manifest[slug=luxury-jewelry-campaign]",
+              "source_path": "data/prompts.json",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/data/prompts.json"
+            },
+            {
+              "native_id": "luxury-jewelry-campaign",
+              "selector": "## Prompt (EN) fenced block",
+              "source_path": "prompts/jewelry/luxury-jewelry-campaign.md",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/jewelry/luxury-jewelry-campaign.md"
+            },
+            {
+              "native_id": "luxury-jewelry-campaign",
+              "selector": "manifest entry example_image",
+              "source_path": "assets/examples/luxury-jewelry-campaign-necklace.png",
+              "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/assets/examples/luxury-jewelry-campaign-necklace.png"
+            }
+          ],
+          "method": "explicit_markdown_block",
+          "prompt_id": "prompt:sha256:a9294d19a78610012083e4957e2fb28f849cf7cce1dd518dd983b601bf47241c",
+          "status": "strong"
+        }
+      ],
+      "prompt": {
+        "language": "en",
+        "prompt_id": "prompt:sha256:a9294d19a78610012083e4957e2fb28f849cf7cce1dd518dd983b601bf47241c",
+        "raw_text": "Goal: Create a luxury jewelry campaign image with clear craftsmanship and believable premium sparkle.\nAsset: Homepage hero or social campaign for fine jewelry.\nScene: Deep charcoal-to-black luxury backdrop with a glossy black pedestal and restrained reflective surfaces.\nSubject: One diamond necklace arranged elegantly as the hero piece.\nComposition: Close-to-medium crop, full focal section of the necklace clearly visible, upscale magazine-ad balance, controlled negative space.\nLighting: Dramatic but controlled spotlighting with crisp gemstone highlights and soft shadow falloff.\nMaterials and styling: Polished precious metal, refined stone facets, black lacquer surface, intimate editorial mood.\nConstraints: No model, no hands, no text, no logo, no exaggerated sparkle effects, no clutter, no cheap costume-jewelry look, no watermark.",
+        "source_location": {
+          "native_id": "luxury-jewelry-campaign",
+          "selector": "## Prompt (EN) fenced block",
+          "source_path": "prompts/jewelry/luxury-jewelry-campaign.md",
+          "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/jewelry/luxury-jewelry-campaign.md"
+        }
+      },
+      "raw_tags": [
+        "jewelry"
+      ],
+      "rights_evidence": {
+        "asset_rights_status": "unknown",
+        "evidence_urls": [],
+        "note": "Registry review_required evidence is retained without approval or publication authorization.",
+        "prompt_rights_status": "unknown"
+      },
+      "source_case_key": "joesai-commercial-prompts:luxury-jewelry-campaign",
+      "source_case_locator": {
+        "native_id": "luxury-jewelry-campaign",
+        "selector": "manifest slug=luxury-jewelry-campaign",
+        "source_path": "prompts/jewelry/luxury-jewelry-campaign.md",
+        "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/jewelry/luxury-jewelry-campaign.md"
+      },
+      "source_claim": {
+        "evidence_status": "unknown",
+        "model_raw": null,
+        "parameters_raw": null
+      },
+      "state": "contract_valid"
+    }
+  ],
+  "revision_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b",
+  "schema_version": "adapter-output/v1",
+  "source_id": "joesai-commercial-prompts"
+}

@@ -1,0 +1,521 @@
+[
+  {
+    "schema_version": "generation-example/v1",
+    "source_id": "conardli-gpt-image-2-101",
+    "revision_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99",
+    "state": "contract_valid",
+    "source_case_key": "conardli-gpt-image-2-101:academic-figures/qualitative-comparison-grid/1",
+    "source_case_locator": {
+      "source_path": "src/data/cases.json",
+      "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+      "native_id": "academic-figures/qualitative-comparison-grid/1",
+      "selector": "cases[id=academic-figures/qualitative-comparison-grid/1]"
+    },
+    "prompts": [
+      {
+        "prompt_id": "prompt:sha256:09a3d781b65ecb4618ddaca62fcd096a8cb56fb4a1983bda1453e43d86922298",
+        "raw_text": "{\n  \"type\": \"Qualitative Comparison Grid（论文级多方法多样本对比网格）\",\n  \"goal\": \"生成一张可直接放进论文 qualitative results 章节的文生图对比网格，严格对齐、Ours 列深红细边框、英文列首\",\n  \"canvas\": {\n    \"aspect_ratio\": \"4:3\",\n    \"background\": \"white #FFFFFF\",\n    \"outer_padding\": \"40px\"\n  },\n  \"grid\": {\n    \"rows\": \"4\",\n    \"cols\": \"5\",\n    \"cell_size_rule\": \"all cells identical size; gap between cells 4-6px\",\n    \"cell_aspect\": \"square\"\n  },\n  \"headers\": {\n    \"column_headers\": {\n      \"enabled\": true,\n      \"items\": [\n        {\n          \"id\": \"C1\",\n          \"label\": \"Text Prompt\"\n        },\n        {\n          \"id\": \"C2\",\n          \"label\": \"DALL·E 3 [1]\"\n        },\n        {\n          \"id\": \"C3\",\n          \"label\": \"Midjourney v6 [2]\"\n        },\n        {\n          \"id\": \"C4\",\n          \"label\": \"SDXL 1.0 [3]\"\n        },\n        {\n          \"id\": \"C5\",\n          \"label\": \"Ours (proposed)\",\n          \"highlight\": true\n        }\n      ],\n      \"style\": \"centered above each column, sans-serif bold 11pt, citations in [brackets]\"\n    },\n    \"row_labels\": {\n      \"enabled\": true,\n      \"items\": [\n        \"Prompt A: “a photorealistic red fox in snow, 85mm, shallow DoF”\",\n        \"Prompt B: “futuristic Tokyo alley at night, neon, rain, cinematic”\",\n        \"Prompt C: “ceramic mug on oak table, morning window light, product shot”\",\n        \"Prompt D: “watercolor botanical illustration, eucalyptus leaves, white background”\"\n      ],\n      \"style\": \"left margin, 10pt compact sans, two lines max per label\"\n    }\n  },\n  \"cell_content\": {\n    \"type\": \"rgb_image\",\n    \"options_explained\": {\n      \"note\": \"Col1: monospace text box rendering the prompt; Col2–5: model outputs for that row's prompt\"\n    },\n    \"consistency_rule\": \"each row shows the same prompt in column 1 and all generated images reflect that text only\"\n  },\n  \"highlights\": {\n    \"ours_column\": {\n      \"enabled\": true,\n      \"style\": \"thicker border 1.5px in deep red #DC2626 around each Ours cell\"\n    },\n    \"zoom_in_boxes\": {\n      \"enabled\": \"false\",\n      \"rule\": \"N/A\"\n    }\n  },\n  \"caption\": {\n    \"enabled\": true,\n    \"label\": \"Figure 5.\",\n    \"text\": \"Qualitative text-to-image comparison on fixed prompts. Our method (last column) better preserves specular highlights and text–image alignment; see supp. for more seeds.\",\n    \"style\": \"below the grid, italic smaller sans, justified\"\n  },\n  \"constraints\": {\n    \"must_keep\": [\n      \"Ours column clearly outlined\",\n      \"same semantic scene per row across methods\",\n      \"no decorative gradients in grid background\"\n    ],\n    \"avoid\": [\n      \"mismatched row content\",\n      \"unreadable prompt text in column 1\"\n    ]\n  }\n}\n",
+        "language": "mixed",
+        "source_location": {
+          "source_path": "public/case/academic-figures/qualitative-comparison-grid/1.json",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/qualitative-comparison-grid/1.json",
+          "native_id": "academic-figures/qualitative-comparison-grid/1",
+          "selector": "cases[id=academic-figures/qualitative-comparison-grid/1].prompt_path"
+        }
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "asset:sha256:30f20af994ce84a50b3244dc395d6565e20edc706cf4a7e2c490ffa0d3720d7e",
+        "role": "output_primary",
+        "content_sha256": "30f20af994ce84a50b3244dc395d6565e20edc706cf4a7e2c490ffa0d3720d7e",
+        "source_location": {
+          "source_path": "public/case/academic-figures/qualitative-comparison-grid/1.png",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/qualitative-comparison-grid/1.png",
+          "native_id": "academic-figures/qualitative-comparison-grid/1",
+          "selector": "cases[id=academic-figures/qualitative-comparison-grid/1].image_url"
+        },
+        "extensions": {
+          "ingestion.asset": {
+            "byte_size": 1032,
+            "media_type": "image/png"
+          }
+        }
+      }
+    ],
+    "generation_examples": [
+      {
+        "generation_example_id": "generation:conardli-gpt-image-2-101:academic-figures/qualitative-comparison-grid/1:output-primary",
+        "prompt_id": "prompt:sha256:09a3d781b65ecb4618ddaca62fcd096a8cb56fb4a1983bda1453e43d86922298",
+        "input_asset_ids": [],
+        "output_asset_ids": [
+          "asset:sha256:30f20af994ce84a50b3244dc395d6565e20edc706cf4a7e2c490ffa0d3720d7e"
+        ],
+        "generation_claim": {
+          "evidence_status": "unknown",
+          "model_raw": null,
+          "parameters_raw": null
+        },
+        "pairing": {
+          "method": "stable_native_mapping",
+          "status": "strong",
+          "evidence": [
+            {
+              "source_path": "src/data/cases.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+              "native_id": "academic-figures/qualitative-comparison-grid/1",
+              "selector": "cases[id=academic-figures/qualitative-comparison-grid/1]"
+            },
+            {
+              "source_path": "public/case/_mapping.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/_mapping.json",
+              "native_id": "academic-figures/qualitative-comparison-grid/1",
+              "selector": "items[category=academic-figures,template_basename=qualitative-comparison-grid].cases[idx=1]"
+            },
+            {
+              "source_path": "public/case/academic-figures/qualitative-comparison-grid/1.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/qualitative-comparison-grid/1.json",
+              "native_id": "academic-figures/qualitative-comparison-grid/1",
+              "selector": "cases[id=academic-figures/qualitative-comparison-grid/1].prompt_path"
+            },
+            {
+              "source_path": "public/case/academic-figures/qualitative-comparison-grid/1.png",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/qualitative-comparison-grid/1.png",
+              "native_id": "academic-figures/qualitative-comparison-grid/1",
+              "selector": "cases[id=academic-figures/qualitative-comparison-grid/1].image_url"
+            }
+          ]
+        }
+      }
+    ],
+    "rights_evidence": {
+      "prompt_rights_status": "unknown",
+      "asset_rights_status": "unknown",
+      "evidence_urls": [],
+      "note": "Registry review_required evidence is retained without approval or publication authorization."
+    },
+    "extensions": {
+      "conardli.source": {
+        "case": {
+          "id": "academic-figures/qualitative-comparison-grid/1",
+          "category": "academic-figures",
+          "category_label": "学术配图",
+          "category_accent": "#1A4E8A",
+          "template_key": "academic-figures/qualitative-comparison-grid",
+          "template_label": "Qualitative Comparison Grid",
+          "idx": 1,
+          "title": "三种图像生成模型 × 四个固定 Prompt",
+          "brief": "同一文本提示下对比 DALL·E 3、Midjourney v6、Stable Diffusion XL 与 Ours，四行文本提示、五列（含 Input 为 prompt 文本卡片）。适用于生成类论文 supplementary。",
+          "format": "json",
+          "prompt_path": "academic-figures/qualitative-comparison-grid/1.json",
+          "prompt_url": "/case/academic-figures/qualitative-comparison-grid/1.json",
+          "image_url": "/case/academic-figures/qualitative-comparison-grid/1.png",
+          "thumb_url": "/case/academic-figures/qualitative-comparison-grid/1-thumb.webp",
+          "has_image": true
+        },
+        "category": {
+          "key": "academic-figures",
+          "label": "Academic",
+          "cn": "学术配图",
+          "accent": "#1A4E8A",
+          "templates": [
+            "academic-figures/qualitative-comparison-grid",
+            "academic-figures/scientific-schematic"
+          ],
+          "total": 2,
+          "ready": 2
+        },
+        "template": {
+          "key": "academic-figures/qualitative-comparison-grid",
+          "category": "academic-figures",
+          "name": "qualitative-comparison-grid",
+          "label": "Qualitative Comparison Grid",
+          "md_path": "references/academic-figures/qualitative-comparison-grid.md",
+          "description": null,
+          "content": null,
+          "cases_count": 1
+        },
+        "manifest_location": {
+          "source_path": "src/data/cases.json",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+          "native_id": "academic-figures/qualitative-comparison-grid/1",
+          "selector": "cases[id=academic-figures/qualitative-comparison-grid/1]"
+        },
+        "mapping": {
+          "item": {
+            "category": "academic-figures",
+            "template_basename": "qualitative-comparison-grid",
+            "template_md": "references/academic-figures/qualitative-comparison-grid.md",
+            "prompt_dir": "academic-figures/qualitative-comparison-grid",
+            "source_md": "academic-figures/qualitative-comparison-grid.md"
+          },
+          "case": {
+            "idx": 1,
+            "title": "三种图像生成模型 × 四个固定 Prompt",
+            "brief": "同一文本提示下对比 DALL·E 3、Midjourney v6、Stable Diffusion XL 与 Ours，四行文本提示、五列（含 Input 为 prompt 文本卡片）。适用于生成类论文 supplementary。",
+            "format": "json",
+            "file": "academic-figures/qualitative-comparison-grid/1.json"
+          },
+          "location": {
+            "source_path": "public/case/_mapping.json",
+            "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/_mapping.json",
+            "native_id": "academic-figures/qualitative-comparison-grid/1",
+            "selector": "items[category=academic-figures,template_basename=qualitative-comparison-grid].cases[idx=1]"
+          }
+        },
+        "thumbnail_location": {
+          "source_path": "public/case/academic-figures/qualitative-comparison-grid/1-thumb.webp",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/qualitative-comparison-grid/1-thumb.webp",
+          "native_id": "academic-figures/qualitative-comparison-grid/1",
+          "selector": "cases[id=academic-figures/qualitative-comparison-grid/1].thumb_url"
+        }
+      }
+    }
+  },
+  {
+    "schema_version": "generation-example/v1",
+    "source_id": "conardli-gpt-image-2-101",
+    "revision_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99",
+    "state": "contract_valid",
+    "source_case_key": "conardli-gpt-image-2-101:academic-figures/scientific-schematic/1",
+    "source_case_locator": {
+      "source_path": "src/data/cases.json",
+      "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+      "native_id": "academic-figures/scientific-schematic/1",
+      "selector": "cases[id=academic-figures/scientific-schematic/1]"
+    },
+    "prompts": [
+      {
+        "prompt_id": "prompt:sha256:bbe97d9708952ba186b851af95c764f4b1c6875a0110eba0c6d6d5ca9cc82755",
+        "raw_text": "A scientific schematic illustration in the style of a Cell / Nature Reviews Molecular Cell Biology figure panel (flat vector, not photo).\n\nCORE CONCEPT\nThe figure illustrates: sequence-specific double-strand break by Streptococcus pyogenes Cas9 guided by a single guide RNA, followed by repair outcomes—error-prone non-homologous end joining (NHEJ) versus templated homology-directed repair (HDR) when a donor is present.\n\nCENTRAL SUBJECT\nThe visual centerpiece is: a horizontal double-stranded DNA duplex (3′–5′ on top, 5′–3′ bottom) in deep blue; a single guide RNA (red-orange) hybridized to the target protospacer, with a short PAM (NGG) region highlighted; Cas9 (large gray/lavender ovoid) docked to the RNP–DNA ternary complex with a wedge at the HNH and RuvC nuclease sites.\n\nSUPPORTING ELEMENTS\n(1) A magnified insert (panel b) showing phosphodiester cleavage at positions −3 and +3 relative to the PAM, with small scissor marks.\n(2) A dashed branch: left path labeled “NHEJ: indels, frameshift, knockout”; right path labeled “HDR: donor template, precise knock-in (low efficiency in G1)”.\n(3) A tiny 20 nt spacer + tracr repeat cartoon above Cas9, connected by thin leader lines.\n\nANNOTATIONS\n- Use leader lines (thin black, 0.8–1.0pt) to label: target DNA, protospacer, PAM, sgRNA, Cas9, HNH, RuvC, cut sites.\n- Each label 11pt sans-serif (Helvetica / Inter / Arial), sentence case, no all-caps.\n- 5–6 main labels; subparts (a)(b) in 10pt bold at top-left of each panel.\n\nEQUATIONS\n- Optional one-line: none required; or small grey note “ΔG_hybrid kcal/mol (qualitative)”.\n- If showing knock-in, small italic: “P_HDR ∝ f(cell cycle, exogenous donor)” in margin.\n\nCOLOR PALETTE\n- 3–4 muted academic colors:\n  - deep blue #1E3A8A — target DNA\n  - warm orange #C2410C — gRNA\n  - medium gray #475569 — Cas9 and annotation lines\n  - pale yellow #FEF9C3 — PAM and donor DNA outline\n- White background; print-safe grayscale.\n\nLAYOUT\n- single panel ~60% width to central cleavage; right 40% split between two repair fates, aligned to grid.\n- Aspect ratio: 4:3.\n- 25% whitespace, invisible alignment grid, no decorative texture.\n\nSTYLE ENFORCEMENT\n- Crisp vector lines; no drop shadow, no gradient, no 3D extrusion, no stock photo.\n- All text typeset, never hand-lettered.\n- NO cartoon characters, NO emoji, NO “science fair” clip art.\n- Read like TikZ + Illustrator, peer-review quality.\n\nCAPTION (optional, drawn below figure)\nFigure. CRISPR-Cas9 (spCas9) RNP cleaves a genomic target 3′ of the PAM, enabling indel formation via NHEJ or precise editing via HDR when a homologous donor is supplied.（中文注：PAM 依赖性的靶向切割是 Cas9 编辑的核心约束。）\n",
+        "language": "mixed",
+        "source_location": {
+          "source_path": "public/case/academic-figures/scientific-schematic/1.txt",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/scientific-schematic/1.txt",
+          "native_id": "academic-figures/scientific-schematic/1",
+          "selector": "cases[id=academic-figures/scientific-schematic/1].prompt_path"
+        }
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "asset:sha256:306aadbaac596abb2d8842d5a0eff8fa40ad8b905b0100bda51f067e9a287f58",
+        "role": "output_primary",
+        "content_sha256": "306aadbaac596abb2d8842d5a0eff8fa40ad8b905b0100bda51f067e9a287f58",
+        "source_location": {
+          "source_path": "public/case/academic-figures/scientific-schematic/1.png",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/scientific-schematic/1.png",
+          "native_id": "academic-figures/scientific-schematic/1",
+          "selector": "cases[id=academic-figures/scientific-schematic/1].image_url"
+        },
+        "extensions": {
+          "ingestion.asset": {
+            "byte_size": 1032,
+            "media_type": "image/png"
+          }
+        }
+      }
+    ],
+    "generation_examples": [
+      {
+        "generation_example_id": "generation:conardli-gpt-image-2-101:academic-figures/scientific-schematic/1:output-primary",
+        "prompt_id": "prompt:sha256:bbe97d9708952ba186b851af95c764f4b1c6875a0110eba0c6d6d5ca9cc82755",
+        "input_asset_ids": [],
+        "output_asset_ids": [
+          "asset:sha256:306aadbaac596abb2d8842d5a0eff8fa40ad8b905b0100bda51f067e9a287f58"
+        ],
+        "generation_claim": {
+          "evidence_status": "unknown",
+          "model_raw": null,
+          "parameters_raw": null
+        },
+        "pairing": {
+          "method": "stable_native_mapping",
+          "status": "strong",
+          "evidence": [
+            {
+              "source_path": "src/data/cases.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+              "native_id": "academic-figures/scientific-schematic/1",
+              "selector": "cases[id=academic-figures/scientific-schematic/1]"
+            },
+            {
+              "source_path": "public/case/_mapping.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/_mapping.json",
+              "native_id": "academic-figures/scientific-schematic/1",
+              "selector": "items[category=academic-figures,template_basename=scientific-schematic].cases[idx=1]"
+            },
+            {
+              "source_path": "public/case/academic-figures/scientific-schematic/1.txt",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/scientific-schematic/1.txt",
+              "native_id": "academic-figures/scientific-schematic/1",
+              "selector": "cases[id=academic-figures/scientific-schematic/1].prompt_path"
+            },
+            {
+              "source_path": "public/case/academic-figures/scientific-schematic/1.png",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/scientific-schematic/1.png",
+              "native_id": "academic-figures/scientific-schematic/1",
+              "selector": "cases[id=academic-figures/scientific-schematic/1].image_url"
+            }
+          ]
+        }
+      }
+    ],
+    "rights_evidence": {
+      "prompt_rights_status": "unknown",
+      "asset_rights_status": "unknown",
+      "evidence_urls": [],
+      "note": "Registry review_required evidence is retained without approval or publication authorization."
+    },
+    "extensions": {
+      "conardli.source": {
+        "case": {
+          "id": "academic-figures/scientific-schematic/1",
+          "category": "academic-figures",
+          "category_label": "学术配图",
+          "category_accent": "#1A4E8A",
+          "template_key": "academic-figures/scientific-schematic",
+          "template_label": "Scientific Schematic",
+          "idx": 1,
+          "title": "CRISPR-Cas9 靶向双链断裂与非同源末端连接",
+          "brief": "以 guide RNA 与目标 DNA 配对、Cas9 切割、NHEJ 或 HDR 为叙事主线，白底、标注线与基因序列样式符号，适合作 Nature Methods 风格图注或综述插图。",
+          "format": "txt",
+          "prompt_path": "academic-figures/scientific-schematic/1.txt",
+          "prompt_url": "/case/academic-figures/scientific-schematic/1.txt",
+          "image_url": "/case/academic-figures/scientific-schematic/1.png",
+          "thumb_url": "/case/academic-figures/scientific-schematic/1-thumb.webp",
+          "has_image": true
+        },
+        "category": {
+          "key": "academic-figures",
+          "label": "Academic",
+          "cn": "学术配图",
+          "accent": "#1A4E8A",
+          "templates": [
+            "academic-figures/qualitative-comparison-grid",
+            "academic-figures/scientific-schematic"
+          ],
+          "total": 2,
+          "ready": 2
+        },
+        "template": {
+          "key": "academic-figures/scientific-schematic",
+          "category": "academic-figures",
+          "name": "scientific-schematic",
+          "label": "Scientific Schematic",
+          "md_path": "references/academic-figures/scientific-schematic.md",
+          "description": null,
+          "content": null,
+          "cases_count": 1
+        },
+        "manifest_location": {
+          "source_path": "src/data/cases.json",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+          "native_id": "academic-figures/scientific-schematic/1",
+          "selector": "cases[id=academic-figures/scientific-schematic/1]"
+        },
+        "mapping": {
+          "item": {
+            "category": "academic-figures",
+            "template_basename": "scientific-schematic",
+            "template_md": "references/academic-figures/scientific-schematic.md",
+            "prompt_dir": "academic-figures/scientific-schematic",
+            "source_md": "academic-figures/scientific-schematic.md"
+          },
+          "case": {
+            "idx": 1,
+            "title": "CRISPR-Cas9 靶向双链断裂与非同源末端连接",
+            "brief": "以 guide RNA 与目标 DNA 配对、Cas9 切割、NHEJ 或 HDR 为叙事主线，白底、标注线与基因序列样式符号，适合作 Nature Methods 风格图注或综述插图。",
+            "format": "txt",
+            "file": "academic-figures/scientific-schematic/1.txt"
+          },
+          "location": {
+            "source_path": "public/case/_mapping.json",
+            "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/_mapping.json",
+            "native_id": "academic-figures/scientific-schematic/1",
+            "selector": "items[category=academic-figures,template_basename=scientific-schematic].cases[idx=1]"
+          }
+        },
+        "thumbnail_location": {
+          "source_path": "public/case/academic-figures/scientific-schematic/1-thumb.webp",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/academic-figures/scientific-schematic/1-thumb.webp",
+          "native_id": "academic-figures/scientific-schematic/1",
+          "selector": "cases[id=academic-figures/scientific-schematic/1].thumb_url"
+        }
+      }
+    }
+  },
+  {
+    "schema_version": "generation-example/v1",
+    "source_id": "conardli-gpt-image-2-101",
+    "revision_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99",
+    "state": "contract_valid",
+    "source_case_key": "conardli-gpt-image-2-101:poster-and-campaigns/banner-hero/3",
+    "source_case_locator": {
+      "source_path": "src/data/cases.json",
+      "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+      "native_id": "poster-and-campaigns/banner-hero/3",
+      "selector": "cases[id=poster-and-campaigns/banner-hero/3]"
+    },
+    "prompts": [
+      {
+        "prompt_id": "prompt:sha256:db3418f819043e82f841a2883bc3f6fd99ee351f87f602d07868ca7c8b9ddd5a",
+        "raw_text": "{\n  \"type\": \"Web hero banner\",\n  \"goal\": \"为开源项目 Easy Dataset 生成 16:9 横版明色调宣传图，适合 GitHub README hero banner、官网首屏、公众号封面和技术分享首图\",\n  \"aspect_ratio\": \"16:9\",\n  \"layout\": {\n    \"left_column\": {\n      \"headline\": \"Easy Dataset\",\n      \"subhead\": \"一站式构建 LLM 微调、RAG 与评测数据集\",\n      \"slogan\": \"从文档到高质量数据集\",\n      \"badges\": [\"Fine-tuning\", \"RAG\", \"Eval\"]\n    },\n    \"right_column\": {\n      \"centerpiece\": \"明亮的 SaaS 工作台界面悬浮在浅色背景中，表现从多格式文档输入到高质量数据集输出的流程\",\n      \"input_cards\": [\"PDF\", \"Markdown\", \"DOCX\", \"TXT\", \"EPUB\"],\n      \"workspace_elements\": [\"数据表格\", \"QA 卡片\", \"切分面板\", \"评测分数卡\", \"导出面板\"],\n      \"output_cards\": [\"Fine-tuning Dataset\", \"RAG Knowledge Base\", \"Eval Benchmark\"],\n      \"scale\": \"占右侧 60%，使用柔和青绿色数据线串联输入、工作台与输出\"\n    },\n    \"bottom_feature_strip\": [\n      {\n        \"title\": \"文档解析\",\n        \"caption\": \"多格式输入\"\n      },\n      {\n        \"title\": \"智能切分\",\n        \"caption\": \"结构化处理\"\n      },\n      {\n        \"title\": \"问答生成\",\n        \"caption\": \"QA / 多轮 / COT\"\n      },\n      {\n        \"title\": \"图像 QA\",\n        \"caption\": \"视觉问答数据\"\n      },\n      {\n        \"title\": \"自动评测\",\n        \"caption\": \"Judge Model\"\n      },\n      {\n        \"title\": \"导出集成\",\n        \"caption\": \"JSONL / ShareGPT / LLaMA Factory\"\n      }\n    ]\n  },\n  \"background\": {\n    \"type\": \"暖白 #F8FAFC 与极淡青蓝 #EAF7F6 的明亮背景\",\n    \"decoration\": \"浅灰网格、柔和数据流线和轻微纸感颗粒，保持清爽留白\"\n  },\n  \"style\": {\n    \"aesthetic\": \"明亮、高级、开源 AI SaaS、干净的产品官网视觉\",\n    \"palette\": [\"#F8FAFC\", \"#EAF7F6\", \"#172033\", \"#14B8A6\", \"#F6B84B\", \"#6366F1\"],\n    \"typography\": \"现代无衬线，中文类似思源黑体，英文类似 Inter\",\n    \"lighting\": \"soft daylight, clean shadows, subtle cyan glow\"\n  },\n  \"footer\": {\n    \"items\": [\"github.com/ConardLi/easy-dataset\", \"Open Source\", \"AGPL-3.0\", \"14k+ Stars\"],\n    \"placement\": \"右下角或底部信息区，使用简洁开源徽章样式\"\n  },\n  \"constraints\": {\n    \"must_keep\": [\n      \"16:9 横版构图稳定\",\n      \"整体为明亮浅色调\",\n      \"Easy Dataset 标题大且清晰可读\",\n      \"Fine-tuning / RAG / Eval 三个使用场景醒目\",\n      \"从文档输入到数据集输出的视觉动线必须一眼可懂\",\n      \"文字必须正确、简洁、可读\"\n    ],\n    \"avoid\": [\n      \"深色赛博朋克背景\",\n      \"大面积紫色渐变\",\n      \"人物或机器人吉祥物\",\n      \"夸张 3D 卡通\",\n      \"代码雨\",\n      \"伪造真实产品截图\",\n      \"复杂长段落\",\n      \"二维码\",\n      \"第三方品牌 logo，除 GitHub 字样外不出现真实商标\",\n      \"拥挤表格或过密小字\"\n    ]\n  }\n}\n",
+        "language": "mixed",
+        "source_location": {
+          "source_path": "public/case/poster-and-campaigns/banner-hero/3.json",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/poster-and-campaigns/banner-hero/3.json",
+          "native_id": "poster-and-campaigns/banner-hero/3",
+          "selector": "cases[id=poster-and-campaigns/banner-hero/3].prompt_path"
+        }
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "asset:sha256:832171e99eeff7d72a15d2e5cd3b15d7a5c758af230f14e1baa39c1b8ad64fbe",
+        "role": "output_primary",
+        "content_sha256": "832171e99eeff7d72a15d2e5cd3b15d7a5c758af230f14e1baa39c1b8ad64fbe",
+        "source_location": {
+          "source_path": "public/case/poster-and-campaigns/banner-hero/3.png",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/poster-and-campaigns/banner-hero/3.png",
+          "native_id": "poster-and-campaigns/banner-hero/3",
+          "selector": "cases[id=poster-and-campaigns/banner-hero/3].image_url"
+        },
+        "extensions": {
+          "ingestion.asset": {
+            "byte_size": 1032,
+            "media_type": "image/png"
+          }
+        }
+      }
+    ],
+    "generation_examples": [
+      {
+        "generation_example_id": "generation:conardli-gpt-image-2-101:poster-and-campaigns/banner-hero/3:output-primary",
+        "prompt_id": "prompt:sha256:db3418f819043e82f841a2883bc3f6fd99ee351f87f602d07868ca7c8b9ddd5a",
+        "input_asset_ids": [],
+        "output_asset_ids": [
+          "asset:sha256:832171e99eeff7d72a15d2e5cd3b15d7a5c758af230f14e1baa39c1b8ad64fbe"
+        ],
+        "generation_claim": {
+          "evidence_status": "unknown",
+          "model_raw": null,
+          "parameters_raw": null
+        },
+        "pairing": {
+          "method": "stable_native_mapping",
+          "status": "strong",
+          "evidence": [
+            {
+              "source_path": "src/data/cases.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+              "native_id": "poster-and-campaigns/banner-hero/3",
+              "selector": "cases[id=poster-and-campaigns/banner-hero/3]"
+            },
+            {
+              "source_path": "public/case/_mapping.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/_mapping.json",
+              "native_id": "poster-and-campaigns/banner-hero/3",
+              "selector": "items[category=poster-and-campaigns,template_basename=banner-hero].cases[idx=3]"
+            },
+            {
+              "source_path": "public/case/poster-and-campaigns/banner-hero/3.json",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/poster-and-campaigns/banner-hero/3.json",
+              "native_id": "poster-and-campaigns/banner-hero/3",
+              "selector": "cases[id=poster-and-campaigns/banner-hero/3].prompt_path"
+            },
+            {
+              "source_path": "public/case/poster-and-campaigns/banner-hero/3.png",
+              "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/poster-and-campaigns/banner-hero/3.png",
+              "native_id": "poster-and-campaigns/banner-hero/3",
+              "selector": "cases[id=poster-and-campaigns/banner-hero/3].image_url"
+            }
+          ]
+        }
+      }
+    ],
+    "rights_evidence": {
+      "prompt_rights_status": "unknown",
+      "asset_rights_status": "unknown",
+      "evidence_urls": [],
+      "note": "Registry review_required evidence is retained without approval or publication authorization."
+    },
+    "extensions": {
+      "conardli.source": {
+        "case": {
+          "id": "poster-and-campaigns/banner-hero/3",
+          "category": "poster-and-campaigns",
+          "category_label": "海报营销",
+          "category_accent": "#E8472C",
+          "template_key": "poster-and-campaigns/banner-hero",
+          "template_label": "Banner Hero",
+          "idx": 3,
+          "title": "Easy Dataset 开源 AI 数据集工作台 Hero（明色横版）",
+          "brief": "为 ConardLi/easy-dataset 生成的 16:9 明色调 README / 官网首屏宣传图。左侧突出 Easy Dataset、Fine-tuning / RAG / Eval 三个场景，右侧用 SaaS 工作台表达从多格式文档到高质量数据集的流程。",
+          "format": "json",
+          "prompt_path": "poster-and-campaigns/banner-hero/3.json",
+          "prompt_url": "/case/poster-and-campaigns/banner-hero/3.json",
+          "image_url": "/case/poster-and-campaigns/banner-hero/3.png",
+          "thumb_url": "/case/poster-and-campaigns/banner-hero/3-thumb.webp",
+          "has_image": true
+        },
+        "category": {
+          "key": "poster-and-campaigns",
+          "label": "Posters & Campaigns",
+          "cn": "海报营销",
+          "accent": "#E8472C",
+          "templates": [
+            "poster-and-campaigns/banner-hero"
+          ],
+          "total": 1,
+          "ready": 1
+        },
+        "template": {
+          "key": "poster-and-campaigns/banner-hero",
+          "category": "poster-and-campaigns",
+          "name": "banner-hero",
+          "label": "Banner Hero",
+          "md_path": "references/poster-and-campaigns/banner-hero.md",
+          "description": null,
+          "content": null,
+          "cases_count": 1
+        },
+        "manifest_location": {
+          "source_path": "src/data/cases.json",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/src/data/cases.json",
+          "native_id": "poster-and-campaigns/banner-hero/3",
+          "selector": "cases[id=poster-and-campaigns/banner-hero/3]"
+        },
+        "mapping": {
+          "item": {
+            "category": "poster-and-campaigns",
+            "template_basename": "banner-hero",
+            "template_md": "references/poster-and-campaigns/banner-hero.md",
+            "prompt_dir": "poster-and-campaigns/banner-hero",
+            "source_md": "poster-and-campaigns/banner-hero.md"
+          },
+          "case": {
+            "idx": 3,
+            "title": "Easy Dataset 开源 AI 数据集工作台 Hero（明色横版）",
+            "brief": "为 ConardLi/easy-dataset 生成的 16:9 明色调 README / 官网首屏宣传图。左侧突出 Easy Dataset、Fine-tuning / RAG / Eval 三个场景，右侧用 SaaS 工作台表达从多格式文档到高质量数据集的流程。",
+            "format": "json",
+            "file": "poster-and-campaigns/banner-hero/3.json"
+          },
+          "location": {
+            "source_path": "public/case/_mapping.json",
+            "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/_mapping.json",
+            "native_id": "poster-and-campaigns/banner-hero/3",
+            "selector": "items[category=poster-and-campaigns,template_basename=banner-hero].cases[idx=3]"
+          }
+        },
+        "thumbnail_location": {
+          "source_path": "public/case/poster-and-campaigns/banner-hero/3-thumb.webp",
+          "source_url": "https://raw.githubusercontent.com/ConardLi/gpt-image-2-101/971b67dc8cbca8cf6eb32e196fea04bddd6abe99/public/case/poster-and-campaigns/banner-hero/3-thumb.webp",
+          "native_id": "poster-and-campaigns/banner-hero/3",
+          "selector": "cases[id=poster-and-campaigns/banner-hero/3].thumb_url"
+        }
+      }
+    }
+  }
+]
+

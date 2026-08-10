@@ -1,0 +1,133 @@
+{
+  "freestylefly": {
+    "repository": "https://github.com/freestylefly/awesome-gpt-image-2",
+    "totalCases": 2,
+    "categories": ["Posters", "Products"],
+    "styles": ["Poster", "Realistic"],
+    "scenes": ["Commerce"],
+    "cases": [
+      {
+        "id": 1,
+        "title": "Poster case",
+        "image": "/images/case1.jpg",
+        "imageAlt": "Poster case",
+        "sourceLabel": "fixture",
+        "sourceUrl": "",
+        "prompt": "Create a precise commercial poster with a strong typographic hierarchy and a readable product message.",
+        "promptPreview": "Create a precise commercial poster",
+        "category": "Posters",
+        "styles": ["Poster"],
+        "scenes": ["Commerce"],
+        "featured": true,
+        "githubUrl": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-1.md#case-1"
+      },
+      {
+        "id": 2,
+        "title": "Product case",
+        "image": "/images/case2.png",
+        "imageAlt": "Product case",
+        "sourceLabel": "fixture",
+        "sourceUrl": "https://example.test/source",
+        "prompt": "Render a realistic product hero image on a clean studio background with controlled reflections and balanced spacing.",
+        "promptPreview": "Render a realistic product hero image",
+        "category": "Products",
+        "styles": ["Realistic"],
+        "scenes": ["Commerce"],
+        "featured": false,
+        "githubUrl": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-1.md#case-2"
+      }
+    ]
+  },
+  "erickkkyt": [
+    {
+      "index": 1,
+      "id": "x-111",
+      "prompt": "A cinematic street portrait with neon reflections, natural skin detail, shallow depth of field, and subtle film grain.",
+      "author": "fixture-one",
+      "author_name": "Fixture One",
+      "image": "assets/gpt-image-2-x-discussions/fixture-one-1.jpg",
+      "images": ["assets/gpt-image-2-x-discussions/fixture-one-1.jpg"],
+      "image_count": 1,
+      "image_width": 1024,
+      "image_height": 1536,
+      "image_aspect_ratio": "2 / 3",
+      "image_dimensions": [
+        {"image": "assets/gpt-image-2-x-discussions/fixture-one-1.jpg", "width": 1024, "height": 1536, "aspect_ratio": "2 / 3"}
+      ],
+      "model": "gpt-image-2",
+      "date": "2026-05-01",
+      "published": "May 1, 2026",
+      "languages": ["en"],
+      "source": "X",
+      "source_url": "https://x.com/example/status/111",
+      "pair_ids": ["x-111-1"]
+    },
+    {
+      "index": 2,
+      "id": "x-222",
+      "prompt": "Design a bilingual editorial campaign with a clear grid, two complementary image variants, tactile print texture, and concise labels.",
+      "author": "fixture-two",
+      "author_name": "Fixture Two",
+      "image": "assets/gpt-image-2-x-discussions/fixture-two-2.jpg",
+      "images": [
+        "assets/gpt-image-2-x-discussions/fixture-two-2.jpg",
+        "assets/gpt-image-2-x-discussions/fixture-two-3.webp"
+      ],
+      "image_count": 2,
+      "image_width": 1536,
+      "image_height": 1024,
+      "image_aspect_ratio": "3 / 2",
+      "image_dimensions": [
+        {"image": "assets/gpt-image-2-x-discussions/fixture-two-2.jpg", "width": 1536, "height": 1024, "aspect_ratio": "3 / 2"},
+        {"image": "assets/gpt-image-2-x-discussions/fixture-two-3.webp", "width": 1024, "height": 1536, "aspect_ratio": "2 / 3"}
+      ],
+      "model": "gpt-image-2",
+      "date": "2026-05-02",
+      "published": "May 2, 2026",
+      "languages": ["zh", "en"],
+      "source": "X",
+      "source_url": "https://x.com/example/status/222",
+      "pair_ids": ["x-222-2", "x-222-3"]
+    }
+  ],
+  "vigozhao": {
+    "acid-lime-fixture-style": {
+      "style_name": "Acid Lime Fixture Style",
+      "style_slug": "acid-lime-fixture-style",
+      "style_version": "1.0.0",
+      "style_summary": "A compact high-key campaign style with black typography and acid-lime accents.",
+      "environment_variables": {"SUBJECT": "main subject", "ASPECT_RATIO": "9:16 or 16:9"},
+      "style_fidelity_anchors": ["pale studio field", "black block type", "acid-lime accents"],
+      "source_content_to_avoid": ["watermark", "username", "source logo"],
+      "visual_deconstruction": {"style_category": "commercial poster", "composition_logic": "type and subject split"},
+      "composition": {"layout": "large headline with one subject cluster"},
+      "typography": {"headline": "large condensed black display type"},
+      "color_palette": {"dominant": ["white", "black", "acid lime"]},
+      "design_rules": ["keep the headline readable", "use one dominant accent"],
+      "do": ["use clean studio lighting"],
+      "avoid": ["avoid source marks"],
+      "prompt_template": "Create a finished {ASPECT_RATIO} campaign poster featuring {SUBJECT}. Use a pale studio field, one oversized black condensed headline, controlled acid-lime accents, polished product lighting, tactile props, clear negative space, and no copied source identity or watermark.",
+      "negative_prompt": "watermark, username, source logo, unreadable typography",
+      "examples": [{"case_name": "fixture", "values": {"SUBJECT": "a compact product mascot", "ASPECT_RATIO": "16:9"}}]
+    },
+    "analog-diary-fixture-style": {
+      "style_name": "Analog Diary Fixture Style",
+      "style_slug": "analog-diary-fixture-style",
+      "style_version": "1.0.0",
+      "style_summary": "A paper-textured diary collage with a portrait, stickers, and distressed lettering.",
+      "environment_variables": {"SUBJECT": "main subject", "ASPECT_RATIO": "9:16 or 16:9"},
+      "style_fidelity_anchors": ["cream graph paper", "sticker collage", "distressed lettering"],
+      "source_content_to_avoid": ["watermark", "username", "source logo"],
+      "visual_deconstruction": {"style_category": "analog collage", "composition_logic": "portrait with sticker field"},
+      "composition": ["large portrait", "busy sticker perimeter"],
+      "typography": ["rough hand lettering", "small diary labels"],
+      "color_palette": ["cream", "orange", "faded blue"],
+      "design_rules": ["retain paper texture", "use replacement text only"],
+      "do": ["use scanned print texture"],
+      "avoid": ["avoid clean vector finish"],
+      "prompt_template": "Create a finished {ASPECT_RATIO} analog diary collage featuring {SUBJECT}. Use cream graph paper, faded blue grid lines, a large quiet portrait, sticker-like objects, tickets, notes, rough orange hand lettering, halftone grain, imperfect cutout edges, and no copied source identity or watermark.",
+      "negative_prompt": "watermark, username, source logo, clean vector art",
+      "examples": [{"case_name": "fixture", "values": {"SUBJECT": "a quiet commuter", "ASPECT_RATIO": "9:16"}}]
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": "generation-example/v1",
+  "source_id": "joesai-commercial-prompts",
+  "revision_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b",
+  "state": "contract_valid",
+  "source_case_key": "joesai-commercial-prompts:boutique-hotel-lobby-editorial",
+  "source_case_locator": {
+    "source_path": "prompts/hospitality/boutique-hotel-lobby-editorial.md",
+    "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/hospitality/boutique-hotel-lobby-editorial.md",
+    "native_id": "boutique-hotel-lobby-editorial",
+    "selector": "manifest slug=boutique-hotel-lobby-editorial"
+  },
+  "prompts": [
+    {
+      "prompt_id": "prompt:sha256:5901d1412f68371ac3637c4322e9fae4abfbeb5891092329e6de264805ceec18",
+      "raw_text": "Goal: Create a boutique-hotel campaign image that feels intentional, warm, and editorial rather than generic real estate photography.\nAsset: Hospitality brand hero image.\nScene: Sophisticated hotel lobby with curated furniture, sculptural lighting, stone flooring, and warm evening ambience.\nSubject: The lobby itself as the hero environment, with one central seating vignette and a clear sense of premium hospitality.\nComposition: Wide but intimate framing, layered depth, balanced symmetry, usable negative space for campaign copy.\nLighting: Warm architectural lighting mixed with soft natural dusk spill, cinematic but believable.\nMaterials and styling: Walnut wood, travertine, boucle upholstery, brushed brass, textured plaster walls, refined boutique styling.\nConstraints: No readable signage, no visible brand marks, no crowd, no messy reception desk, no distortion, no watermark.",
+      "language": "en",
+      "source_location": {
+        "source_path": "prompts/hospitality/boutique-hotel-lobby-editorial.md",
+        "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/hospitality/boutique-hotel-lobby-editorial.md",
+        "native_id": "boutique-hotel-lobby-editorial",
+        "selector": "## Prompt (EN) fenced block"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "asset_id": "asset:sha256:8a1645d856dff546847a2eb2f2eb3203755af6daea6c72685311dd77d26fc675",
+      "role": "output_primary",
+      "content_sha256": "8a1645d856dff546847a2eb2f2eb3203755af6daea6c72685311dd77d26fc675",
+      "source_location": {
+        "source_path": "assets/examples/boutique-hotel-lobby-editorial.png",
+        "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/assets/examples/boutique-hotel-lobby-editorial.png",
+        "native_id": "boutique-hotel-lobby-editorial",
+        "selector": "manifest entry example_image"
+      }
+    }
+  ],
+  "generation_examples": [
+    {
+      "generation_example_id": "generation:joesai-commercial-prompts:boutique-hotel-lobby-editorial:output-primary",
+      "prompt_id": "prompt:sha256:5901d1412f68371ac3637c4322e9fae4abfbeb5891092329e6de264805ceec18",
+      "input_asset_ids": [],
+      "output_asset_ids": ["asset:sha256:8a1645d856dff546847a2eb2f2eb3203755af6daea6c72685311dd77d26fc675"],
+      "generation_claim": {
+        "evidence_status": "unknown",
+        "model_raw": null,
+        "parameters_raw": null
+      },
+      "pairing": {
+        "method": "explicit_markdown_block",
+        "status": "strong",
+        "evidence": [
+          {
+            "source_path": "prompts/hospitality/boutique-hotel-lobby-editorial.md",
+            "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/prompts/hospitality/boutique-hotel-lobby-editorial.md",
+            "native_id": "boutique-hotel-lobby-editorial",
+            "selector": "## Prompt (EN) fenced block"
+          },
+          {
+            "source_path": "assets/examples/boutique-hotel-lobby-editorial.png",
+            "source_url": "https://raw.githubusercontent.com/JoeSai/awesome-gpt-image-2-commercial-prompts/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b/assets/examples/boutique-hotel-lobby-editorial.png",
+            "native_id": "boutique-hotel-lobby-editorial",
+            "selector": "same manifest slug selects example_image"
+          }
+        ]
+      }
+    }
+  ],
+  "rights_evidence": {
+    "prompt_rights_status": "unknown",
+    "asset_rights_status": "unknown",
+    "evidence_urls": [],
+    "note": null
+  }
+}

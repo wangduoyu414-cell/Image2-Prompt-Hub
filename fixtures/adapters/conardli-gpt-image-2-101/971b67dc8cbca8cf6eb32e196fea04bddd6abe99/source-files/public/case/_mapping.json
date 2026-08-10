@@ -1,0 +1,57 @@
+{
+  "summary": {
+    "templates": 3,
+    "cases": 3
+  },
+  "items": [
+    {
+      "category": "academic-figures",
+      "template_basename": "qualitative-comparison-grid",
+      "template_md": "references/academic-figures/qualitative-comparison-grid.md",
+      "prompt_dir": "academic-figures/qualitative-comparison-grid",
+      "source_md": "academic-figures/qualitative-comparison-grid.md",
+      "cases": [
+        {
+          "idx": 1,
+          "title": "三种图像生成模型 × 四个固定 Prompt",
+          "brief": "同一文本提示下对比 DALL·E 3、Midjourney v6、Stable Diffusion XL 与 Ours，四行文本提示、五列（含 Input 为 prompt 文本卡片）。适用于生成类论文 supplementary。",
+          "format": "json",
+          "file": "academic-figures/qualitative-comparison-grid/1.json"
+        }
+      ]
+    },
+    {
+      "category": "academic-figures",
+      "template_basename": "scientific-schematic",
+      "template_md": "references/academic-figures/scientific-schematic.md",
+      "prompt_dir": "academic-figures/scientific-schematic",
+      "source_md": "academic-figures/scientific-schematic.md",
+      "cases": [
+        {
+          "idx": 1,
+          "title": "CRISPR-Cas9 靶向双链断裂与非同源末端连接",
+          "brief": "以 guide RNA 与目标 DNA 配对、Cas9 切割、NHEJ 或 HDR 为叙事主线，白底、标注线与基因序列样式符号，适合作 Nature Methods 风格图注或综述插图。",
+          "format": "txt",
+          "file": "academic-figures/scientific-schematic/1.txt"
+        }
+      ]
+    },
+    {
+      "category": "poster-and-campaigns",
+      "template_basename": "banner-hero",
+      "template_md": "references/poster-and-campaigns/banner-hero.md",
+      "prompt_dir": "poster-and-campaigns/banner-hero",
+      "source_md": "poster-and-campaigns/banner-hero.md",
+      "cases": [
+        {
+          "idx": 3,
+          "title": "Easy Dataset 开源 AI 数据集工作台 Hero（明色横版）",
+          "brief": "为 ConardLi/easy-dataset 生成的 16:9 明色调 README / 官网首屏宣传图。左侧突出 Easy Dataset、Fine-tuning / RAG / Eval 三个场景，右侧用 SaaS 工作台表达从多格式文档到高质量数据集的流程。",
+          "format": "json",
+          "file": "poster-and-campaigns/banner-hero/3.json"
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "boutique-hotel-lobby-editorial",
+    "category": "hospitality",
+    "title": "Boutique Hotel Lobby Editorial",
+    "title_zh": "精品酒店大堂编辑图",
+    "use_case": "hospitality brand hero visual",
+    "asset_type": "space campaign image",
+    "languages": ["en", "zh-CN"],
+    "featured": true,
+    "example_image": "assets/examples/boutique-hotel-lobby-editorial.png"
+  },
+  {
+    "slug": "beauty-campaign-kv-editorial",
+    "category": "beauty",
+    "title": "Beauty Campaign KV Editorial",
+    "title_zh": "美妆 Campaign KV",
+    "use_case": "beauty brand launch KV",
+    "asset_type": "campaign key visual",
+    "languages": ["en", "zh-CN"],
+    "featured": false,
+    "example_image": "assets/examples/beauty-campaign-kv-editorial.png"
+  },
+  {
+    "slug": "luxury-jewelry-campaign",
+    "category": "jewelry",
+    "title": "Luxury Jewelry Campaign",
+    "title_zh": "高级珠宝 Campaign 图",
+    "use_case": "premium jewelry launch visual",
+    "asset_type": "luxury campaign visual",
+    "languages": ["en", "zh-CN"],
+    "featured": true,
+    "example_image": "assets/examples/luxury-jewelry-campaign-necklace.png"
+  }
+]

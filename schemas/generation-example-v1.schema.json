@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://image2.local/contracts/generation-example-v1.schema.json",
+  "title": "Generation Example v1",
+  "description": "A closed, resolved content-evidence document. Schema validates shape; the companion validator enforces cross-reference, source-registry, and pairing semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_id",
+    "revision_sha",
+    "state",
+    "source_case_key",
+    "source_case_locator",
+    "prompts",
+    "assets",
+    "generation_examples",
+    "rights_evidence"
+  ],
+  "properties": {
+    "schema_version": { "const": "generation-example/v1" },
+    "source_id": { "$ref": "#/$defs/nonemptyString" },
+    "revision_sha": { "$ref": "#/$defs/commitSha" },
+    "state": { "const": "contract_valid" },
+    "source_case_key": { "$ref": "#/$defs/nonemptyString" },
+    "source_case_locator": { "$ref": "#/$defs/sourceLocation" },
+    "prompts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/prompt" }
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/resolvedAsset" }
+    },
+    "generation_examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/generationExample" }
+    },
+    "rights_evidence": { "$ref": "#/$defs/rightsEvidence" },
+    "extensions": { "$ref": "#/$defs/extensions" }
+  },
+  "$defs": {
+    "nonemptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "commitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sourceLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_path": { "$ref": "#/$defs/nonemptyString" },
+        "source_url": { "$ref": "#/$defs/nonemptyString" },
+        "native_id": { "type": ["string", "null"] },
+        "selector": { "type": ["string", "null"] }
+      },
+      "anyOf": [
+        { "required": ["source_path"] },
+        { "required": ["source_url"] }
+      ]
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_-]*\\.[a-z][a-z0-9_.-]*$"
+      },
+      "additionalProperties": true
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt_id", "raw_text", "language", "source_location"],
+      "properties": {
+        "prompt_id": { "$ref": "#/$defs/nonemptyString" },
+        "raw_text": { "$ref": "#/$defs/nonemptyString" },
+        "language": { "type": "string", "enum": ["unknown", "en", "zh", "mixed"] },
+        "source_location": { "$ref": "#/$defs/sourceLocation" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "resolvedAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_id", "role", "content_sha256", "source_location"],
+      "properties": {
+        "asset_id": { "$ref": "#/$defs/nonemptyString" },
+        "role": {
+          "type": "string",
+          "enum": ["input_reference", "output_primary", "output_secondary"]
+        },
+        "content_sha256": { "$ref": "#/$defs/sha256" },
+        "source_location": { "$ref": "#/$defs/sourceLocation" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "sourceClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_status", "model_raw", "parameters_raw"],
+      "properties": {
+        "evidence_status": { "type": "string", "enum": ["unknown", "source_claimed"] },
+        "model_raw": { "type": ["string", "null"] },
+        "parameters_raw": { "type": ["object", "null"], "additionalProperties": true }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "evidence_status": { "const": "source_claimed" } } },
+          "then": { "properties": { "model_raw": { "$ref": "#/$defs/nonemptyString" } } }
+        }
+      ]
+    },
+    "strongPairing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "status", "evidence"],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["explicit_structured_reference", "explicit_markdown_block", "stable_native_mapping"]
+        },
+        "status": { "const": "strong" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/sourceLocation" }
+        }
+      }
+    },
+    "rightsEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt_rights_status", "asset_rights_status", "evidence_urls"],
+      "properties": {
+        "prompt_rights_status": { "type": "string", "enum": ["unknown", "source_claimed", "evidence_recorded"] },
+        "asset_rights_status": { "type": "string", "enum": ["unknown", "source_claimed", "evidence_recorded"] },
+        "evidence_urls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonemptyString" }
+        },
+        "note": { "type": ["string", "null"] }
+      }
+    },
+    "generationExample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generation_example_id",
+        "prompt_id",
+        "input_asset_ids",
+        "output_asset_ids",
+        "generation_claim",
+        "pairing"
+      ],
+      "properties": {
+        "generation_example_id": { "$ref": "#/$defs/nonemptyString" },
+        "prompt_id": { "$ref": "#/$defs/nonemptyString" },
+        "input_asset_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonemptyString" },
+          "uniqueItems": true
+        },
+        "output_asset_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonemptyString" },
+          "uniqueItems": true
+        },
+        "generation_claim": { "$ref": "#/$defs/sourceClaim" },
+        "pairing": { "$ref": "#/$defs/strongPairing" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    }
+  }
+}

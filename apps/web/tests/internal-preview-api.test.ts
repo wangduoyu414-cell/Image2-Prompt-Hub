@@ -11,8 +11,8 @@ const valid = {
   total: 1,
   page: 1,
   page_size: 24,
-  case_count: 1513,
-  output_count: 1930,
+  case_count: 3973,
+  output_count: 9310,
   sources: [{ value: "source-a", count: 1 }],
   cases: [
     {
@@ -45,8 +45,8 @@ const valid = {
 
 test("internal preview parser preserves review-required facts and counts", () => {
   const parsed = parseInternalPreviewList(valid);
-  assert.equal(parsed.case_count, 1513);
-  assert.equal(parsed.output_count, 1930);
+  assert.equal(parsed.case_count, 3973);
+  assert.equal(parsed.output_count, 9310);
   assert.equal(parsed.cases[0]?.review_state, "review_required");
   assert.equal(parsed.cases[0]?.outputs[0]?.asset_id, "c".repeat(64));
 });
@@ -79,4 +79,3 @@ test("internal preview client sends bounded shareable filters", async () => {
     globalThis.fetch = original;
   }
 });
-

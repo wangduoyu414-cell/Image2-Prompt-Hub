@@ -42,7 +42,7 @@ EXIT_CODES = {
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Extract the frozen g0dam fixed commit into a verified external package.")
+    parser = argparse.ArgumentParser(description="Extract one registered fixed commit into a verified external package.")
     subcommands = parser.add_subparsers(dest="command", required=True)
     extract_parser = subcommands.add_parser("extract", help="run one external fixed-commit extraction")
     extract_parser.add_argument("--registry", required=True, type=Path)

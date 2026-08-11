@@ -18,6 +18,7 @@ SUPPORTED_ADAPTER_STRUCTURES = {
     "freestylefly_cases_json_v1": "centralized_case_manifest",
     "erickkkyt_prompts_json_v1": "structured_prompt_image_manifest",
     "vigo_style_directory_v1": "style_json_with_preview_assets",
+    "chaos_meta_three_webp_v1": "meta_json_with_three_webp_outputs",
 }
 
 
@@ -35,6 +36,9 @@ class SourceConfig:
     adapter_strategy: str
     structure_type: str
     rights: dict[str, Any]
+    ingestion_mode: str = "continuous"
+    sync_enabled: bool = True
+    one_shot_import_only: bool = False
 
     @property
     def idempotency_key(self) -> str:
@@ -110,6 +114,8 @@ def load_source_config(registry_path: Path | str, source_id: str) -> SourceConfi
         raise RegistryError("source status must be active")
     pilot = _require_mapping(source.get("pilot"), "pilot")
     sync = _require_mapping(source.get("sync"), "sync")
+    ingestion_value = source.get("ingestion")
+    ingestion = _require_mapping(ingestion_value, "ingestion") if ingestion_value is not None else None
     family = _require_mapping(source.get("family"), "family")
     publication = _require_mapping(source.get("publication"), "publication")
     content = _require_mapping(source.get("content"), "content")
@@ -117,8 +123,21 @@ def load_source_config(registry_path: Path | str, source_id: str) -> SourceConfi
     rights = _require_mapping(source.get("rights"), "rights")
     if pilot.get("selected") is not True:
         raise RegistryError("source pilot.selected must be true")
-    if sync.get("enabled") is not True:
-        raise RegistryError("source sync.enabled must be true")
+    sync_enabled = sync.get("enabled")
+    if not isinstance(sync_enabled, bool):
+        raise RegistryError("source sync.enabled must be boolean")
+    if ingestion is None:
+        ingestion_mode = "continuous"
+        one_shot_import_only = False
+    else:
+        ingestion_mode = ingestion.get("mode")
+        one_shot_import_only = ingestion.get("one_shot_import_only")
+        if ingestion_mode not in {"continuous", "fixed_history"} or not isinstance(one_shot_import_only, bool):
+            raise RegistryError("source ingestion policy is malformed")
+    if ingestion_mode == "continuous" and (sync_enabled is not True or one_shot_import_only):
+        raise RegistryError("continuous source must enable sync and may not be one-shot only")
+    if ingestion_mode == "fixed_history" and (sync_enabled is not False or one_shot_import_only is not True):
+        raise RegistryError("fixed-history source must disable sync and require one-shot import")
     if family.get("role") != "canonical":
         raise RegistryError("source family.role must be canonical")
     if publication.get("ingestion_policy") != "full":
@@ -142,4 +161,7 @@ def load_source_config(registry_path: Path | str, source_id: str) -> SourceConfi
         adapter_strategy=adapter_strategy,
         structure_type=structure_type,
         rights=rights,
+        ingestion_mode=ingestion_mode,
+        sync_enabled=sync_enabled,
+        one_shot_import_only=one_shot_import_only,
     )

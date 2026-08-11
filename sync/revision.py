@@ -86,6 +86,8 @@ def load_sync_source(registry_path: Path | str, audit_path: Path | str, source_i
     registry = _load_json(registry_file)
     audit = _load_json(audit_file)
     source = _source_record(registry, source_id)
+    if config.ingestion_mode != "continuous" or not config.sync_enabled or config.one_shot_import_only:
+        raise RevisionError("authority_invalid", "fixed-history sources cannot enter incremental sync")
     audit_record = _audit_record(audit, source_id)
     repository = source.get("repository")
     admission = source.get("admission")

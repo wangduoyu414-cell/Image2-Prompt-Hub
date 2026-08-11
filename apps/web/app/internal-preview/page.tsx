@@ -12,7 +12,7 @@ type SearchParams = Record<string, string | string[] | undefined>;
 
 export const metadata: Metadata = {
   title: "Image2 真实数据内部预览",
-  description: "六个固定来源中尚待权利审核的真实提示词与对应效果图，仅供本机内部浏览。",
+  description: "七个固定来源中尚待权利审核的真实提示词与对应效果图，仅供本机内部浏览。",
 };
 
 function first(value: string | string[] | undefined): string | undefined {
@@ -110,7 +110,7 @@ export default async function InternalPreviewPage({ searchParams }: { searchPara
         <label>
           固定来源
           <select defaultValue={filters.source ?? ""} name="source">
-            <option value="">全部六个来源</option>
+            <option value="">全部七个来源</option>
             {listing.sources.map((source) => (
               <option key={source.value} value={source.value}>
                 {source.value} ({source.count})

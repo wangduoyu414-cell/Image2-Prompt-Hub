@@ -29,6 +29,7 @@ PACKAGE_SCHEMA_BY_ADAPTER = {
     "freestylefly_cases_json_v1": "extraction-package/v1",
     "erickkkyt_prompts_json_v1": "extraction-package/v1",
     "vigo_style_directory_v1": "extraction-package/v1",
+    "chaos_meta_three_webp_v1": "extraction-package/v1",
 }
 METRICS_SCHEMA_BY_ADAPTER = {
     "g0dam_manifest_json_v1": "g0dam-extraction-metrics/v1",
@@ -37,6 +38,7 @@ METRICS_SCHEMA_BY_ADAPTER = {
     "freestylefly_cases_json_v1": "extraction-metrics/v1",
     "erickkkyt_prompts_json_v1": "extraction-metrics/v1",
     "vigo_style_directory_v1": "extraction-metrics/v1",
+    "chaos_meta_three_webp_v1": "extraction-metrics/v1",
 }
 
 
@@ -299,6 +301,7 @@ def generation_example_for(record: dict[str, Any], *, source_id: str, revision_s
                 "freestylefly.source",
                 "erickkkyt.source",
                 "vigozhao.source",
+                "chaosrealms.source",
             )
             if key in extensions
         }

@@ -1,0 +1,402 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "default_publication": {
+      "properties": {
+        "auto_publish": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "auto_publish"
+      ],
+      "type": "object"
+    },
+    "exclusions": {
+      "items": {
+        "properties": {
+          "candidate_key": {
+            "minLength": 3,
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "source_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "candidate_key",
+          "reason"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "pilots": {
+      "items": {
+        "properties": {
+          "source_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "structure_type": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "structure_type"
+        ],
+        "type": "object"
+      },
+      "minItems": 3,
+      "type": "array"
+    },
+    "registry_format": {
+      "const": "yaml-1.2-json-profile"
+    },
+    "registry_version": {
+      "const": "v2"
+    },
+    "sources": {
+      "items": {
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "ingestion": {
+                  "properties": {
+                    "mode": {
+                      "const": "continuous"
+                    }
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "ingestion": {
+                  "properties": {
+                    "one_shot_import_only": {
+                      "const": false
+                    }
+                  }
+                },
+                "sync": {
+                  "properties": {
+                    "enabled": {
+                      "const": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "ingestion": {
+                  "properties": {
+                    "mode": {
+                      "const": "fixed_history"
+                    }
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "ingestion": {
+                  "properties": {
+                    "one_shot_import_only": {
+                      "const": true
+                    }
+                  }
+                },
+                "sync": {
+                  "properties": {
+                    "enabled": {
+                      "const": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "properties": {
+          "admission": {
+            "properties": {
+              "minimum_pair_rate": {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              "minimum_valid_cases": {
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "minimum_valid_cases",
+              "minimum_pair_rate"
+            ],
+            "type": "object"
+          },
+          "audit_ref": {
+            "properties": {
+              "source_id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "verified_commit_sha": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "source_id",
+              "verified_commit_sha"
+            ],
+            "type": "object"
+          },
+          "candidate_key": {
+            "minLength": 3,
+            "type": "string"
+          },
+          "content": {
+            "properties": {
+              "adapter_strategy": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "model_scope": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "structure_type": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "structure_type",
+              "adapter_strategy",
+              "model_scope"
+            ],
+            "type": "object"
+          },
+          "family": {
+            "properties": {
+              "canonical_source_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "family_id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "role": {
+                "enum": [
+                  "canonical",
+                  "mirror",
+                  "backup",
+                  "translation",
+                  "derived",
+                  "aggregator"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "family_id",
+              "role",
+              "canonical_source_id"
+            ],
+            "type": "object"
+          },
+          "ingestion": {
+            "properties": {
+              "mode": {
+                "enum": [
+                  "continuous",
+                  "fixed_history"
+                ],
+                "type": "string"
+              },
+              "one_shot_import_only": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "mode",
+              "one_shot_import_only"
+            ],
+            "type": "object"
+          },
+          "pilot": {
+            "properties": {
+              "selected": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "selected"
+            ],
+            "type": "object"
+          },
+          "publication": {
+            "properties": {
+              "auto_publish": {
+                "type": "boolean"
+              },
+              "ingestion_policy": {
+                "enum": [
+                  "full",
+                  "provenance_only"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "ingestion_policy",
+              "auto_publish"
+            ],
+            "type": "object"
+          },
+          "repository": {
+            "properties": {
+              "default_branch": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "repository_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "url": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "verified_commit_sha": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "url",
+              "repository_id",
+              "default_branch",
+              "verified_commit_sha"
+            ],
+            "type": "object"
+          },
+          "rights": {
+            "properties": {
+              "asset_policy": {
+                "enum": [
+                  "unknown",
+                  "review_required",
+                  "internal_only",
+                  "permitted",
+                  "blocked"
+                ],
+                "type": "string"
+              },
+              "prompt_policy": {
+                "enum": [
+                  "unknown",
+                  "review_required",
+                  "internal_only",
+                  "permitted",
+                  "blocked"
+                ],
+                "type": "string"
+              },
+              "repository_license": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "repository_license",
+              "prompt_policy",
+              "asset_policy"
+            ],
+            "type": "object"
+          },
+          "source_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "candidate",
+              "probation",
+              "active",
+              "paused",
+              "retired",
+              "blocked"
+            ],
+            "type": "string"
+          },
+          "sync": {
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "enabled"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "source_id",
+          "candidate_key",
+          "status",
+          "repository",
+          "family",
+          "sync",
+          "content",
+          "admission",
+          "rights",
+          "publication",
+          "audit_ref",
+          "pilot",
+          "ingestion"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "registry_version",
+    "registry_format",
+    "default_publication",
+    "sources",
+    "exclusions",
+    "pilots"
+  ],
+  "title": "Source registry v2",
+  "type": "object"
+}

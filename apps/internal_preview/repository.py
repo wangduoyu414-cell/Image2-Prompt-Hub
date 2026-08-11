@@ -25,7 +25,10 @@ from ingestion.git_snapshot import fixed_snapshot
 from ingestion.registry import SourceConfig, ensure_external_root, load_source_config, repo_root
 
 
-INDEX_SCHEMA = "internal-preview-index/v1"
+INDEX_SCHEMA = "internal-preview-index/v2"
+LEGACY_INDEX_SCHEMA = "internal-preview-index/v1"
+EXPECTED_CASE_COUNT = 3973
+EXPECTED_OUTPUT_COUNT = 9310
 SOURCE_IDS = (
     "g0dam-work-prompts",
     "joesai-commercial-prompts",
@@ -33,6 +36,10 @@ SOURCE_IDS = (
     "freestylefly-awesome-gpt-image-2",
     "erickkkyt-awesome-gptimage2-prompts",
     "vigozhao-ai-visual-prompt-cookbook",
+)
+CURRENT_SOURCE_IDS = (
+    *SOURCE_IDS,
+    "chaosrealmsai-gpt-image-2-gallery",
 )
 
 
@@ -101,8 +108,9 @@ def _positive_integer(value: Any, label: str) -> int:
 
 
 def _cache_key(registry_path: Path, audit_path: Path, configs: Sequence[SourceConfig]) -> str:
+    schema_version = _schema_for_configs(configs)
     authority = {
-        "schema": INDEX_SCHEMA,
+        "schema": schema_version,
         "adapter_version": ADAPTER_VERSION,
         "registry_sha256": _sha256_file(registry_path),
         "audit_sha256": _sha256_file(audit_path),
@@ -118,6 +126,15 @@ def _cache_key(registry_path: Path, audit_path: Path, configs: Sequence[SourceCo
     return hashlib.sha256(
         json.dumps(authority, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
+
+
+def _schema_for_configs(configs: Sequence[SourceConfig]) -> str:
+    source_ids = tuple(config.source_id for config in configs)
+    if set(source_ids) == set(SOURCE_IDS) and len(source_ids) == len(SOURCE_IDS):
+        return LEGACY_INDEX_SCHEMA
+    if set(source_ids) == set(CURRENT_SOURCE_IDS) and len(source_ids) == len(CURRENT_SOURCE_IDS):
+        return INDEX_SCHEMA
+    raise InternalPreviewError("preview_configuration_invalid", "preview source set is not an approved baseline")
 
 
 def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
@@ -264,10 +281,12 @@ def _build_index(
                         raise InternalPreviewError("preview_index_invalid", "asset id collision has inconsistent facts")
 
     cases.sort(key=lambda item: str(item["case_id"]))
-    if len(cases) != 1513 or sum(int(item["output_count"]) for item in cases) != 1930:
-        raise InternalPreviewError("preview_index_invalid", "six-source preview counts differ from the validated baseline")
+    schema_version = _schema_for_configs(configs)
+    expected = (1513, 1930) if schema_version == LEGACY_INDEX_SCHEMA else (EXPECTED_CASE_COUNT, EXPECTED_OUTPUT_COUNT)
+    if len(cases) != expected[0] or sum(int(item["output_count"]) for item in cases) != expected[1]:
+        raise InternalPreviewError("preview_index_invalid", "preview counts differ from the approved source baseline")
     return {
-        "schema_version": INDEX_SCHEMA,
+        "schema_version": schema_version,
         "cache_key": cache_key,
         "case_count": len(cases),
         "output_count": sum(int(item["output_count"]) for item in cases),
@@ -293,8 +312,8 @@ class InternalPreviewRepository:
     @classmethod
     def from_environment(cls) -> "InternalPreviewRepository":
         repo = repo_root().resolve()
-        registry_path = repo / "config" / "sources-v1.yaml"
-        audit_path = repo / "reports" / "source-audit-v1.json"
+        registry_path = repo / "config" / "sources-v2.yaml"
+        audit_path = repo / "reports" / "source-audit-v2.json"
         data_value = os.environ.get("IMAGE2_INTERNAL_PREVIEW_DATA_ROOT")
         cache_value = os.environ.get("IMAGE2_INTERNAL_PREVIEW_CACHE_ROOT")
         if not data_value or not cache_value:
@@ -304,9 +323,9 @@ class InternalPreviewRepository:
             )
         data_root = ensure_external_root(data_value, workspace_root=repo, create=False)
         cache_root = ensure_external_root(cache_value, workspace_root=repo)
-        configs = tuple(load_source_config(registry_path, source_id) for source_id in SOURCE_IDS)
+        configs = tuple(load_source_config(registry_path, source_id) for source_id in CURRENT_SOURCE_IDS)
         cache_key = _cache_key(registry_path, audit_path, configs)
-        cache_path = cache_root / "index-v1.json"
+        cache_path = cache_root / "index-v2.json"
         payload: dict[str, Any] | None = None
         if cache_path.is_file():
             try:
@@ -415,4 +434,3 @@ class InternalPreviewRepository:
             media_type=locator.media_type,
             content_sha256=locator.content_sha256,
         )
-

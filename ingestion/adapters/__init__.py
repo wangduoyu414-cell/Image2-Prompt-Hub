@@ -1,6 +1,7 @@
 """Fixed, code-owned dispatch for the supported static source adapters."""
 
 from .base import AdapterError, AssetPathBinding, FixedSnapshotAdapter, ParsedCase
+from .chaosrealms import parse_chaos_snapshot
 from .conardli import parse_conardli_snapshot
 from .erickkkyt import parse_erickkkyt_snapshot
 from .freestylefly import parse_freestylefly_snapshot
@@ -16,6 +17,7 @@ STATIC_ADAPTER_PARSERS: dict[str, FixedSnapshotAdapter] = {
     "freestylefly_cases_json_v1": parse_freestylefly_snapshot,
     "erickkkyt_prompts_json_v1": parse_erickkkyt_snapshot,
     "vigo_style_directory_v1": parse_vigozhao_snapshot,
+    "chaos_meta_three_webp_v1": parse_chaos_snapshot,
 }
 
 
@@ -37,4 +39,5 @@ __all__ = [
     "parse_freestylefly_snapshot",
     "parse_erickkkyt_snapshot",
     "parse_vigozhao_snapshot",
+    "parse_chaos_snapshot",
 ]

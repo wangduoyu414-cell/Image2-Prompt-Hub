@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "audit_version": {
+      "const": "v2"
+    },
+    "candidate_coverage": {
+      "properties": {
+        "uncovered_candidate_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "unique_repositories": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "unique_repositories",
+        "uncovered_candidate_count"
+      ],
+      "type": "object"
+    },
+    "generated_at": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "records": {
+      "items": {
+        "properties": {
+          "audit_scope": {
+            "enum": [
+              "full_case_audit",
+              "case_audit_incomplete",
+              "family_mapping",
+              "out_of_scope_mapping"
+            ],
+            "type": "string"
+          },
+          "candidate_key": {
+            "minLength": 3,
+            "type": "string"
+          },
+          "content": {
+            "properties": {
+              "adapter_strategy": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "model_scope": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "structure_type": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "structure_type",
+              "adapter_strategy",
+              "model_scope"
+            ],
+            "type": "object"
+          },
+          "family": {
+            "properties": {
+              "canonical_source_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "family_id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "role": {
+                "enum": [
+                  "canonical",
+                  "mirror",
+                  "backup",
+                  "translation",
+                  "derived",
+                  "aggregator",
+                  "not_assessed"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "family_id",
+              "role",
+              "canonical_source_id"
+            ],
+            "type": "object"
+          },
+          "metrics": {
+            "properties": {
+              "broken_asset_count": {
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "duplicate_estimate": {
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "exact_prompt_count": {
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "metrics_complete": {
+                "type": "boolean"
+              },
+              "observed_case_count": {
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "pair_rate": {
+                "minimum": 0,
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "paired_output_count": {
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "unique_valid_case_count": {
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "valid_case_count": {
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "metrics_complete",
+              "observed_case_count",
+              "exact_prompt_count",
+              "paired_output_count",
+              "valid_case_count",
+              "unique_valid_case_count",
+              "pair_rate",
+              "broken_asset_count",
+              "duplicate_estimate"
+            ],
+            "type": "object"
+          },
+          "recommended_status": {
+            "enum": [
+              "candidate",
+              "probation",
+              "active",
+              "paused",
+              "retired",
+              "blocked",
+              null
+            ],
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "repository": {
+            "properties": {
+              "availability": {
+                "enum": [
+                  "available",
+                  "unavailable"
+                ],
+                "type": "string"
+              },
+              "default_branch": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "repository_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "url": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "verified_commit_sha": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "url",
+              "repository_id",
+              "default_branch",
+              "verified_commit_sha",
+              "availability"
+            ],
+            "type": "object"
+          },
+          "rights": {
+            "properties": {
+              "asset_policy": {
+                "enum": [
+                  "unknown",
+                  "review_required",
+                  "internal_only",
+                  "permitted",
+                  "blocked"
+                ],
+                "type": "string"
+              },
+              "auto_publish": {
+                "type": "boolean"
+              },
+              "prompt_policy": {
+                "enum": [
+                  "unknown",
+                  "review_required",
+                  "internal_only",
+                  "permitted",
+                  "blocked"
+                ],
+                "type": "string"
+              },
+              "repository_license": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "repository_license",
+              "prompt_policy",
+              "asset_policy",
+              "auto_publish"
+            ],
+            "type": "object"
+          },
+          "source_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "candidate_key",
+          "audit_scope",
+          "repository",
+          "family",
+          "content",
+          "metrics",
+          "rights",
+          "recommended_status",
+          "status_reason"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "audit_version",
+    "generated_at",
+    "candidate_coverage",
+    "records"
+  ],
+  "title": "Source audit v2",
+  "type": "object"
+}

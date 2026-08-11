@@ -49,8 +49,8 @@ def parser() -> argparse.ArgumentParser:
         command.add_argument("--source-id", required=True)
         command.add_argument("--json", action="store_true")
     run = subcommands.choices["run-source"]
-    run.add_argument("--registry", default=str(REPO_ROOT / "config" / "sources-v1.yaml"))
-    run.add_argument("--audit", default=str(REPO_ROOT / "reports" / "source-audit-v1.json"))
+    run.add_argument("--registry", default=str(REPO_ROOT / "config" / "sources-v2.yaml"))
+    run.add_argument("--audit", default=str(REPO_ROOT / "reports" / "source-audit-v2.json"))
     return result
 
 

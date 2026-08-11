@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .database import DatabaseConfig, DatabaseError, InventoryDatabase
+from .fixed_history import FixedHistoryImportError, import_fixed_history
 from .importer import ImportError, ImportSettings, import_package
 from .object_store import ObjectStoreConfig, ObjectStoreError
 
@@ -18,6 +19,7 @@ EXIT_CODES = {
     "package_contract_invalid": 21,
     "package_commit_mismatch": 22,
     "package_conflict": 23,
+    "fixed_history_policy_invalid": 24,
     "source_asset_mismatch": 30,
     "object_endpoint_insecure": 39,
     "object_conflict": 40,
@@ -91,6 +93,17 @@ def _parser() -> argparse.ArgumentParser:
     importing.add_argument("--lock-hold-seconds", type=float, default=0.0)
     importing.add_argument("--json", action="store_true")
 
+    fixed_history = commands.add_parser(
+        "import-fixed-history",
+        help="extract, import, and canonicalize one authorized fixed-history source without publishing it",
+    )
+    fixed_history.add_argument("--registry", type=Path, default=Path("config/sources-v2.yaml"))
+    fixed_history.add_argument("--audit", type=Path, default=Path("reports/source-audit-v2.json"))
+    fixed_history.add_argument("--source-id", required=True)
+    fixed_history.add_argument("--git-data-root", type=Path, required=True)
+    fixed_history.add_argument("--package-root", type=Path, required=True)
+    fixed_history.add_argument("--json", action="store_true")
+
     inspect = commands.add_parser("inspect", help="read a stable ready-inventory summary")
     inspect.add_argument("--idempotency-key", required=True)
     inspect.add_argument("--json", action="store_true")
@@ -129,12 +142,39 @@ def main(argv: Sequence[str] | None = None) -> int:
                 args.json,
             )
             return 0
+        if args.command == "import-fixed-history":
+            result = import_fixed_history(
+                registry_path=args.registry,
+                audit_path=args.audit,
+                source_id=args.source_id,
+                git_data_root=args.git_data_root,
+                package_root=args.package_root,
+                settings=_settings(args.git_data_root),
+            )
+            _emit(
+                {
+                    "status": result.status,
+                    "source_id": result.source_id,
+                    "revision_sha": result.revision_sha,
+                    "package_path": str(result.package_path),
+                    "extraction_status": result.extraction_status,
+                    "inventory_status": result.inventory_status,
+                    "idempotency_key": result.idempotency_key,
+                    "semantic_digest": result.semantic_digest,
+                    "object_count": result.object_count,
+                    "inventory_summary": result.inventory_summary,
+                    "canonicalization": result.canonicalization,
+                    "publication_changed": False,
+                },
+                args.json,
+            )
+            return 0
         if args.command == "inspect":
             database = InventoryDatabase(DatabaseConfig(_required_env("INVENTORY_DATABASE_URL")))
             _emit({"status": "ready", "summary": database.inspect(args.idempotency_key)}, args.json)
             return 0
         raise AssertionError("unrecognized argparse command")
-    except (ImportError, DatabaseError, ObjectStoreError) as exc:
+    except (FixedHistoryImportError, ImportError, DatabaseError, ObjectStoreError) as exc:
         code = getattr(exc, "error_code", "internal_error")
         _emit({"status": "failed", "error_code": code, "message": str(exc)}, getattr(args, "json", False))
         return EXIT_CODES.get(code, 1)

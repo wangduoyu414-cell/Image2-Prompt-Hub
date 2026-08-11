@@ -1,0 +1,804 @@
+{
+  "audit_version": "v2",
+  "candidate_coverage": {
+    "uncovered_candidate_count": 0,
+    "unique_repositories": 7
+  },
+  "generated_at": "2026-08-11T19:07:46.205872Z",
+  "method": "Operational seven-source authority derived from the six-source v1 active records plus the exact TASK-0022 Chaos fixed-history handoff.",
+  "records": [
+    {
+      "audit_scope": "full_case_audit",
+      "candidate_key": "ChaosRealmsAI/gpt-image-2-gallery",
+      "classification": "independent_case_source",
+      "content": {
+        "adapter_complexity": "medium",
+        "adapter_strategy": "chaos_meta_three_webp_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "meta_json_with_three_webp_outputs"
+      },
+      "evidence": {
+        "admission_manifest": "config/fixed-history/chaosrealmsai-gpt-image-2-gallery-v1.json",
+        "admission_report": "reports/phase2/source-expansion-admission-v3.json",
+        "case_ledger_sha256": "33484746656377578e62ad6f425d5d07f23cce0f9fdc5b04697fb31d402fa65b",
+        "exclusion_ledger_sha256": "8d3dccc3ff82053a7c580bfd56b69fd056858e804aa4fd8d7a608896af2f3eb5"
+      },
+      "family": {
+        "canonical_source_id": "chaosrealmsai-gpt-image-2-gallery",
+        "family_id": "family-chaosrealmsai-gpt-image-2-gallery",
+        "role": "canonical"
+      },
+      "ingestion": {
+        "mode": "fixed_history",
+        "one_shot_import_only": true,
+        "sync_eligible": false
+      },
+      "maintenance": {
+        "content_path": "works/index.json + works/topics/**/meta.json + three WebP variants",
+        "evidence_commit_sha": "5296db8c996e38776c83a0bc8c64f848dcd512b3",
+        "fixed_snapshot_complete": true,
+        "kind": "fixed_history",
+        "one_shot_import_only": true,
+        "sync_eligible": false
+      },
+      "metrics": {
+        "broken_asset_count": 0,
+        "case_fingerprint_aggregate_sha256": "21e68e472d22bd877a960c317ab5cc18360fa5e51a9c21f7627bdd4202379858",
+        "duplicate_estimate": 0,
+        "exact_prompt_count": 2460,
+        "generation_example_count": 7380,
+        "metrics_complete": true,
+        "observed_case_count": 2460,
+        "pair_rate": 1.0,
+        "paired_output_count": 2460,
+        "unique_valid_case_count": 2460,
+        "valid_case_count": 2460
+      },
+      "quality_sampling": {
+        "human_review_finding": "60/60 deterministic admitted cases passed prompt completeness, image readability, semantic pairing and visual quality; 12/12 deterministic exclusion-reason checks were confirmed.",
+        "human_review_result": "pass",
+        "sample_size": 60,
+        "selection_method": "TASK-0022 deterministic category/risk/length sampling over the fixed filtered ledger."
+      },
+      "recommended_status": "active",
+      "repository": {
+        "availability": "available",
+        "default_branch": "main",
+        "repository_id": "1219036815",
+        "url": "https://github.com/ChaosRealmsAI/gpt-image-2-gallery",
+        "verified_commit_sha": "5296db8c996e38776c83a0bc8c64f848dcd512b3"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "auto_publish": false,
+        "prompt_policy": "review_required",
+        "reason": "Fixed-history admission permits private inventory only; every Prompt and output remains review_required.",
+        "repository_license": "MIT",
+        "repository_license_evidence_path": "LICENSE"
+      },
+      "source_id": "chaosrealmsai-gpt-image-2-gallery",
+      "status_reason": "TASK-0022 fixed-history handoff passed full quality, pairing, asset, duplicate, contribution and fail-closed rights gates; activation is one-shot internal import only."
+    },
+    {
+      "audit_scope": "full_case_audit",
+      "candidate_key": "conardli/gpt-image-2-101",
+      "classification": "independent_case_source",
+      "content": {
+        "adapter_complexity": "low",
+        "adapter_strategy": "conardli_compiled_case_manifest_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "compiled_multi_category_case_gallery"
+      },
+      "evidence": {
+        "full_metric_evidence": "D:/image2/.task-runs/TASK-0001/TASK-0001-6dc3257a60bbc609/active-candidate-full-metrics.json",
+        "markdown_line_numbers": [
+          77,
+          148
+        ],
+        "quality_review_evidence": "D:/image2/.task-runs/TASK-0001/TASK-0001-6dc3257a60bbc609/quality-visual-review.json",
+        "remote_probe": {
+          "availability": "available",
+          "default_branch": "main",
+          "errors": [],
+          "methods": [
+            "github_html_repository_meta",
+            "github_commit_atom"
+          ],
+          "repository_id": "1222461120",
+          "retrieved_at": "2026-08-02T12:52:43Z",
+          "verified_commit_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99"
+        },
+        "source_references": [
+          {
+            "input": "gpt-image-2-two-track-research-2026-08-01.xlsx",
+            "project_label": "ConardLi/gpt-image-2-101",
+            "row": 5,
+            "sheet": "案例效果类"
+          }
+        ]
+      },
+      "family": {
+        "canonical_source_id": "conardli-gpt-image-2-101",
+        "family_id": "family-conardli-gpt-image-2-101",
+        "role": "canonical"
+      },
+      "maintenance": {
+        "content_path": "src/data/cases.json",
+        "evidence_commit_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99",
+        "last_substantive_content_update": "2026-05-31T14:35:06Z",
+        "meaning": "The path-filtered history identifies a commit that changed the audited case data path at or before the fixed audit commit.",
+        "status": "confirmed_content_path_history",
+        "url": "https://github.com/ConardLi/gpt-image-2-101/commits/971b67dc8cbca8cf6eb32e196fea04bddd6abe99.atom?path=src/data/cases.json"
+      },
+      "metrics": {
+        "broken_asset_count": 0,
+        "case_fingerprint_aggregate_sha256": "36d03d248e8a844fa31db4290f395acbcd37c1c25ce9205d634cace4d7c8e573",
+        "duplicate_estimate": 0,
+        "exact_prompt_count": 162,
+        "metrics_complete": true,
+        "observation_basis": "complete fixed-commit source record plus streamed output-image SHA-256 verification",
+        "observed_case_count": 162,
+        "pair_rate": 1.0,
+        "paired_output_count": 162,
+        "unique_valid_case_count": 162,
+        "valid_case_count": 162
+      },
+      "quality_sampling": {
+        "formula": "min(unique_valid_case_count, 50, max(20, ceil(unique_valid_case_count * 0.10)))",
+        "human_review_finding": "All selected multi-category gallery cases were readable, varied, and paired to substantive structured prompts. The sample includes public-figure, brand, IP-style, and other provenance-sensitive imagery, so internal source eligibility does not authorize public mirroring.",
+        "human_review_result": "pass_with_publication_restriction",
+        "sample_case_ids": [
+          "academic-figures/qualitative-comparison-grid/1",
+          "assets-and-props/game-screenshot-mockup/1",
+          "avatars-and-profile/sticker-set/2",
+          "branding-and-packaging/beverage-label-design/2",
+          "branding-and-packaging/brand-identity-board/2",
+          "editing-workflows/product-retouching/1",
+          "grids-and-collages/lookbook-grid/1",
+          "infographics/legend-heavy-infographic/1",
+          "maps/food-map/2",
+          "portraits-and-characters/professional-portrait/1",
+          "poster-and-campaigns/campaign-kv/1",
+          "product-visuals/exploded-view-poster/1",
+          "scenes-and-illustrations/concept-scene/2",
+          "slides-and-visual-docs/policy-style-slide/2",
+          "storyboards-and-sequences/manga-spread-page/1",
+          "storyboards-and-sequences/recipe-process-flowchart/2",
+          "technical-diagrams/sequence-diagram/1",
+          "typography-and-text-layout/title-safe-poster/2",
+          "ui-mockups/chat-interface-scene/2",
+          "ui-mockups/live-commerce-ui/1"
+        ],
+        "sample_size": 20,
+        "selection_method": "First cover each category by stable SHA-256(case_id), then fill with remaining lowest stable SHA-256(case_id)."
+      },
+      "recommended_status": "active",
+      "repository": {
+        "availability": "available",
+        "default_branch": "main",
+        "repository_id": "1222461120",
+        "url": "https://github.com/ConardLi/gpt-image-2-101",
+        "verified_commit_sha": "971b67dc8cbca8cf6eb32e196fea04bddd6abe99"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "auto_publish": false,
+        "prompt_policy": "review_required",
+        "reason": "asset_policy and prompt_policy must remain review_required and auto_publish must remain false.",
+        "repository_license": "unknown",
+        "repository_license_evidence_path": null
+      },
+      "source_id": "conardli-gpt-image-2-101",
+      "status_reason": "Fixed-commit full metrics satisfy the 50 unique valid case and 0.90 pair-rate baseline; publication stays fail-closed pending per-asset/prompt rights review."
+    },
+    {
+      "audit_scope": "full_case_audit",
+      "candidate_key": "erickkkyt/awesome-gptimage2-prompts",
+      "classification": "independent_case_source",
+      "content": {
+        "adapter_complexity": "medium",
+        "adapter_strategy": "erickkkyt_prompts_json_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "structured_prompt_image_manifest"
+      },
+      "evidence": {
+        "full_metric_evidence": "D:/image2/reports/phase2/source-discovery-v1.json",
+        "quality_review_evidence": "D:/image2/reports/phase2/source-discovery-v1.json",
+        "remote_probe": {
+          "availability": "available",
+          "default_branch": "main",
+          "errors": [],
+          "methods": [
+            "task-0018-github-api",
+            "task-0018-fixed-commit-full-audit"
+          ],
+          "repository_id": "1213215604",
+          "retrieved_at": "2026-08-09T08:30:00Z",
+          "verified_commit_sha": "1b5ec5f4f3409d2bf4cd2a4741070ce6c1429c6a"
+        },
+        "source_references": [
+          {
+            "input": "reports/phase2/source-discovery-v1.json",
+            "project_label": "erickkkyt/awesome-gptimage2-prompts",
+            "row": null,
+            "sheet": "adapter_ready_batch"
+          }
+        ]
+      },
+      "family": {
+        "canonical_source_id": "erickkkyt-awesome-gptimage2-prompts",
+        "family_id": "family-erickkkyt-awesome-gptimage2-prompts",
+        "role": "canonical"
+      },
+      "maintenance": {
+        "content_path": "prompts/prompts.json",
+        "evidence_commit_sha": "1b5ec5f4f3409d2bf4cd2a4741070ce6c1429c6a",
+        "last_substantive_content_update": "2026-06-24T00:00:00Z",
+        "meaning": "TASK-0018 confirmed substantive fixed-path maintenance within the 180-day admission window.",
+        "status": "confirmed_content_path_history",
+        "url": "https://github.com/erickkkyt/awesome-gptimage2-prompts/commits/1b5ec5f4f3409d2bf4cd2a4741070ce6c1429c6a"
+      },
+      "metrics": {
+        "broken_asset_count": 0,
+        "case_fingerprint_aggregate_sha256": "a2e80796bb546f17dd5d48a0776a0144d6a9333e23a5534b10864862b5327551",
+        "duplicate_estimate": 0,
+        "exact_prompt_count": 572,
+        "metrics_complete": true,
+        "observation_basis": "complete TASK-0018 fixed-commit source ledger plus TASK-0019 full asset SHA-256 extraction",
+        "observed_case_count": 572,
+        "pair_rate": 1.0,
+        "paired_output_count": 572,
+        "unique_valid_case_count": 572,
+        "valid_case_count": 572
+      },
+      "quality_sampling": {
+        "formula": "min(unique_valid_case_count, 50, max(20, ceil(unique_valid_case_count * 0.10)))",
+        "human_review_finding": "diverse sample pass",
+        "human_review_result": "pass",
+        "sample_case_ids": [
+          "x-2055490135488336199|assets/gpt-image-2-x-discussions/cinematic-night-time-selfie-young-woman-riding-1.jpg",
+          "x-2055463009531891960|assets/gpt-image-2-x-discussions/minimal-luxury-fashion-wallpaper-tiny-black-silhouette-1.jpg",
+          "x-2055438674947461476|assets/gpt-image-2-x-discussions/ultra-realistic-candid-phone-photo-plus-size-1.jpg",
+          "x-2055045492703379680|assets/gpt-image-2-x-discussions/create-moody-cinematic-portrait-daenarys-targaren-one-1.jpg",
+          "x-2054955002830217407|assets/gpt-image-2-x-discussions/ultra-detailed-cinematic-mafia-style-pizza-brand-1.jpg",
+          "x-2054067438770348059|assets/gpt-image-2-x-discussions/create-premium-square-reference-style-outdoor-gear-1.jpg",
+          "x-2054109913824030966|assets/gpt-image-2-x-discussions/gpt-image-2-2054109913824030966-1.jpg",
+          "x-2054118230726447333|assets/gpt-image-2-x-discussions/prompt-is-going-insanely-viral-right-now-1.jpg",
+          "x-2054039805990998231|assets/gpt-image-2-x-discussions/ultra-realistic-selfie-photo-three-teenage-young-1.jpg",
+          "x-2053670680873648460|assets/gpt-image-2-x-discussions/2x2-grid-16-9-do-this-4-1.jpg",
+          "x-2053645842016547277|assets/gpt-image-2-x-discussions/create-8k-ultra-detailed-minimalist-line-art-1.jpg",
+          "x-2053843881553502219|assets/gpt-image-2-x-discussions/create-high-end-cinematic-character-design-sheet-1.jpg",
+          "x-2053822435062141367|assets/gpt-image-2-x-discussions/create-stylized-travel-poster-graphic-collage-dubai-1.jpg",
+          "x-2053810408075767983|assets/gpt-image-2-x-discussions/high-fashion-y2k-inspired-editorial-artwork-featuring-1.jpg",
+          "x-2053819024333746410|assets/gpt-image-2-x-discussions/realistic-sports-broadcast-screenshot-style-documentary-photo-1.jpg",
+          "x-2053688756180533666|assets/gpt-image-2-x-discussions/ultra-realistic-cinematic-fashion-editorial-photograph-stunning-1.jpg",
+          "x-2053670329135034818|assets/gpt-image-2-x-discussions/watercolor-travel-poster-illustration-city-name-busy-1.jpg",
+          "x-2053512135993385454|assets/gpt-image-2-x-discussions/create-epic-cinematic-landscape-shot-traditional-east-1.jpg",
+          "x-2053478856066257172|assets/gpt-image-2-x-discussions/front-facing-medium-close-up-webcam-live-1.jpg",
+          "x-2053266241943687233|assets/gpt-image-2-x-discussions/realistic-low-light-phone-style-portrait-young-1.jpg",
+          "x-2053494585830379785|assets/gpt-image-2-x-discussions/yapper-so-prompt-create-visually-rich-infographic-1.jpg",
+          "x-2053142955926384824|assets/gpt-image-2-x-discussions/no-cheap-paper-cup-no-flimsy-cup-1.jpg",
+          "user-marathon-sub-two-history|assets/gpt-image-2-x-discussions/marathon-sub-two-history-1.webp",
+          "x-2047969988368314526|assets/gpt-image-2-x-discussions/candid-bedroom-selfie-1.jpg",
+          "x-2047807925519814947|assets/gpt-image-2-x-discussions/gongbi-mandarin-ducks-peony-garden-1.jpg",
+          "x-2047522091046494400|assets/gpt-image-2-x-discussions/song-dynasty-moral-maxim-painting-1.jpg",
+          "x-2047182214304055339|assets/gpt-image-2-x-discussions/json-prompt-recreation-1.jpg",
+          "x-2047123658024652905-r0-product-marketing-microsoft-powerwordex-promo-graphic|assets/gpt-image-2-x-discussions/product-marketing-microsoft-powerwordex-promo-graphic-1.jpg",
+          "x-2047202015307067412|assets/gpt-image-2-x-discussions/torn-paper-split-face-editorial-portrait-1.jpg",
+          "x-2046944962349351038|assets/gpt-image-2-x-discussions/child-guitar-studio-rehearsal-portrait-1.jpg",
+          "x-2046929515092554025-r2-e-commerce-main-image-child-cow-onesie-three-view-sheet|assets/gpt-image-2-x-discussions/e-commerce-main-image-child-cow-onesie-three-view-sheet-1.jpg",
+          "x-2046824148304048381-r2-e-commerce-main-image-new-chinese-aesthetics-style-chart|assets/gpt-image-2-x-discussions/e-commerce-main-image-new-chinese-aesthetics-style-chart-1.jpg",
+          "x-2047038657295798701-forced-perspective-korean-idol-portrait|assets/gpt-image-2-x-discussions/forced-perspective-korean-idol-portrait-1.jpg",
+          "x-2047057858727158110-r1-japanese-business-slide-on-e-application|assets/gpt-image-2-x-discussions/japanese-business-slide-on-e-application-1.jpg",
+          "x-2047085107979419924-r1-minimal-sci-fi-anime-girl-portrait|assets/gpt-image-2-x-discussions/minimal-sci-fi-anime-girl-portrait-1.jpg",
+          "x-2047100576002138113-product-marketing-hand-drawn-hermes-agent-poster|assets/gpt-image-2-x-discussions/product-marketing-hand-drawn-hermes-agent-poster-1.jpg",
+          "x-2047090842901553239-r0-social-media-post-absurd-purple-mofumofu-pachinko-machine|assets/gpt-image-2-x-discussions/social-media-post-absurd-purple-mofumofu-pachinko-machine-1.jpg",
+          "x-2046963727954501785-r0-spanish-neon-ai-business-infographic|assets/gpt-image-2-x-discussions/spanish-neon-ai-business-infographic-1.jpg",
+          "x-2046775660182385070|assets/gpt-image-2-x-discussions/visual-polyglot-magazine-collage-1.jpg",
+          "x-2046564674112831920-barbecue-three-sword-style-portrait|assets/gpt-image-2-x-discussions/barbecue-three-sword-style-portrait-1.jpg",
+          "x-2046520509651886451|assets/gpt-image-2-x-discussions/game-screenshot-prompt-1.jpg",
+          "x-2046723051895800086|assets/gpt-image-2-x-discussions/tang-dynasty-queen-minion-squad-1.jpg",
+          "x-2046603586038333595-youtube-thumbnail-youtube-gaming-stream-despair-scene|assets/gpt-image-2-x-discussions/youtube-thumbnail-youtube-gaming-stream-despair-scene-1.jpg",
+          "x-2045792240044511277-r1-3d-stone-staircase-evolution-infographic|assets/gpt-image-2-x-discussions/3d-stone-staircase-evolution-infographic-1.jpg",
+          "x-2045390207072256179|assets/gpt-image-2-x-discussions/futuristic-mandala-illustration-1.jpg",
+          "x-2045328856937312549-creative-calligraphy-zong-you-ji-feng-qi|assets/gpt-image-2-x-discussions/creative-calligraphy-zong-you-ji-feng-qi-1.jpg",
+          "x-2044660755031544028|assets/gpt-image-2-x-discussions/crownless-watch-sealed-case-1.jpg",
+          "x-2044562722491121718|assets/gpt-image-2-x-discussions/amalfi-coast-vintage-travel-poster-1.jpg",
+          "x-2043821412939641017|assets/gpt-image-2-x-discussions/ikea-storefront-at-twilight-1.jpg",
+          "x-1998778811127595081|assets/gpt-image-2-x-discussions/front-page-of-a-newspaper-1.jpg"
+        ],
+        "sample_size": 50,
+        "selection_method": "deterministic_even_spacing_over_fixed_commit_records_with_local_outputs_v1"
+      },
+      "recommended_status": "active",
+      "repository": {
+        "availability": "available",
+        "default_branch": "main",
+        "repository_id": "1213215604",
+        "url": "https://github.com/erickkkyt/awesome-gptimage2-prompts",
+        "verified_commit_sha": "1b5ec5f4f3409d2bf4cd2a4741070ce6c1429c6a"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "auto_publish": false,
+        "prompt_policy": "review_required",
+        "reason": "TASK-0018 admitted this source for internal adapter work only; every prompt and asset remains review_required and auto_publish stays false.",
+        "repository_license": "unknown",
+        "repository_license_evidence_path": null
+      },
+      "source_id": "erickkkyt-awesome-gptimage2-prompts",
+      "status_reason": "TASK-0018 fixed-commit full audit passed count, pairing, asset, maintenance, quality, family and duplicate gates; TASK-0019 activates internal ingestion while publication remains fail-closed."
+    },
+    {
+      "audit_scope": "full_case_audit",
+      "candidate_key": "freestylefly/awesome-gpt-image-2",
+      "classification": "independent_case_source",
+      "content": {
+        "adapter_complexity": "low",
+        "adapter_strategy": "freestylefly_cases_json_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "centralized_case_manifest"
+      },
+      "evidence": {
+        "full_metric_evidence": "D:/image2/reports/phase2/source-discovery-v1.json",
+        "quality_review_evidence": "D:/image2/reports/phase2/source-discovery-v1.json",
+        "remote_probe": {
+          "availability": "available",
+          "default_branch": "main",
+          "errors": [],
+          "methods": [
+            "task-0018-github-api",
+            "task-0018-fixed-commit-full-audit"
+          ],
+          "repository_id": "1220744720",
+          "retrieved_at": "2026-08-09T08:30:00Z",
+          "verified_commit_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270"
+        },
+        "source_references": [
+          {
+            "input": "reports/phase2/source-discovery-v1.json",
+            "project_label": "freestylefly/awesome-gpt-image-2",
+            "row": null,
+            "sheet": "adapter_ready_batch"
+          }
+        ]
+      },
+      "family": {
+        "canonical_source_id": "freestylefly-awesome-gpt-image-2",
+        "family_id": "family-freestylefly-awesome-gpt-image-2",
+        "role": "canonical"
+      },
+      "maintenance": {
+        "content_path": "data/cases.json",
+        "evidence_commit_sha": "60b6e1d3ddaf1c982426d6c8181827764c6b2012",
+        "last_substantive_content_update": "2026-07-14T00:00:00Z",
+        "meaning": "TASK-0018 confirmed substantive fixed-path maintenance within the 180-day admission window.",
+        "status": "confirmed_content_path_history",
+        "url": "https://github.com/freestylefly/awesome-gpt-image-2/commits/76fcd0e6b3961ef2b041547aac654f1efd1ef270"
+      },
+      "metrics": {
+        "broken_asset_count": 0,
+        "case_fingerprint_aggregate_sha256": "ce4adddbfb74f88d0b2aee58e5ebe0f9de646eaf8dfcc5a34bcfbbd1f3e11a92",
+        "duplicate_estimate": 0,
+        "exact_prompt_count": 517,
+        "metrics_complete": true,
+        "observation_basis": "complete TASK-0018 fixed-commit source ledger plus TASK-0019 full asset SHA-256 extraction",
+        "observed_case_count": 517,
+        "pair_rate": 1.0,
+        "paired_output_count": 517,
+        "unique_valid_case_count": 517,
+        "valid_case_count": 517
+      },
+      "quality_sampling": {
+        "formula": "min(unique_valid_case_count, 50, max(20, ceil(unique_valid_case_count * 0.10)))",
+        "human_review_finding": "broad sample pass",
+        "human_review_result": "pass",
+        "sample_case_ids": [
+          "520|data/images/case520.jpg",
+          "509|data/images/case509.jpg",
+          "499|data/images/case499.jpg",
+          "488|data/images/case488.jpg",
+          "478|data/images/case478.jpg",
+          "467|data/images/case467.jpg",
+          "457|data/images/case457.jpg",
+          "446|data/images/case446.jpg",
+          "436|data/images/case436.jpg",
+          "425|data/images/case425.jpg",
+          "415|data/images/case415.jpg",
+          "404|data/images/case404.jpg",
+          "394|data/images/case394.jpg",
+          "383|data/images/case383.jpg",
+          "373|data/images/case373.jpg",
+          "362|data/images/case362.jpg",
+          "352|data/images/case352.jpg",
+          "341|data/images/case341.jpg",
+          "330|data/images/case330.png",
+          "320|data/images/case320.jpg",
+          "309|data/images/case309.jpg",
+          "299|data/images/case299.jpg",
+          "288|data/images/case288.jpg",
+          "278|data/images/case278.jpg",
+          "267|data/images/case267.jpg",
+          "257|data/images/case257.jpg",
+          "246|data/images/case246.jpg",
+          "236|data/images/case236.jpg",
+          "225|data/images/case225.jpg",
+          "215|data/images/case215.jpg",
+          "204|data/images/case204.jpg",
+          "194|data/images/case194.jpg",
+          "183|data/images/case183.jpg",
+          "172|data/images/case172.jpg",
+          "160|data/images/case160.jpg",
+          "149|data/images/case149.jpg",
+          "139|data/images/case139.jpg",
+          "128|data/images/case128.jpg",
+          "118|data/images/case118.jpg",
+          "107|data/images/case107.jpg",
+          "97|data/images/case97.jpg",
+          "86|data/images/case86.jpg",
+          "76|data/images/case76.jpg",
+          "65|data/images/case65.jpg",
+          "55|data/images/case55.jpg",
+          "44|data/images/case44.jpg",
+          "34|data/images/case34.jpg",
+          "23|data/images/case23.jpg",
+          "13|data/images/case13.jpg",
+          "1|data/images/case1.jpg"
+        ],
+        "sample_size": 50,
+        "selection_method": "deterministic_even_spacing_over_fixed_commit_records_with_local_outputs_v1"
+      },
+      "recommended_status": "active",
+      "repository": {
+        "availability": "available",
+        "default_branch": "main",
+        "repository_id": "1220744720",
+        "url": "https://github.com/freestylefly/awesome-gpt-image-2",
+        "verified_commit_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "auto_publish": false,
+        "prompt_policy": "review_required",
+        "reason": "TASK-0018 admitted this source for internal adapter work only; every prompt and asset remains review_required and auto_publish stays false.",
+        "repository_license": "MIT",
+        "repository_license_evidence_path": "LICENSE"
+      },
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "status_reason": "TASK-0018 fixed-commit full audit passed count, pairing, asset, maintenance, quality, family and duplicate gates; TASK-0019 activates internal ingestion while publication remains fail-closed."
+    },
+    {
+      "audit_scope": "full_case_audit",
+      "candidate_key": "g0dam/awesome-gpt-image-2-work-prompts",
+      "classification": "independent_case_source",
+      "content": {
+        "adapter_complexity": "low",
+        "adapter_strategy": "g0dam_manifest_json_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "structured_manifest_json"
+      },
+      "evidence": {
+        "full_metric_evidence": "D:/image2/.task-runs/TASK-0001/TASK-0001-6dc3257a60bbc609/active-candidate-full-metrics.json",
+        "markdown_line_numbers": [
+          37,
+          79,
+          149
+        ],
+        "quality_review_evidence": "D:/image2/.task-runs/TASK-0001/TASK-0001-6dc3257a60bbc609/quality-visual-review.json",
+        "remote_probe": {
+          "availability": "available",
+          "default_branch": "main",
+          "errors": [],
+          "methods": [
+            "github_html_repository_meta",
+            "github_commit_atom"
+          ],
+          "repository_id": "1226388064",
+          "retrieved_at": "2026-08-02T12:52:43Z",
+          "verified_commit_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe"
+        },
+        "source_references": [
+          {
+            "input": "gpt-image-2-two-track-research-2026-08-01.xlsx",
+            "project_label": "g0dam/Awesome-GPT-Image-2-Work-Prompts",
+            "row": 7,
+            "sheet": "案例效果类"
+          }
+        ]
+      },
+      "family": {
+        "canonical_source_id": "g0dam-work-prompts",
+        "family_id": "family-g0dam-work-prompts",
+        "role": "canonical"
+      },
+      "maintenance": {
+        "content_path": "data/prompts.json",
+        "evidence_commit_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe",
+        "last_substantive_content_update": "2026-05-11T15:45:14Z",
+        "meaning": "The path-filtered history identifies a commit that changed the audited case data path at or before the fixed audit commit.",
+        "status": "confirmed_content_path_history",
+        "url": "https://github.com/g0dam/Awesome-GPT-Image-2-Work-Prompts/commits/690c2d6969a65b406b17ba7d41f18695a652c3fe.atom?path=data/prompts.json"
+      },
+      "metrics": {
+        "broken_asset_count": 0,
+        "case_fingerprint_aggregate_sha256": "ba7dbf0154f4d77317ec4a2b5044fbd6b3ef80ffb06b7ecacd2655dcfae8dbf0",
+        "duplicate_estimate": 0,
+        "exact_prompt_count": 100,
+        "metrics_complete": true,
+        "observation_basis": "complete fixed-commit source record plus streamed output-image SHA-256 verification",
+        "observed_case_count": 100,
+        "pair_rate": 1.0,
+        "paired_output_count": 100,
+        "unique_valid_case_count": 100,
+        "valid_case_count": 100
+      },
+      "quality_sampling": {
+        "formula": "min(unique_valid_case_count, 50, max(20, ceil(unique_valid_case_count * 0.10)))",
+        "human_review_finding": "All selected business-visual cases were readable, varied, paired to substantive prompts, and visibly aligned with their declared work-asset intent. No placeholder or obvious exact-repeat sample was observed.",
+        "human_review_result": "pass",
+        "sample_case_ids": [
+          "gptimg2-work-002",
+          "gptimg2-work-009",
+          "gptimg2-work-010",
+          "gptimg2-work-014",
+          "gptimg2-work-019",
+          "gptimg2-work-024",
+          "gptimg2-work-025",
+          "gptimg2-work-027",
+          "gptimg2-work-032",
+          "gptimg2-work-034",
+          "gptimg2-work-035",
+          "gptimg2-work-037",
+          "gptimg2-work-051",
+          "gptimg2-work-055",
+          "gptimg2-work-060",
+          "gptimg2-work-073",
+          "gptimg2-work-078",
+          "gptimg2-work-082",
+          "gptimg2-work-095",
+          "gptimg2-work-099"
+        ],
+        "sample_size": 20,
+        "selection_method": "First cover each category by stable SHA-256(case_id), then fill with remaining lowest stable SHA-256(case_id)."
+      },
+      "recommended_status": "active",
+      "repository": {
+        "availability": "available",
+        "default_branch": "main",
+        "repository_id": "1226388064",
+        "url": "https://github.com/g0dam/Awesome-GPT-Image-2-Work-Prompts",
+        "verified_commit_sha": "690c2d6969a65b406b17ba7d41f18695a652c3fe"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "auto_publish": false,
+        "prompt_policy": "review_required",
+        "reason": "The audit still requires review_required asset and prompt publication policy; this review is not a license conclusion.",
+        "repository_license": "Creative-Commons-claimed",
+        "repository_license_evidence_path": "LICENSE"
+      },
+      "source_id": "g0dam-work-prompts",
+      "status_reason": "Fixed-commit full metrics satisfy the 50 unique valid case and 0.90 pair-rate baseline; publication stays fail-closed pending per-asset/prompt rights review."
+    },
+    {
+      "audit_scope": "full_case_audit",
+      "candidate_key": "joesai/awesome-gpt-image-2-commercial-prompts",
+      "classification": "independent_case_source",
+      "content": {
+        "adapter_complexity": "low",
+        "adapter_strategy": "joesai_manifest_markdown_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "markdown_prompt_pages_with_manifest"
+      },
+      "evidence": {
+        "full_metric_evidence": "D:/image2/.task-runs/TASK-0001/TASK-0001-6dc3257a60bbc609/active-candidate-full-metrics.json",
+        "markdown_line_numbers": [
+          82,
+          150
+        ],
+        "quality_review_evidence": "D:/image2/.task-runs/TASK-0001/TASK-0001-6dc3257a60bbc609/quality-visual-review.json",
+        "remote_probe": {
+          "availability": "available",
+          "default_branch": "main",
+          "errors": [],
+          "methods": [
+            "github_html_repository_meta",
+            "github_commit_atom"
+          ],
+          "repository_id": "1218209672",
+          "retrieved_at": "2026-08-02T12:52:47Z",
+          "verified_commit_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b"
+        },
+        "source_references": [
+          {
+            "input": "gpt-image-2-two-track-research-2026-08-01.xlsx",
+            "project_label": "JoeSai/awesome-gpt-image-2-commercial-prompts",
+            "row": 10,
+            "sheet": "案例效果类"
+          }
+        ]
+      },
+      "family": {
+        "canonical_source_id": "joesai-commercial-prompts",
+        "family_id": "family-joesai-commercial-prompts",
+        "role": "canonical"
+      },
+      "maintenance": {
+        "content_path": "data/prompts.json",
+        "evidence_commit_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b",
+        "last_substantive_content_update": "2026-04-23T15:44:00Z",
+        "meaning": "The path-filtered history identifies a commit that changed the audited case data path at or before the fixed audit commit.",
+        "status": "confirmed_content_path_history",
+        "url": "https://github.com/JoeSai/awesome-gpt-image-2-commercial-prompts/commits/6f9b01fd21efbc05cfdde1176fc988013d3c4a9b.atom?path=data/prompts.json"
+      },
+      "metrics": {
+        "broken_asset_count": 0,
+        "case_fingerprint_aggregate_sha256": "ea242f29b82c8149e43132d208cc67ae55c49cbb3d19ed80b2c3d2676e943293",
+        "duplicate_estimate": 0,
+        "exact_prompt_count": 50,
+        "metrics_complete": true,
+        "observation_basis": "complete fixed-commit source record plus streamed output-image SHA-256 verification",
+        "observed_case_count": 50,
+        "pair_rate": 1.0,
+        "paired_output_count": 50,
+        "unique_valid_case_count": 50,
+        "valid_case_count": 50
+      },
+      "quality_sampling": {
+        "formula": "min(unique_valid_case_count, 50, max(20, ceil(unique_valid_case_count * 0.10)))",
+        "human_review_finding": "All selected commercial cases were clear, visually coherent, varied by product/use case, and paired to full English prompt blocks. No placeholder or obvious exact-repeat sample was observed.",
+        "human_review_result": "pass",
+        "sample_case_ids": [
+          "boutique-hotel-lobby-editorial",
+          "clean-supplement-packshot",
+          "editorial-collage-campaign-board",
+          "fine-fragrance-obsidian-hero",
+          "footwear-floating-hero",
+          "haute-jewelry-maison-salon",
+          "haute-parfum-nocturne-series",
+          "heritage-leather-goods-maison-hero",
+          "luxury-ev-night-showroom",
+          "luxury-skincare-hero",
+          "luxury-watch-macro-campaign",
+          "luxury-window-display-ooh",
+          "minimal-bedding-hero",
+          "mobile-shopping-app-homepage",
+          "packaging-unboxing-reveal",
+          "premium-headphones-sculptural-hero",
+          "premium-whisky-decanter-hero",
+          "scandinavian-chair-lifestyle",
+          "summer-beverage-launch-banner",
+          "trust-proof-case-study-visual"
+        ],
+        "sample_size": 20,
+        "selection_method": "First cover each category by stable SHA-256(case_id), then fill with remaining lowest stable SHA-256(case_id)."
+      },
+      "recommended_status": "active",
+      "repository": {
+        "availability": "available",
+        "default_branch": "main",
+        "repository_id": "1218209672",
+        "url": "https://github.com/JoeSai/awesome-gpt-image-2-commercial-prompts",
+        "verified_commit_sha": "6f9b01fd21efbc05cfdde1176fc988013d3c4a9b"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "auto_publish": false,
+        "prompt_policy": "review_required",
+        "reason": "Commercial-look output and source assets remain review_required for publication; this review is not a license conclusion.",
+        "repository_license": "MIT",
+        "repository_license_evidence_path": "LICENSE"
+      },
+      "source_id": "joesai-commercial-prompts",
+      "status_reason": "Fixed-commit full metrics satisfy the 50 unique valid case and 0.90 pair-rate baseline; publication stays fail-closed pending per-asset/prompt rights review."
+    },
+    {
+      "audit_scope": "full_case_audit",
+      "candidate_key": "vigozhao/ai-visual-prompt-cookbook",
+      "classification": "independent_case_source",
+      "content": {
+        "adapter_complexity": "medium",
+        "adapter_strategy": "vigo_style_directory_v1",
+        "model_scope": "gpt-image-2_claimed",
+        "structure_type": "style_json_with_preview_assets"
+      },
+      "evidence": {
+        "full_metric_evidence": "D:/image2/reports/phase2/source-discovery-v1.json",
+        "quality_review_evidence": "D:/image2/reports/phase2/source-discovery-v1.json",
+        "remote_probe": {
+          "availability": "available",
+          "default_branch": "main",
+          "errors": [],
+          "methods": [
+            "task-0018-github-api",
+            "task-0018-fixed-commit-full-audit"
+          ],
+          "repository_id": "1235254657",
+          "retrieved_at": "2026-08-09T08:30:00Z",
+          "verified_commit_sha": "9fa17042b392db28bb495f7208d37f1b9c416368"
+        },
+        "source_references": [
+          {
+            "input": "reports/phase2/source-discovery-v1.json",
+            "project_label": "vigozhao/ai-visual-prompt-cookbook",
+            "row": null,
+            "sheet": "adapter_ready_batch"
+          }
+        ]
+      },
+      "family": {
+        "canonical_source_id": "vigozhao-ai-visual-prompt-cookbook",
+        "family_id": "family-vigozhao-ai-visual-prompt-cookbook",
+        "role": "canonical"
+      },
+      "maintenance": {
+        "content_path": "styles/*/style.json",
+        "evidence_commit_sha": "9fa17042b392db28bb495f7208d37f1b9c416368",
+        "last_substantive_content_update": "2026-08-07T00:00:00Z",
+        "meaning": "TASK-0018 confirmed substantive fixed-path maintenance within the 180-day admission window.",
+        "status": "confirmed_content_path_history",
+        "url": "https://github.com/VigoZhao/AI-Visual-Prompt-Cookbook/commits/9fa17042b392db28bb495f7208d37f1b9c416368"
+      },
+      "metrics": {
+        "broken_asset_count": 0,
+        "case_fingerprint_aggregate_sha256": "fb1c44c484a07b07b9756ff0186cb93f37bfb4024432339bd138591ea64db3f6",
+        "duplicate_estimate": 0,
+        "exact_prompt_count": 112,
+        "metrics_complete": true,
+        "observation_basis": "complete TASK-0018 fixed-commit source ledger plus TASK-0019 full asset SHA-256 extraction",
+        "observed_case_count": 112,
+        "pair_rate": 1.0,
+        "paired_output_count": 112,
+        "unique_valid_case_count": 112,
+        "valid_case_count": 112
+      },
+      "quality_sampling": {
+        "formula": "min(unique_valid_case_count, 50, max(20, ceil(unique_valid_case_count * 0.10)))",
+        "human_review_finding": "consistent sample pass",
+        "human_review_result": "pass",
+        "sample_case_ids": [
+          "acid-lime-3d-streetwear-type-poster-style|styles/acid-lime-3d-streetwear-type-poster-style/preview-16x9.jpg",
+          "blue-halftone-ransom-zine-poster-style|styles/blue-halftone-ransom-zine-poster-style/preview-16x9.jpg",
+          "clean-triptych-travel-vlog-thumbnail-style|styles/clean-triptych-travel-vlog-thumbnail-style/preview-16x9.jpg",
+          "crayon-catalog-doodle-poster-style|styles/crayon-catalog-doodle-poster-style/preview-16x9.jpg",
+          "cyan-red-shockwave-type-poster-style|styles/cyan-red-shockwave-type-poster-style/preview-16x9.jpg",
+          "folded-diamond-perspective-type-poster-style|styles/folded-diamond-perspective-type-poster-style/preview-16x9.jpg",
+          "ice-cyan-megatype-action-poster-style|styles/ice-cyan-megatype-action-poster-style/preview-16x9.jpg",
+          "kinetic-geometric-doodle-cutouts|styles/kinetic-geometric-doodle-cutouts/preview-16x9.jpg",
+          "manga-dossier-blueprint-poster|styles/manga-dossier-blueprint-poster/preview-16x9.jpg",
+          "mountain-trail-monster-doodle-poster-style|styles/mountain-trail-monster-doodle-poster-style/preview-16x9.jpg",
+          "neon-kinetic-typographic-poster-style|styles/neon-kinetic-typographic-poster-style/preview-16x9.jpg",
+          "orange-brush-mascot-action-poster-style|styles/orange-brush-mascot-action-poster-style/preview-16x9.jpg",
+          "plush-comic-toy-product-poster-style|styles/plush-comic-toy-product-poster-style/preview-16x9.jpg",
+          "red-yellow-product-trophy-collage-style|styles/red-yellow-product-trophy-collage-style/preview-16x9.jpg",
+          "scarlet-court-photo-type-poster-style|styles/scarlet-court-photo-type-poster-style/preview-16x9.jpg",
+          "subway-doodle-photo-hybrid-style|styles/subway-doodle-photo-hybrid-style/preview-16x9.jpg",
+          "sunlit-kinetic-block-type-photo-poster-style|styles/sunlit-kinetic-block-type-photo-poster-style/preview-16x9.jpg",
+          "tokyo-kawaii-travel-collage-poster-style|styles/tokyo-kawaii-travel-collage-poster-style/preview-16x9.jpg",
+          "warm-fisheye-product-impact-ad-style|styles/warm-fisheye-product-impact-ad-style/preview-16x9.jpg",
+          "yellow-graffiti-fisheye-manga-street-poster-style|styles/yellow-graffiti-fisheye-manga-street-poster-style/preview-16x9.jpg"
+        ],
+        "sample_size": 20,
+        "selection_method": "deterministic_even_spacing_over_fixed_commit_records_with_local_outputs_v1"
+      },
+      "recommended_status": "active",
+      "repository": {
+        "availability": "available",
+        "default_branch": "main",
+        "repository_id": "1235254657",
+        "url": "https://github.com/VigoZhao/AI-Visual-Prompt-Cookbook",
+        "verified_commit_sha": "9fa17042b392db28bb495f7208d37f1b9c416368"
+      },
+      "rights": {
+        "asset_policy": "review_required",
+        "auto_publish": false,
+        "prompt_policy": "review_required",
+        "reason": "TASK-0018 admitted this source for internal adapter work only; every prompt and asset remains review_required and auto_publish stays false.",
+        "repository_license": "MIT",
+        "repository_license_evidence_path": "LICENSE"
+      },
+      "source_id": "vigozhao-ai-visual-prompt-cookbook",
+      "status_reason": "TASK-0018 fixed-commit full audit passed count, pairing, asset, maintenance, quality, family and duplicate gates; TASK-0019 activates internal ingestion while publication remains fail-closed."
+    }
+  ]
+}

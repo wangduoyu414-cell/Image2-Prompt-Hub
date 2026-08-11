@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/phase2-source-expansion-admission-v3.schema.json",
+  "title": "Phase 2 Source Expansion Admission v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "authority", "sources", "adapter_ready_batch", "summary", "canonical_digest"],
+  "properties": {
+    "schema_version": {"const": "phase2-source-expansion-admission-v3"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "authority": {"$ref": "#/$defs/currentAuthority"},
+    "sources": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/$defs/source"}},
+    "adapter_ready_batch": {"type": "array", "maxItems": 2, "items": {"$ref": "#/$defs/batch"}},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_count", "protected_scope_modified", "auto_publish"],
+      "properties": {
+        "source_count": {"const": 4},
+        "protected_scope_modified": {"const": false},
+        "auto_publish": {"const": false}
+      }
+    },
+    "canonical_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "currentAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["active_source_count", "current_case_count", "current_output_count", "current_deduplicated_asset_object_count", "current_source_file_count", "current_public_cases", "current_index_core_sha256", "protected_prompt_hashes_sha256", "v2_admission_sha256", "protected_files"],
+      "properties": {
+        "active_source_count": {"const": 6},
+        "current_case_count": {"const": 1513},
+        "current_output_count": {"const": 1930},
+        "current_deduplicated_asset_object_count": {"const": 1885},
+        "current_source_file_count": {"const": 2260},
+        "current_public_cases": {"const": 0},
+        "current_index_core_sha256": {"$ref": "#/$defs/sha256"},
+        "protected_prompt_hashes_sha256": {"$ref": "#/$defs/sha256"},
+        "v2_admission_sha256": {"$ref": "#/$defs/sha256"},
+        "protected_files": {"type": "object", "minProperties": 8, "additionalProperties": {"$ref": "#/$defs/sha256"}}
+      }
+    },
+    "gitAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "revision", "remote_url", "entry_count", "blob_count", "tree_manifest_sha256", "commit_date"],
+      "properties": {
+        "kind": {"const": "git"},
+        "revision": {"$ref": "#/$defs/commit"},
+        "remote_url": {"type": "string", "format": "uri"},
+        "entry_count": {"type": "integer", "minimum": 1},
+        "blob_count": {"type": "integer", "minimum": 1},
+        "tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "commit_date": {"type": "string", "format": "date-time"}
+      }
+    },
+    "hfAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "repository", "revision", "file_count", "image_count", "lfs_count", "metadata_oid", "metadata_size", "tree_manifest_sha256"],
+      "properties": {
+        "kind": {"const": "hf"},
+        "repository": {"const": "Goku-OpenLab/gpt-image-2-prompts-datasets"},
+        "revision": {"const": "c4e79e9e11b3e754ec64f6400c7f94de6a5f103d"},
+        "file_count": {"const": 28296},
+        "image_count": {"const": 28293},
+        "lfs_count": {"const": 28294},
+        "metadata_oid": {"const": "45295247269b84b54b053007c36682d3fc344599d69e0f18fedfb0b3088d281f"},
+        "metadata_size": {"const": 116859730},
+        "tree_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "historySnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "date", "file_count", "image_count", "lfs_count", "metadata_oid", "metadata_size", "tree_manifest_sha256"],
+      "properties": {
+        "revision": {"$ref": "#/$defs/commit"},
+        "date": {"type": "string", "format": "date"},
+        "file_count": {"type": "integer", "minimum": 1},
+        "image_count": {"type": "integer", "minimum": 1},
+        "lfs_count": {"type": "integer", "minimum": 1},
+        "metadata_oid": {"$ref": "#/$defs/sha256"},
+        "metadata_size": {"type": "integer", "minimum": 1},
+        "tree_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "continuousMaintenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "substantive_dates", "snapshots", "history_sha256", "continuous_eligible", "sync_eligible", "timestamp_only_refreshes_excluded"],
+      "properties": {
+        "kind": {"const": "continuous"},
+        "substantive_dates": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "format": "date"}},
+        "snapshots": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/historySnapshot"}},
+        "history_sha256": {"$ref": "#/$defs/sha256"},
+        "continuous_eligible": {"type": "boolean"},
+        "sync_eligible": {"type": "boolean"},
+        "timestamp_only_refreshes_excluded": {"const": true}
+      }
+    },
+    "fixedHistoryMaintenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "fixed_snapshot_complete", "sync_eligible", "one_shot_import_only", "raw_case_count", "asset_count", "orphan_count", "missing_asset_case_count", "authority_tree_manifest_sha256"],
+      "properties": {
+        "kind": {"const": "fixed_history"},
+        "fixed_snapshot_complete": {"type": "boolean"},
+        "sync_eligible": {"const": false},
+        "one_shot_import_only": {"const": true},
+        "raw_case_count": {"const": 3798},
+        "asset_count": {"const": 11559},
+        "orphan_count": {"const": 168},
+        "missing_asset_case_count": {"const": 1},
+        "authority_tree_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stages", "pair_rate", "broken_authoritative_asset_count", "broken_authoritative_asset_rate", "within_source_duplicate_rate", "exclusion_reason_counts", "raw_case_count", "filtered_case_count", "asset_count", "orphan_asset_count", "excluded_case_count", "exclusion_count", "case_ledger_sha256", "asset_ledger_sha256", "orphan_ledger_sha256", "exclusion_ledger_sha256", "lint_version"],
+      "properties": {
+        "stages": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["raw", "parseable", "authority_valid", "safety_eligible", "within_source_unique", "within_family_unique", "current_exact_new", "quality_valid"],
+          "properties": {
+            "raw": {"type": "integer", "minimum": 0},
+            "parseable": {"type": "integer", "minimum": 0},
+            "authority_valid": {"type": "integer", "minimum": 0},
+            "safety_eligible": {"type": "integer", "minimum": 0},
+            "within_source_unique": {"type": "integer", "minimum": 0},
+            "within_family_unique": {"type": "integer", "minimum": 0},
+            "current_exact_new": {"type": "integer", "minimum": 0},
+            "quality_valid": {"type": "integer", "minimum": 0}
+          }
+        },
+        "pair_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "broken_authoritative_asset_count": {"type": "integer", "minimum": 0},
+        "broken_authoritative_asset_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "within_source_duplicate_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "exclusion_reason_counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}},
+        "raw_case_count": {"type": "integer", "minimum": 0},
+        "filtered_case_count": {"type": "integer", "minimum": 0},
+        "asset_count": {"type": "integer", "minimum": 0},
+        "orphan_asset_count": {"type": "integer", "minimum": 0},
+        "excluded_case_count": {"type": "integer", "minimum": 0},
+        "exclusion_count": {"type": "integer", "minimum": 0},
+        "case_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "asset_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "orphan_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "exclusion_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "lint_version": {"const": "source-quality-lint-v3-multilingual-risk-and-provenance"}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result", "sample_manifest_sha256", "sample_size", "sample_ids", "sample_ids_sha256", "reviews", "missing_review_ids", "exclusion_sample_ids", "exclusion_reviews", "missing_exclusion_reviews", "exclusion_reviews_sha256", "selection_method", "coverage"],
+      "properties": {
+        "result": {"enum": ["pass", "fail"]},
+        "sample_manifest_sha256": {
+          "anyOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "sample_size": {"type": "integer", "minimum": 0, "maximum": 60},
+        "sample_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "sample_ids_sha256": {"$ref": "#/$defs/sha256"},
+        "reviews": {"type": "array", "items": {"type": "object"}},
+        "missing_review_ids": {"type": "array", "items": {"type": "string"}},
+        "exclusion_sample_ids": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
+        "exclusion_reviews": {"type": "array", "items": {"type": "object"}},
+        "missing_exclusion_reviews": {"type": "array", "items": {"type": "object"}},
+        "exclusion_reviews_sha256": {"$ref": "#/$defs/sha256"},
+        "selection_method": {"type": "string", "minLength": 1},
+        "coverage": {"type": "object", "additionalProperties": false, "required": ["source_categories", "sampled_categories", "source_risk_flags", "sampled_risk_flags"], "properties": {"source_categories": {"type": "array", "items": {"type": "string"}}, "sampled_categories": {"type": "array", "items": {"type": "string"}}, "source_risk_flags": {"type": "array", "items": {"type": "string"}}, "sampled_risk_flags": {"type": "array", "items": {"type": "string"}}}}
+      }
+    },
+    "fullBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_case_ledger", "case_ledger", "asset_ledger", "orphan_ledger", "exclusion_ledger", "metrics", "quality", "maintenance", "authority", "contribution"],
+      "properties": {
+        "raw_case_ledger": {"type": "array", "items": {"type": "object"}},
+        "case_ledger": {"type": "array", "items": {"type": "object"}},
+        "asset_ledger": {"type": "array", "items": {"type": "object"}},
+        "orphan_ledger": {"type": "array"},
+        "exclusion_ledger": {"type": "array", "items": {"type": "object", "required": ["case_id", "reason"], "properties": {"case_id": {"type": "string"}, "reason": {"type": "string"}}}},
+        "asset_classifications": {"type": "object"},
+        "metadata_lfs_oid": {"$ref": "#/$defs/sha256"},
+        "metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "metrics": {"$ref": "#/$defs/metrics"},
+        "quality": {"$ref": "#/$defs/quality"},
+        "maintenance": {"oneOf": [{"$ref": "#/$defs/continuousMaintenance"}, {"$ref": "#/$defs/fixedHistoryMaintenance"}]},
+        "authority": {"oneOf": [{"$ref": "#/$defs/hfAuthority"}, {"$ref": "#/$defs/gitAuthority"}]},
+        "contribution": {"type": "object"}
+      }
+    },
+    "gokuEvidence": {"allOf": [{"$ref": "#/$defs/fullBase"}, {"type": "object", "required": ["asset_classifications", "metadata_lfs_oid", "metadata_sha256"], "properties": {"authority": {"$ref": "#/$defs/hfAuthority"}, "maintenance": {"$ref": "#/$defs/continuousMaintenance"}}}]},
+    "chaosEvidence": {"allOf": [{"$ref": "#/$defs/fullBase"}, {"type": "object", "properties": {"authority": {"$ref": "#/$defs/gitAuthority"}, "maintenance": {"$ref": "#/$defs/fixedHistoryMaintenance"}}}]},
+    "youmindRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "category_file", "row_index", "id", "prompt_sha256", "need_reference_images", "source_media", "author_attribution_exposed", "original_post_exposed"],
+      "properties": {
+        "category": {"type": "string", "minLength": 1},
+        "category_file": {"type": "string", "minLength": 1},
+        "row_index": {"type": "integer", "minimum": 0},
+        "id": {"type": "integer", "minimum": 1},
+        "prompt_sha256": {"$ref": "#/$defs/sha256"},
+        "need_reference_images": {"type": "boolean"},
+        "source_media": {"type": "array", "items": {"type": "string", "pattern": "^https://cms-assets\\.youmind\\.com/"}},
+        "author_attribution_exposed": {"type": "boolean"},
+        "original_post_exposed": {"type": "boolean"}
+      }
+    },
+    "youmindComparator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "unique_ids", "unique_prompt_hashes", "need_reference_images", "rows_with_source_media", "source_media_reference_count", "unique_source_media_urls", "cms_https_reference_count", "author_attribution_rows", "original_post_rows", "remote_asset_authority", "source_media_urls_sha256", "records", "goku_prompt_overlap_hashes", "authority", "digest"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 1},
+        "unique_ids": {"type": "integer", "minimum": 1},
+        "unique_prompt_hashes": {"type": "integer", "minimum": 1},
+        "need_reference_images": {"type": "integer", "minimum": 0},
+        "rows_with_source_media": {"type": "integer", "minimum": 0},
+        "source_media_reference_count": {"type": "integer", "minimum": 0},
+        "unique_source_media_urls": {"type": "integer", "minimum": 0},
+        "cms_https_reference_count": {"type": "integer", "minimum": 0},
+        "author_attribution_rows": {"type": "integer", "minimum": 0},
+        "original_post_rows": {"type": "integer", "minimum": 0},
+        "remote_asset_authority": {"const": "observation_only"},
+        "source_media_urls_sha256": {"$ref": "#/$defs/sha256"},
+        "records": {"type": "array", "items": {"$ref": "#/$defs/youmindRecord"}},
+        "goku_prompt_overlap_hashes": {"type": "array", "items": {"$ref": "#/$defs/sha256"}},
+        "authority": {"$ref": "#/$defs/gitAuthority"},
+        "digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "youmindEvidence": {"type": "object", "additionalProperties": false, "required": ["case_ledger", "asset_ledger", "orphan_ledger", "exclusion_ledger", "comparator_ledger"], "properties": {"case_ledger": {"type": "array", "maxItems": 0}, "asset_ledger": {"type": "array", "maxItems": 0}, "orphan_ledger": {"type": "array", "maxItems": 0}, "exclusion_ledger": {"type": "array", "maxItems": 0}, "comparator_ledger": {"$ref": "#/$defs/youmindComparator"}}},
+    "tigerControl": {"type": "object", "additionalProperties": false, "required": ["record_count", "image_count", "missing_fields", "readme_backup_claim", "family_mapping", "authority"], "properties": {"record_count": {"type": "integer", "minimum": 1}, "image_count": {"type": "integer", "minimum": 0}, "missing_fields": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}, "readme_backup_claim": {"const": true}, "family_mapping": {"const": "blocked"}, "authority": {"$ref": "#/$defs/gitAuthority"}}},
+    "tigerEvidence": {"type": "object", "additionalProperties": false, "required": ["case_ledger", "asset_ledger", "orphan_ledger", "exclusion_ledger", "control_record"], "properties": {"case_ledger": {"type": "array", "maxItems": 0}, "asset_ledger": {"type": "array", "maxItems": 0}, "orphan_ledger": {"type": "array", "maxItems": 0}, "exclusion_ledger": {"type": "array", "maxItems": 0}, "control_record": {"$ref": "#/$defs/tigerControl"}}},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "role", "revision", "mode", "status", "identity", "lineage", "structure", "rights", "evidence", "fixed_core_digest"],
+      "properties": {
+        "source_id": {"enum": ["goku-openlab-gpt-image-2-prompts-datasets", "chaosrealmsai-gpt-image-2-gallery", "youmind-openlab-gpt-image-2-prompts-search", "tigerowo-awesome-gpt-image-2-prompts"]},
+        "role": {"enum": ["full", "comparator", "excluded_control"]},
+        "revision": {"$ref": "#/$defs/commit"},
+        "mode": {"enum": ["continuous", "fixed_history", "reserve", "excluded"]},
+        "status": {"enum": ["continuous_ready", "fixed_history_ready", "blocked", "comparator_only", "excluded"]},
+        "identity": {"type": "object", "additionalProperties": false, "required": ["canonical_url", "provider_id", "default_branch", "fixed_revision"], "properties": {"canonical_url": {"type": "string", "format": "uri"}, "provider_id": {"enum": ["6a467d6d7239e0c7f8f23621", "1219036815", "1218575008", "1284712193"]}, "default_branch": {"const": "main"}, "fixed_revision": {"$ref": "#/$defs/commit"}}},
+        "lineage": {"type": "object", "additionalProperties": false, "required": ["family_id", "canonical_source_id", "family_role"], "properties": {"family_id": {"type": "string", "minLength": 1}, "canonical_source_id": {"type": "string", "minLength": 1}, "family_role": {"enum": ["canonical", "aggregator", "reserve", "backup"]}}},
+        "structure": {"type": "object", "additionalProperties": false, "required": ["strategy"], "properties": {"strategy": {"type": "string", "minLength": 1}}},
+        "rights": {"type": "object", "additionalProperties": false, "required": ["prompt_policy", "asset_policy", "auto_publish"], "properties": {"prompt_policy": {"const": "review_required"}, "asset_policy": {"const": "review_required"}, "auto_publish": {"const": false}}},
+        "evidence": {"type": "object"},
+        "fixed_core_digest": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {"if": {"properties": {"source_id": {"const": "goku-openlab-gpt-image-2-prompts-datasets"}}}, "then": {"properties": {"role": {"const": "full"}, "revision": {"const": "c4e79e9e11b3e754ec64f6400c7f94de6a5f103d"}, "mode": {"const": "continuous"}, "status": {"enum": ["continuous_ready", "blocked"]}, "evidence": {"$ref": "#/$defs/gokuEvidence"}}}},
+        {"if": {"properties": {"source_id": {"const": "chaosrealmsai-gpt-image-2-gallery"}}}, "then": {"properties": {"role": {"const": "full"}, "revision": {"const": "5296db8c996e38776c83a0bc8c64f848dcd512b3"}, "mode": {"const": "fixed_history"}, "status": {"enum": ["fixed_history_ready", "blocked"]}, "evidence": {"$ref": "#/$defs/chaosEvidence"}}}},
+        {"if": {"properties": {"source_id": {"const": "youmind-openlab-gpt-image-2-prompts-search"}}}, "then": {"properties": {"role": {"const": "comparator"}, "revision": {"const": "08861ab6db5d772e311f5661cfb0a3ae06e10bb1"}, "mode": {"const": "reserve"}, "status": {"const": "comparator_only"}, "evidence": {"$ref": "#/$defs/youmindEvidence"}}}},
+        {"if": {"properties": {"source_id": {"const": "tigerowo-awesome-gpt-image-2-prompts"}}}, "then": {"properties": {"role": {"const": "excluded_control"}, "revision": {"const": "60e9c65baecfd6d6d51ac4e4d87f146af834bb64"}, "mode": {"const": "excluded"}, "status": {"const": "excluded"}, "evidence": {"$ref": "#/$defs/tigerEvidence"}}}}
+      ]
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "revision", "mode", "case_scope", "structure_strategy", "family_role", "exclusions"],
+      "properties": {
+        "source_id": {"enum": ["goku-openlab-gpt-image-2-prompts-datasets", "chaosrealmsai-gpt-image-2-gallery"]},
+        "revision": {"$ref": "#/$defs/commit"},
+        "mode": {"enum": ["continuous", "fixed_history"]},
+        "case_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["case_count", "case_ledger_sha256"],
+          "properties": {
+            "case_count": {"type": "integer", "minimum": 1},
+            "case_ledger_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "structure_strategy": {"type": "string", "minLength": 1},
+        "family_role": {"enum": ["canonical", "aggregator"]},
+        "exclusions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["case_id", "reason"],
+            "properties": {
+              "case_id": {"type": "string"},
+              "reason": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -10,11 +10,12 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from sync.database import SyncDatabaseSettings
 from sync.operations import OperationsDatabase, SchedulerSourceResult
-
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 class ValidationFailure(RuntimeError):

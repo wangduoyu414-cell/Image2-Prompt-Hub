@@ -9,7 +9,8 @@ in the registry. The current authority is six continuous sources; Chaos is
 fixed-history and can never enter this queue.
 
 Redis/Dramatiq is transport only. PostgreSQL stores scheduler cycles, per-source
-results, synchronization runs, diffs, quality-gate results, and alert state. A
+results, an independent scheduler heartbeat, synchronization runs, diffs,
+quality-gate results, and alert state. A
 PostgreSQL source lock plus the existing candidate lock make duplicate delivery
 safe. One source failure is recorded and does not prevent the remaining source
 messages from being dispatched or processed.
@@ -19,6 +20,10 @@ before any queue message is sent. A scheduler restart resumes an unfinished
 dispatch before it considers a new cycle. Redis AOF loss or a worker crash is
 recovered by redelivering queued/running rows only after the four-hour actor
 limit plus a safety margin; the source lock prevents overlapping execution.
+Message binding accepts a worker that starts before the scheduler persists its
+Dramatiq ID, and a worker cannot move a still-dispatching cycle out of recovery
+visibility. This closes the queue/worker ordering race without making Redis an
+authority.
 
 The worker reuses the existing safe `run_source` chain: exact default-branch
 observation, fast-forward proof, full repository parse, stable case diff,
@@ -28,12 +33,14 @@ state, not an automatic retry loop.
 
 ## Monitoring and alerts
 
-The monitor runs every five minutes and checks:
+The monitor runs every five minutes and treats a missing scheduler heartbeat
+for twenty minutes as stale. It checks:
 
 - the external Web readiness aggregate;
 - Publication v2 readability (`no_current` remains valid);
 - one real current primary image when an active public case exists;
-- scheduler freshness and partial failures;
+- scheduler-heartbeat freshness (including intentionally idle periods) and
+  explicit scheduler errors or cycle partial failures;
 - stuck queued/running source work;
 - latest source failures and quality/count-drop review gates;
 - sources that have never completed a scheduled observation.
@@ -55,6 +62,18 @@ For a deployment probe that must fail on open alerts:
 docker compose --env-file /secure/image2.env -f compose.prod.yaml exec \
   -e MONITOR_FAIL_ON_ALERT=true monitor python -m sync monitor-once --json
 ```
+
+The CI/static durability check is:
+
+```console
+python scripts/validate_operations_runtime.py --json
+```
+
+Against a disposable migrated PostgreSQL database, add
+`--database-url postgresql://...` to exercise worker-first message ordering,
+cycle count closure, active-work projection, and heartbeat persistence. Live
+mode intentionally requires empty operational tables and removes its own
+validator facts before returning.
 
 ## Source lifecycle
 

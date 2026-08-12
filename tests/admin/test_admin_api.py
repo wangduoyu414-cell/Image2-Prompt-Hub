@@ -26,7 +26,7 @@ class FakeRepository:
         return "ready"
 
     def operations_status(self) -> dict[str, Any]:
-        return {"status": "ready", "eligible_source_count": 6, "sources": [], "open_alerts": [], "review_queue": {"subject_count": 0, "output_count": 0, "state_counts": {}}}
+        return {"status": "ready", "eligible_source_count": 6, "scheduler_runtime": None, "latest_cycle": None, "sources": [], "open_alerts": [], "review_queue": {"subject_count": 0, "output_count": 0, "state_counts": {}}}
 
     def list_queue(self, *, state: str | None, limit: int, offset: int) -> dict[str, Any]:
         return {

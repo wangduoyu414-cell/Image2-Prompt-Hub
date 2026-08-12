@@ -107,6 +107,7 @@ export interface OperationsStatus {
   observed_at: string;
   registry_sha256: string;
   eligible_source_count: number;
+  scheduler_runtime: Record<string, unknown> | null;
   latest_cycle: Record<string, unknown> | null;
   review_queue: {
     subject_count: number;
@@ -363,6 +364,7 @@ export function parseOperationsStatus(value: unknown): OperationsStatus {
     observed_at: text(item.observed_at),
     registry_sha256: text(item.registry_sha256),
     eligible_source_count: number(item.eligible_source_count),
+    scheduler_runtime: item.scheduler_runtime === null ? null : record(item.scheduler_runtime),
     latest_cycle: item.latest_cycle === null ? null : record(item.latest_cycle),
     review_queue: (() => {
       const queue = record(item.review_queue);

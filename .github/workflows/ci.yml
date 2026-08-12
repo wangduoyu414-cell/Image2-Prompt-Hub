@@ -31,6 +31,7 @@ jobs:
             --registry-schema schemas/source-registry-v2.schema.json \
             --self-test --determinism-check --json
           uv run python scripts/validate_chaos_fixed_history.py --json
+          uv run python scripts/validate_operations_runtime.py --json
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: "24.14.0"

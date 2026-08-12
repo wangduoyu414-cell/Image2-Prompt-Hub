@@ -58,11 +58,31 @@ class OperationsDatabase:
                 """
                 SELECT to_regclass('sync.scheduler_cycles') AS cycles,
                        to_regclass('sync.scheduler_source_results') AS results,
-                       to_regclass('sync.alert_deliveries') AS alerts
+                       to_regclass('sync.alert_deliveries') AS alerts,
+                       to_regclass('sync.scheduler_runtime') AS runtime
                 """
             ).fetchone()
-        if not row or any(row.get(name) is None for name in ("cycles", "results", "alerts")):
+        if not row or any(row.get(name) is None for name in ("cycles", "results", "alerts", "runtime")):
             raise SyncDatabaseError("operations_schema_not_migrated", "operations migration has not been applied")
+
+    def heartbeat(self, *, status: str, observed_at: datetime, details: Mapping[str, Any] | None = None) -> None:
+        if observed_at.tzinfo is None:
+            raise SyncDatabaseError("scheduler_time_invalid", "scheduler heartbeat time must include a timezone")
+        if status not in {"starting", "idle", "dispatching", "recovering", "error"}:
+            raise SyncDatabaseError("scheduler_status_invalid", "scheduler heartbeat status is invalid")
+        with self._connect() as conn, conn.transaction():
+            conn.execute(
+                """
+                INSERT INTO sync.scheduler_runtime
+                  (runtime_key, last_heartbeat_at, last_status, details)
+                VALUES ('primary', %s, %s, %s::jsonb)
+                ON CONFLICT (runtime_key) DO UPDATE
+                SET last_heartbeat_at=EXCLUDED.last_heartbeat_at,
+                    last_status=EXCLUDED.last_status,
+                    details=EXCLUDED.details
+                """,
+                (observed_at, status, _json(dict(details or {}))),
+            )
 
     @contextmanager
     def source_lock(self, source_id: str):  # type: ignore[no-untyped-def]
@@ -118,14 +138,15 @@ class OperationsDatabase:
                 raise SyncDatabaseError("scheduler_cycle_conflict", "existing scheduler cycle differs from its authority")
             cycle_id = int(row["scheduler_cycle_id"])
             if created:
-                conn.executemany(
-                    """
-                    INSERT INTO sync.scheduler_source_results
-                      (scheduler_cycle_id, source_id, state)
-                    VALUES (%s, %s, 'queued')
-                    """,
-                    [(cycle_id, source_id) for source_id in eligible],
-                )
+                with conn.cursor() as cursor:
+                    cursor.executemany(
+                        """
+                        INSERT INTO sync.scheduler_source_results
+                          (scheduler_cycle_id, source_id, state)
+                        VALUES (%s, %s, 'queued')
+                        """,
+                        [(cycle_id, source_id) for source_id in eligible],
+                    )
                 row = conn.execute(
                     """
                     UPDATE sync.scheduler_cycles SET queued_count=source_count
@@ -150,13 +171,14 @@ class OperationsDatabase:
                 """
                 UPDATE sync.scheduler_source_results
                 SET message_id=%s
-                WHERE scheduler_cycle_id=%s AND source_id=%s AND state='queued'
+                WHERE scheduler_cycle_id=%s AND source_id=%s
+                  AND (message_id IS NULL OR message_id=%s)
                 RETURNING scheduler_source_result_id
                 """,
-                (message_id, cycle_id, source_id),
+                (message_id, cycle_id, source_id, message_id),
             ).fetchone()
             if row is None:
-                raise SyncDatabaseError("scheduler_result_conflict", "queued scheduler source result is unavailable")
+                raise SyncDatabaseError("scheduler_result_conflict", "dispatchable scheduler source result is unavailable")
 
     def incomplete_dispatch(self) -> dict[str, Any] | None:
         with self._connect(autocommit=True) as conn:
@@ -168,7 +190,7 @@ class OperationsDatabase:
             rows = conn.execute(
                 """
                 SELECT source_id FROM sync.scheduler_source_results
-                WHERE scheduler_cycle_id=%s AND state='queued' AND message_id IS NULL
+                WHERE scheduler_cycle_id=%s AND state IN ('queued','running') AND message_id IS NULL
                 ORDER BY source_id
                 """,
                 (cycle["scheduler_cycle_id"],),
@@ -238,11 +260,14 @@ class OperationsDatabase:
             raise SyncDatabaseError("scheduler_result_invalid", "scheduler source result state is invalid")
         with self._connect() as conn, conn.transaction():
             cycle = conn.execute(
-                "SELECT scheduler_cycle_id FROM sync.scheduler_cycles WHERE scheduler_cycle_id=%s FOR UPDATE",
+                "SELECT scheduler_cycle_id, state FROM sync.scheduler_cycles WHERE scheduler_cycle_id=%s FOR UPDATE",
                 (cycle_id,),
             ).fetchone()
             if cycle is None:
                 raise SyncDatabaseError("scheduler_cycle_conflict", "scheduler cycle is unavailable")
+            cycle_state = str(cycle["state"])
+            if cycle_state not in {"dispatching", "dispatched"}:
+                raise SyncDatabaseError("scheduler_cycle_conflict", "scheduler cycle is already terminal")
             updated = conn.execute(
                 """
                 UPDATE sync.scheduler_source_results
@@ -278,12 +303,17 @@ class OperationsDatabase:
             pending = int(counts["pending"])
             failed = int(counts["failed"])
             review_required = int(counts["review_required"])
-            state = "dispatched" if pending else "partial_failure" if failed or review_required else "completed"
+            state = (
+                cycle_state if pending and cycle_state == "dispatching"
+                else "dispatched" if pending
+                else "partial_failure" if failed or review_required
+                else "completed"
+            )
             conn.execute(
                 """
                 UPDATE sync.scheduler_cycles
                 SET state=%s, completed_count=%s, review_required_count=%s, failed_count=%s,
-                    finished_at=CASE WHEN %s=0 THEN now() ELSE NULL END
+                    finished_at=CASE WHEN %s=0 THEN COALESCE(finished_at, now()) ELSE NULL END
                 WHERE scheduler_cycle_id=%s
                 """,
                 (state, int(counts["completed"]), review_required, failed, pending, cycle_id),
@@ -320,28 +350,34 @@ class OperationsDatabase:
                 raise SyncDatabaseError("scheduler_cycle_conflict", "scheduler cycle is unavailable")
             counts = conn.execute(
                 """
-                SELECT count(*) FILTER (WHERE state IN ('queued','running')) AS pending,
-                       count(*) FILTER (WHERE state='failed') AS failed
+                SELECT count(*) FILTER (WHERE state='completed') AS completed,
+                       count(*) FILTER (WHERE state='review_required') AS review_required,
+                       count(*) FILTER (WHERE state='failed') AS failed,
+                       count(*) FILTER (WHERE state IN ('queued','running')) AS pending
                 FROM sync.scheduler_source_results WHERE scheduler_cycle_id=%s
                 """,
                 (cycle_id,),
             ).fetchone()
             if counts is None:
                 raise SyncDatabaseError("scheduler_cycle_conflict", "scheduler dispatch counts are unavailable")
-            pending, failed = int(counts["pending"]), int(counts["failed"])
-            state = "dispatched" if pending else "partial_failure" if failed else "completed"
+            pending = int(counts["pending"])
+            completed = int(counts["completed"])
+            review_required = int(counts["review_required"])
+            failed = int(counts["failed"])
+            state = "dispatched" if pending else "partial_failure" if failed or review_required else "completed"
             conn.execute(
                 """
                 UPDATE sync.scheduler_cycles
-                SET state=%s, failed_count=%s,
+                SET state=%s, completed_count=%s, review_required_count=%s, failed_count=%s,
                     finished_at=CASE WHEN %s=0 THEN now() ELSE NULL END
                 WHERE scheduler_cycle_id=%s
                 """,
-                (state, failed, pending, cycle_id),
+                (state, completed, review_required, failed, pending, cycle_id),
             )
 
     def snapshot(self) -> dict[str, Any]:
         with self._connect(autocommit=True) as conn:
+            runtime = conn.execute("SELECT * FROM sync.scheduler_runtime WHERE runtime_key='primary'").fetchone()
             cycle = conn.execute("SELECT * FROM sync.scheduler_cycles ORDER BY scheduler_cycle_id DESC LIMIT 1").fetchone()
             results = []
             if cycle:
@@ -349,6 +385,13 @@ class OperationsDatabase:
                     "SELECT * FROM sync.scheduler_source_results WHERE scheduler_cycle_id=%s ORDER BY source_id",
                     (cycle["scheduler_cycle_id"],),
                 ).fetchall()
+            active_results = conn.execute(
+                """
+                SELECT * FROM sync.scheduler_source_results
+                WHERE state IN ('queued','running')
+                ORDER BY scheduler_source_result_id
+                """
+            ).fetchall()
             runs = conn.execute(
                 """
                 SELECT DISTINCT ON (source_id) source_id, state, reason_code, error_code, updated_at,
@@ -361,8 +404,10 @@ class OperationsDatabase:
                 "SELECT * FROM sync.alert_deliveries WHERE state='open' ORDER BY severity DESC, last_seen_at DESC"
             ).fetchall()
         return {
+            "scheduler_runtime": dict(runtime) if runtime else None,
             "cycle": dict(cycle) if cycle else None,
             "source_results": [dict(row) for row in results],
+            "active_source_results": [dict(row) for row in active_results],
             "latest_sync_runs": [dict(row) for row in runs],
             "open_alerts": [dict(row) for row in open_alerts],
         }

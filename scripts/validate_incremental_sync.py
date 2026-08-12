@@ -774,14 +774,16 @@ def run() -> dict[str, Any]:
             _wait_postgres(database_url)
             _wait_minio(endpoint, s3_access_key, s3_secret_key)
             migrations = InventoryDatabase(DatabaseConfig(database_url)).apply_migrations(REPO_ROOT / "migrations")
-            if [entry["version"] for entry in migrations] != [
+            required_versions = [
                 "0001_internal_inventory",
                 "0002_inventory_security_integrity",
                 "0003_content_core_publication",
                 "0004_incremental_sync",
                 "0005_rights_review_queue_and_public_case_v2",
-            ]:
-                raise ValidationFailure("migration sequence does not close through incremental sync")
+            ]
+            actual_versions = [entry["version"] for entry in migrations]
+            if actual_versions[:len(required_versions)] != required_versions:
+                raise ValidationFailure("migration sequence does not preserve the incremental-sync foundation")
             second_migrations = InventoryDatabase(DatabaseConfig(database_url)).apply_migrations(REPO_ROOT / "migrations")
             if any(entry["status"] != "verified_existing" for entry in second_migrations):
                 raise ValidationFailure("incremental sync migration replay is not idempotent")

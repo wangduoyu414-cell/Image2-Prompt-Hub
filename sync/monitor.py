@@ -105,18 +105,24 @@ def collect_alerts(snapshot: dict[str, Any], *, now: datetime, public_origin: st
         code = "public_asset_invalid" if publication_has_cases else "publication_unreachable"
         alerts.append(_alert(code, "critical", "publication-v2", {"error": type(exc).__name__}))
 
-    cadence = _seconds("MONITOR_SYNC_STALE_SECONDS", 8 * 60 * 60, minimum=15 * 60, maximum=14 * 24 * 60 * 60)
-    cycle = snapshot.get("cycle")
-    if not isinstance(cycle, dict):
+    cadence = _seconds("MONITOR_SYNC_STALE_SECONDS", 20 * 60, minimum=15 * 60, maximum=14 * 24 * 60 * 60)
+    runtime = snapshot.get("scheduler_runtime")
+    if not isinstance(runtime, dict):
         alerts.append(_alert("scheduler_never_ran", "warning", "scheduler", {}))
     else:
-        updated = cycle.get("updated_at")
-        if isinstance(updated, datetime) and now - updated > timedelta(seconds=cadence):
-            alerts.append(_alert("scheduler_stale", "critical", "scheduler", {"updated_at": updated.isoformat()}))
+        heartbeat = runtime.get("last_heartbeat_at")
+        if not isinstance(heartbeat, datetime) or now - heartbeat > timedelta(seconds=cadence):
+            details = {"last_heartbeat_at": heartbeat.isoformat()} if isinstance(heartbeat, datetime) else {}
+            alerts.append(_alert("scheduler_stale", "critical", "scheduler", details))
+        if runtime.get("last_status") == "error":
+            details = runtime.get("details") if isinstance(runtime.get("details"), dict) else {}
+            alerts.append(_alert("scheduler_error", "critical", "scheduler", details))
+    cycle = snapshot.get("cycle")
+    if isinstance(cycle, dict):
         if cycle.get("state") == "partial_failure":
             alerts.append(_alert("scheduler_cycle_failed", "critical", str(cycle.get("cycle_key")), {"state": cycle.get("state")}))
 
-    for result in snapshot.get("source_results", []):
+    for result in snapshot.get("active_source_results", []):
         if not isinstance(result, dict) or result.get("state") not in {"queued", "running"}:
             continue
         reference = result.get("started_at") or result.get("queued_at")

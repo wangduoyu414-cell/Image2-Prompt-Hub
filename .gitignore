@@ -6,6 +6,7 @@
 # Task-local execution evidence and scratch work
 .task-runs/
 .work/
+.tmp/
 
 # Python
 __pycache__/

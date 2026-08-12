@@ -90,6 +90,12 @@ def operations_status(*, database_url: str, registry_path: Path = REGISTRY) -> d
                 "completed_count", "review_required_count", "failed_count", "started_at", "finished_at", "updated_at",
             )
         }
+    runtime = snapshot.get("scheduler_runtime")
+    if isinstance(runtime, dict):
+        runtime = {
+            key: runtime.get(key)
+            for key in ("last_heartbeat_at", "last_status", "details", "updated_at")
+        }
     alerts = [
         {
             "alert_code": item.get("alert_code"),
@@ -108,6 +114,7 @@ def operations_status(*, database_url: str, registry_path: Path = REGISTRY) -> d
         "registry_sha256": hashlib.sha256(registry_path.read_bytes()).hexdigest(),
         "eligible_source_count": len(eligible_source_ids(registry_path)),
         "sources": sources,
+        "scheduler_runtime": runtime,
         "latest_cycle": cycle,
         "open_alerts": alerts,
         "review_queue": _review_queue_summary(database_url),

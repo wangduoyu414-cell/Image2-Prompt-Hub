@@ -76,6 +76,7 @@ test("operations parser preserves the seven-source runtime boundary", () => {
     observed_at: "2026-08-12T00:00:00Z",
     registry_sha256: "a".repeat(64),
     eligible_source_count: 6,
+    scheduler_runtime: { last_heartbeat_at: "2026-08-12T00:00:00Z", last_status: "idle", details: {}, updated_at: "2026-08-12T00:00:00Z" },
     latest_cycle: null,
     review_queue: { subject_count: 3973, output_count: 9310, state_counts: { pending: 3973 } },
     sources: [{
@@ -101,6 +102,7 @@ test("operations parser preserves the seven-source runtime boundary", () => {
   assert.equal(status.sources[0].sync_enabled, false);
   assert.equal(status.sources[0].eligible, false);
   assert.equal(status.review_queue.subject_count, 3973);
+  assert.equal(status.scheduler_runtime?.last_status, "idle");
   assert.throws(() => parseOperationsStatus({ ...status, sources: [{ ...status.sources[0], eligible: "false" }] }));
 });
 

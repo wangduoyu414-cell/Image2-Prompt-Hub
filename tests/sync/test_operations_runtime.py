@@ -12,7 +12,7 @@ from apps.observability import JsonLogFormatter, configure_observability
 from sync.database import SyncDatabaseError
 from sync.pipeline import SyncPipelineError
 from sync.monitor import collect_alerts
-from sync.operations import OperationsDatabase, alert_fingerprint, scheduler_cycle_key
+from sync.operations import OperationsDatabase, SchedulerSourceResult, alert_fingerprint, scheduler_cycle_key
 from sync.schedule_policy import due_source_ids, eligible_source_ids
 from sync import scheduler
 
@@ -68,15 +68,16 @@ def test_monitor_reports_scheduler_source_and_stuck_worker_failures(monkeypatch:
     monkeypatch.setattr("sync.monitor.eligible_source_ids", lambda: ["source-a", "source-b"])
     alerts, http = collect_alerts(
         {
+            "scheduler_runtime": {"last_heartbeat_at": now - timedelta(hours=2), "last_status": "error", "details": {"error_code": "scheduler_failed"}},
             "cycle": {"cycle_key": "cycle", "state": "partial_failure", "updated_at": now - timedelta(hours=2)},
-            "source_results": [{"source_id": "source-a", "state": "running", "started_at": now - timedelta(hours=5)}],
+            "active_source_results": [{"source_id": "source-a", "state": "running", "started_at": now - timedelta(hours=5)}],
             "latest_sync_runs": [{"source_id": "source-a", "state": "failed", "error_code": "git_failed"}],
         },
         now=now,
         public_origin="https://example.com",
     )
     codes = {item["alert_code"] for item in alerts}
-    assert {"scheduler_stale", "scheduler_cycle_failed", "source_worker_stuck", "source_sync_failed", "source_never_synced"} <= codes
+    assert {"scheduler_stale", "scheduler_error", "scheduler_cycle_failed", "source_worker_stuck", "source_sync_failed", "source_never_synced"} <= codes
     assert http["publication"]["state"] == "no_current"
 
 
@@ -92,8 +93,9 @@ def test_monitor_distinguishes_count_drop_and_public_asset_failure(monkeypatch: 
     monkeypatch.setattr("sync.monitor._asset_request", lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError("unavailable")))
     alerts, _ = collect_alerts(
         {
+            "scheduler_runtime": {"last_heartbeat_at": now, "last_status": "idle"},
             "cycle": {"cycle_key": "cycle", "state": "completed", "updated_at": now},
-            "source_results": [],
+            "active_source_results": [],
             "latest_sync_runs": [{
                 "source_id": "source-a",
                 "state": "review_required",
@@ -135,6 +137,87 @@ def test_operations_migration_defines_durable_cycles_results_and_alerts() -> Non
         assert table in sql
     assert "UNIQUE (scheduler_cycle_id, source_id)" in sql
     assert "UNIQUE (fingerprint)" in sql
+    heartbeat = (REPO_ROOT / "migrations" / "0008_scheduler_heartbeat.sql").read_text(encoding="utf-8")
+    assert "sync.scheduler_runtime" in heartbeat
+    assert "runtime_key = 'primary'" in heartbeat
+
+
+def test_dispatch_binding_and_worker_completion_preserve_recovery_visibility(monkeypatch: pytest.MonkeyPatch) -> None:
+    executed: list[tuple[str, tuple[object, ...]]] = []
+
+    class Cursor:
+        def __init__(self, row: dict[str, object] | None = None) -> None:
+            self.row = row
+
+        def fetchone(self) -> dict[str, object] | None:
+            return self.row
+
+    class Connection:
+        def __enter__(self): return self
+        def __exit__(self, *_args): return False
+        def transaction(self): return self
+
+        def execute(self, sql: str, parameters=()):
+            compact = " ".join(sql.split())
+            executed.append((compact, tuple(parameters)))
+            if "UPDATE sync.scheduler_source_results SET message_id" in compact:
+                return Cursor({"scheduler_source_result_id": 1})
+            if "SELECT scheduler_cycle_id, state FROM sync.scheduler_cycles" in compact:
+                return Cursor({"scheduler_cycle_id": 7, "state": "dispatching"})
+            if "UPDATE sync.scheduler_source_results SET state=" in compact:
+                return Cursor({"scheduler_source_result_id": 1})
+            if "count(*) FILTER (WHERE state='completed')" in compact:
+                return Cursor({"completed": 1, "review_required": 0, "failed": 0, "pending": 1})
+            return Cursor()
+
+    database = object.__new__(OperationsDatabase)
+    monkeypatch.setattr(database, "_connect", lambda **_: Connection())
+    database.bind_message(cycle_id=7, source_id="source-a", message_id="message-1")
+    database.finish_source(
+        cycle_id=7,
+        result=SchedulerSourceResult(
+            source_id="source-a", state="completed", sync_status="completed", sync_run_id=9,
+            error_code=None, result={"status": "completed"},
+        ),
+    )
+    binding = next(sql for sql, _ in executed if "SET message_id" in sql)
+    assert "message_id IS NULL OR message_id=%s" in binding
+    cycle_update = next(parameters for sql, parameters in executed if "UPDATE sync.scheduler_cycles SET state=" in sql)
+    assert cycle_update[0] == "dispatching"
+
+
+def test_cycle_ledger_uses_psycopg_cursor_batch_api(monkeypatch: pytest.MonkeyPatch) -> None:
+    batches: list[list[tuple[int, str]]] = []
+
+    class Cursor:
+        def __enter__(self): return self
+        def __exit__(self, *_args): return False
+        def executemany(self, _sql: str, parameters): batches.append(list(parameters))
+
+    class Result:
+        def __init__(self, row: dict[str, object] | None = None, rows: list[dict[str, object]] | None = None):
+            self.row, self.rows = row, rows or []
+        def fetchone(self): return self.row
+        def fetchall(self): return self.rows
+
+    class Connection:
+        def __enter__(self): return self
+        def __exit__(self, *_args): return False
+        def transaction(self): return self
+        def cursor(self): return Cursor()
+        def execute(self, sql: str, _parameters=()):
+            compact = " ".join(sql.split())
+            if "INSERT INTO sync.scheduler_cycles" in compact:
+                return Result({"scheduler_cycle_id": 11, "registry_sha256": "a" * 64, "eligible_source_ids": ["a", "b"], "state": "dispatching"})
+            if "UPDATE sync.scheduler_cycles SET queued_count" in compact:
+                return Result({"scheduler_cycle_id": 11, "registry_sha256": "a" * 64, "eligible_source_ids": ["a", "b"], "state": "dispatching", "queued_count": 2})
+            return Result()
+
+    database = object.__new__(OperationsDatabase)
+    monkeypatch.setattr(database, "_connect", lambda **_: Connection())
+    cycle = database.begin_cycle(cycle_key="cycle", registry_sha256="a" * 64, source_ids=["b", "a"])
+    assert cycle["queued_count"] == 2
+    assert batches == [[(11, "a"), (11, "b")]]
 
 
 def test_alert_recurrence_reopens_the_same_fingerprint(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -182,6 +265,7 @@ def test_alert_recurrence_reopens_the_same_fingerprint(monkeypatch: pytest.Monke
 def test_dispatch_cycle_is_idle_without_writing_or_broker_use(monkeypatch: pytest.MonkeyPatch) -> None:
     class Database:
         migrated = False
+        heartbeats: list[str] = []
 
         def assert_migrated(self) -> None:
             self.migrated = True
@@ -194,11 +278,14 @@ def test_dispatch_cycle_is_idle_without_writing_or_broker_use(monkeypatch: pytes
 
         def incomplete_dispatch(self): return None
 
+        def heartbeat(self, *, status: str, **_kwargs): self.heartbeats.append(status)
+
     monkeypatch.setattr(scheduler, "due_source_ids", lambda **_: [])
     database = Database()
     monkeypatch.setattr(scheduler, "_operations", lambda: database)
     assert scheduler.dispatch_cycle(now=datetime(2026, 8, 12, tzinfo=timezone.utc))["status"] == "idle"
     assert database.migrated is True
+    assert database.heartbeats == ["starting", "idle"]
 
 
 def test_dispatch_cycle_recovers_an_incomplete_ledger_before_computing_new_due_work(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -216,6 +303,7 @@ def test_dispatch_cycle_recovers_an_incomplete_ledger_before_computing_new_due_w
 
     class Database:
         remaining = True
+        heartbeats: list[str] = []
         def assert_migrated(self): pass
         def scheduler_lock(self):
             class Lock:
@@ -230,6 +318,7 @@ def test_dispatch_cycle_recovers_an_incomplete_ledger_before_computing_new_due_w
             bound.append((cycle_id, source_id, message_id)); self.remaining = False
         def fail_source_dispatch(self, **_kwargs): return False
         def finish_dispatch(self, *, cycle_id: int): assert cycle_id == 9
+        def heartbeat(self, *, status: str, **_kwargs): self.heartbeats.append(status)
 
     database = Database()
     monkeypatch.setattr(scheduler, "_operations", lambda: database)
@@ -240,6 +329,7 @@ def test_dispatch_cycle_recovers_an_incomplete_ledger_before_computing_new_due_w
     assert result["status"] == "recovered"
     assert sent == [(9, "source-a")]
     assert bound == [(9, "source-a", "message-1")]
+    assert database.heartbeats == ["starting", "recovering", "idle"]
 
 
 def test_worker_retries_when_terminal_failure_cannot_be_persisted(monkeypatch: pytest.MonkeyPatch) -> None:

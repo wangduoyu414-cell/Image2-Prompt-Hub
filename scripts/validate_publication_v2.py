@@ -285,8 +285,9 @@ def validate() -> dict[str, Any]:
             runtime_environment,
         )
         versions = [item["version"] for item in first["migrations"]]
-        if not versions or versions[-1] != "0006_publication_v2_and_takedown":
-            raise ValidationFailure("migration authority does not close through v2")
+        required = "0006_publication_v2_and_takedown"
+        if required not in versions:
+            raise ValidationFailure("migration authority does not include Publication v2")
         if any(item["status"] != "verified_existing" for item in replay["migrations"]):
             raise ValidationFailure("migration replay is not idempotent")
 

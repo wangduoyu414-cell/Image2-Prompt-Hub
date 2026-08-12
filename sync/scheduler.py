@@ -146,16 +146,19 @@ def dispatch_cycle(*, now: datetime | None = None, emit_log: bool = False) -> di
     with database.scheduler_lock() as acquired:
         if not acquired:
             return {"status": "busy", "scheduler_cycle_id": None, "source_ids": [], "failed_source_ids": []}
+        database.heartbeat(status="starting", observed_at=started_at)
         incomplete = database.incomplete_dispatch()
         if incomplete is not None:
             cycle = incomplete["cycle"]
             source_ids = list(incomplete["source_ids"])
             cycle_id = int(cycle["scheduler_cycle_id"])
             status = "recovering"
+            database.heartbeat(status="recovering", observed_at=started_at, details={"scheduler_cycle_id": cycle_id})
         else:
             source_ids = due_source_ids(now=started_at, database=database)
             if not source_ids:
                 result = {"status": "idle", "scheduler_cycle_id": None, "source_ids": [], "failed_source_ids": []}
+                database.heartbeat(status="idle", observed_at=started_at, details=result)
                 if emit_log:
                     _log("scheduler_cycle_idle", **result)
                 return result
@@ -164,8 +167,11 @@ def dispatch_cycle(*, now: datetime | None = None, emit_log: bool = False) -> di
             cycle = database.begin_cycle(cycle_key=key, registry_sha256=registry_sha256, source_ids=source_ids)
             cycle_id = int(cycle["scheduler_cycle_id"])
             if str(cycle["state"]) != "dispatching":
-                return {"status": "existing", "scheduler_cycle_id": cycle_id, "source_ids": source_ids}
+                result = {"status": "existing", "scheduler_cycle_id": cycle_id, "source_ids": source_ids}
+                database.heartbeat(status="idle", observed_at=started_at, details=result)
+                return result
             status = "dispatching"
+            database.heartbeat(status="dispatching", observed_at=started_at, details={"scheduler_cycle_id": cycle_id})
         if isinstance(BROKER, StubBroker):
             raise SyncPipelineError("scheduler_config_missing", "SYNC_REDIS_URL is required to dispatch due sources")
         failed_source_ids: list[str] = []
@@ -192,10 +198,12 @@ def dispatch_cycle(*, now: datetime | None = None, emit_log: bool = False) -> di
                 }
                 if emit_log:
                     _log("scheduler_cycle_recovery_pending", **result)
+                database.heartbeat(status="recovering", observed_at=started_at, details=result)
                 return result
         database.finish_dispatch(cycle_id=cycle_id)
         result_status = "partial_failure" if failed_source_ids else "recovered" if status == "recovering" else "dispatched"
         result = {"status": result_status, "scheduler_cycle_id": cycle_id, "source_ids": cycle_source_ids, "failed_source_ids": failed_source_ids}
+        database.heartbeat(status="idle", observed_at=started_at, details=result)
         if emit_log:
             _log("scheduler_cycle_dispatched", **result)
         return result
@@ -218,6 +226,8 @@ def recover_stale_messages(*, now: datetime | None = None, emit_log: bool = Fals
             database.bind_recovery_message(cycle_id=cycle_id, source_id=source_id, message_id=str(message.message_id))
             recovered.append({"scheduler_cycle_id": cycle_id, "source_id": source_id, "previous_state": row["state"]})
     result = {"status": "recovered" if recovered else "idle", "recovered": recovered}
+    if recovered:
+        database.heartbeat(status="recovering", observed_at=observed_at, details=result)
     if emit_log:
         _log("scheduler_messages_recovered", **result)
     return result
@@ -226,8 +236,8 @@ def recover_stale_messages(*, now: datetime | None = None, emit_log: bool = Fals
 def run_forever() -> None:
     _required("SYNC_REDIS_URL")
     configure_observability("image2-sync-scheduler")
-    interval = _int_environment("SYNC_INTERVAL_SECONDS", 6 * 60 * 60, minimum=300, maximum=7 * 24 * 60 * 60)
-    jitter = _int_environment("SYNC_JITTER_SECONDS", 15 * 60, minimum=0, maximum=60 * 60)
+    interval = _int_environment("SYNC_INTERVAL_SECONDS", 5 * 60, minimum=300, maximum=60 * 60)
+    jitter = _int_environment("SYNC_JITTER_SECONDS", 60, minimum=0, maximum=15 * 60)
     backoff = 60
     while True:
         try:
@@ -238,6 +248,14 @@ def run_forever() -> None:
         except Exception as exc:
             sentry_sdk.capture_exception(exc)
             _log("scheduler_cycle_failed", error_code=getattr(exc, "error_code", "scheduler_failed"))
+            try:
+                _operations().heartbeat(
+                    status="error",
+                    observed_at=datetime.now(timezone.utc),
+                    details={"error_code": getattr(exc, "error_code", "scheduler_failed")},
+                )
+            except Exception as heartbeat_error:
+                sentry_sdk.capture_exception(heartbeat_error)
             delay = min(backoff, 30 * 60)
             backoff = min(backoff * 2, 30 * 60)
         time.sleep(delay)

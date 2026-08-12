@@ -48,6 +48,10 @@ scheduled sources plus one fixed-history source, and zero real public cases.
   public health/readiness returned 200, Publication v2 returned `no_current`,
   the public case count remained zero, internal preview returned 404, and the
   authenticated operations endpoint reported seven sources and six eligible.
+- CI portability: historical Phase 2 byte authorities retain their frozen CRLF
+  checkout contract on every platform, CRLF adapter behavior is constructed by
+  its test rather than inferred from the host, and v3 offline validation no
+  longer depends on a developer-specific absolute cache path.
 
 ## Deliberate external/operator boundaries
 

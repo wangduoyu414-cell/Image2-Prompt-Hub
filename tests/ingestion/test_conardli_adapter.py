@@ -93,6 +93,7 @@ def test_real_shape_fixture_matches_expected_documents_contracts_and_logical_tex
     manifest = _manifest(snapshot)
     first_case = manifest["cases"][0]
     first_prompt_path = snapshot / "public" / "case" / first_case["prompt_path"]
+    first_prompt_path.write_bytes(first_prompt_path.read_bytes().replace(b"\n", b"\r\n"))
     assert b"\r\n" in first_prompt_path.read_bytes()
     record = next(item for item in adapter_output["records"] if item["source_case_key"].endswith(first_case["id"]))
     assert record["prompt"]["raw_text"] == first_case["prompt_content"]

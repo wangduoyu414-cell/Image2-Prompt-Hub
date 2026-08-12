@@ -1,5 +1,15 @@
 * text=auto eol=lf
 
+# Historical Phase 2 evidence was frozen against CRLF bytes. Preserve those
+# exact byte authorities on every checkout while newer source stays LF.
+reports/source-audit-v1.json text eol=crlf
+config/sources-v1.yaml text eol=crlf
+reports/phase2/source-discovery-v1.json text eol=crlf
+reports/phase2/source-expansion-admission-v2.json text eol=crlf
+reports/phase2/source-expansion-admission-v2.md text eol=crlf
+reports/phase2/source-expansion-admission-v3.json text eol=crlf
+docs/phase2/source-expansion-admission-v2.md text eol=crlf
+
 *.jpg binary
 *.jpeg binary
 *.png binary

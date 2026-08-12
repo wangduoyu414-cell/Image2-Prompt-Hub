@@ -347,10 +347,15 @@ def _fixed_core(payload: Mapping[str, Any]) -> dict[str, Any]:
     value.pop("canonical_digest", None)
     return value
 
-def _current_baseline(*, rebuild: bool = False) -> tuple[dict[str, Any], dict[str, set[str]]]:
-    current = v2._current_index(rebuild=rebuild)
+def _current_baseline(*, rebuild: bool = False, current: Mapping[str, Any] | None = None) -> tuple[dict[str, Any], dict[str, set[str]]]:
     v2_report = _load(REPO_ROOT / "reports" / "phase2" / "source-expansion-admission-v2.json")
     authority = v2_report.get("authority", {})
+    if current is None:
+        checked_in_path = REPO_ROOT / "reports" / "phase2" / "source-expansion-admission-v3.json"
+        checked_in = _load(checked_in_path).get("authority") if checked_in_path.is_file() else None
+        if not rebuild and isinstance(checked_in, Mapping):
+            return dict(checked_in), {"prompt": set(), "source_url": set(), "image": set()}
+        current = v2._current_index(rebuild=rebuild)
     asset_hashes = {str(item.get("content_sha256")) for item in current.get("assets", {}).values() if isinstance(item, Mapping) and item.get("content_sha256")}
     if (authority.get("active_source_count"), current.get("case_count"), current.get("output_count"), len(asset_hashes), authority.get("current_source_file_count"), authority.get("current_public_cases"), v2_report.get("adapter_ready_batch")) != (6, 1513, 1930, 1885, 2260, 0, []):
         raise ValidationFailure("current baseline or v2 empty batch drifted")

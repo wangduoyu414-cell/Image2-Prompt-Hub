@@ -102,6 +102,37 @@ export interface PublicationAdminStatus {
   revision_selection: Record<string, string>;
 }
 
+export interface OperationsStatus {
+  status: "ready";
+  observed_at: string;
+  registry_sha256: string;
+  eligible_source_count: number;
+  latest_cycle: Record<string, unknown> | null;
+  review_queue: {
+    subject_count: number;
+    output_count: number;
+    state_counts: Record<string, number>;
+  };
+  sources: Array<{
+    source_id: string;
+    status: string;
+    ingestion_mode: string;
+    sync_enabled: boolean;
+    cadence_seconds: number;
+    jitter_seconds: number;
+    registered_revision_sha: string;
+    latest_candidate_revision_sha: string | null;
+    latest_sync_state: string | null;
+    latest_sync_reason_code: string | null;
+    latest_sync_error_code: string | null;
+    latest_sync_updated_at: string | null;
+    latest_scheduler_state: string | null;
+    latest_scheduler_finished_at: string | null;
+    eligible: boolean;
+  }>;
+  open_alerts: Array<Record<string, unknown>>;
+}
+
 export class AdminApiError extends Error {
   constructor(
     readonly code: string,
@@ -124,6 +155,11 @@ function text(value: unknown): string {
 
 function number(value: unknown): number {
   if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("invalid admin number");
+  return value;
+}
+
+function boolean(value: unknown): boolean {
+  if (typeof value !== "boolean") throw new Error("invalid admin boolean");
   return value;
 }
 
@@ -317,6 +353,45 @@ export async function getPublicationV2Status(): Promise<PublicationAdminStatus> 
     takedowns: { total: number(takedowns.total), items: array(takedowns.items).map(record) },
     revision_selection: Object.fromEntries(Object.entries(selection).map(([key, value]) => [key, text(value)])),
   };
+}
+
+export function parseOperationsStatus(value: unknown): OperationsStatus {
+  const item = record(value);
+  if (text(item.status) !== "ready") throw new Error("invalid operations status");
+  return {
+    status: "ready",
+    observed_at: text(item.observed_at),
+    registry_sha256: text(item.registry_sha256),
+    eligible_source_count: number(item.eligible_source_count),
+    latest_cycle: item.latest_cycle === null ? null : record(item.latest_cycle),
+    review_queue: (() => {
+      const queue = record(item.review_queue);
+      const counts = record(queue.state_counts);
+      return {
+        subject_count: number(queue.subject_count),
+        output_count: number(queue.output_count),
+        state_counts: Object.fromEntries(Object.entries(counts).map(([key, value]) => [key, number(value)])),
+      };
+    })(),
+    sources: array(item.sources).map((value) => {
+      const row = record(value);
+      const nullableText = (item: unknown) => item === null ? null : text(item);
+      return {
+        source_id: text(row.source_id), status: text(row.status), ingestion_mode: text(row.ingestion_mode),
+        sync_enabled: boolean(row.sync_enabled), cadence_seconds: number(row.cadence_seconds), jitter_seconds: number(row.jitter_seconds),
+        registered_revision_sha: text(row.registered_revision_sha), latest_candidate_revision_sha: nullableText(row.latest_candidate_revision_sha),
+        latest_sync_state: nullableText(row.latest_sync_state), latest_sync_reason_code: nullableText(row.latest_sync_reason_code),
+        latest_sync_error_code: nullableText(row.latest_sync_error_code), latest_sync_updated_at: nullableText(row.latest_sync_updated_at),
+        latest_scheduler_state: nullableText(row.latest_scheduler_state), latest_scheduler_finished_at: nullableText(row.latest_scheduler_finished_at),
+        eligible: boolean(row.eligible),
+      };
+    }),
+    open_alerts: array(item.open_alerts).map(record),
+  };
+}
+
+export async function getOperationsStatus(): Promise<OperationsStatus> {
+  return parseOperationsStatus(await request("operations"));
 }
 
 async function mutatePublication(path: string, body: Record<string, unknown>, csrfToken: string): Promise<Record<string, unknown>> {

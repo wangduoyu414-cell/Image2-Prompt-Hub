@@ -25,6 +25,9 @@ class FakeRepository:
     def readiness(self) -> str:
         return "ready"
 
+    def operations_status(self) -> dict[str, Any]:
+        return {"status": "ready", "eligible_source_count": 6, "sources": [], "open_alerts": [], "review_queue": {"subject_count": 0, "output_count": 0, "state_counts": {}}}
+
     def list_queue(self, *, state: str | None, limit: int, offset: int) -> dict[str, Any]:
         return {
             "subject_count": 1,
@@ -186,6 +189,7 @@ def test_admin_api_requires_session_and_serves_authenticated_subject_assets() ->
     assert session.json()["user"] == {"username": "reviewer", "role": "reviewer"}
     assert session.json()["csrf_token"] == csrf
     assert client.get("/api/admin/v1/review-queue").json()["subject_count"] == 1
+    assert client.get("/api/admin/v1/operations").json()["eligible_source_count"] == 6
     assert client.get("/api/admin/v1/review-subjects/7").json()["case_facts"]["generations"][0]["outputs"][0]["generation_output_id"] == 11
     asset = client.get("/api/admin/v1/review-assets/11")
     assert asset.status_code == 200

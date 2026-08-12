@@ -4,7 +4,8 @@
 
 The production runtime is a single-host Docker Compose deployment with one
 public Caddy entry point, a Next.js Web process, separate read-only public and
-authenticated administration APIs, one migration job, and PostgreSQL. The
+authenticated administration APIs, one migration job, PostgreSQL, Redis,
+Dramatiq scheduler/workers, and an operations monitor. The
 private asset authority is an external HTTPS S3-compatible service such as S3
 or R2. The local `compose.yaml` MinIO stack remains a test/development tool and
 is not silently promoted to production.
@@ -35,14 +36,33 @@ returns 404 for `/internal-preview*` in production.
 
    ```console
    docker compose --env-file /secure/image2.env -f compose.prod.yaml config --quiet
-   docker compose --env-file /secure/image2.env -f compose.prod.yaml build
+   docker compose --env-file /secure/image2.env -f compose.prod.yaml build public-api web
    ```
+
+   The services share one immutable Python image tag. If a local Compose/Buildx
+   release exhibits concurrent same-tag export conflicts, build `public-api`
+   (the shared Python image authority) and `web` explicitly; the admin,
+   scheduler, worker, monitor, migration, and bootstrap services then reuse the
+   same Python image rather than requiring distinct builds.
 
 5. Start the stack:
 
    ```console
    docker compose --env-file /secure/image2.env -f compose.prod.yaml up -d --wait
    ```
+
+6. On a new data volume, run the separately profiled Chaos fixed-history
+   bootstrap once. The command is idempotent and never adds Chaos to the
+   continuous scheduler:
+
+   ```console
+   docker compose --env-file /secure/image2.env -f compose.prod.yaml \
+     --profile bootstrap run --rm bootstrap-fixed-history
+   ```
+
+   The six continuous sources are discovered by the scheduler/worker. The
+   fixed-history bootstrap and continuous synchronization may run in either
+   order because their source and package locks are independent.
 
 The migration job is checksum-verified and must finish successfully before the
 APIs start. Re-running the deployment verifies existing migrations rather than
@@ -60,6 +80,11 @@ recorded and an administrator activates a Publication v2 snapshot.
   the repository contains no default credentials.
 - PostgreSQL, API, and administration ports must not be reachable from the host
   through Compose port publishing.
+- `/admin/operations` must show seven registered sources, six continuous
+  scheduler-eligible sources, the latest cycle, and open alerts.
+
+The scheduler/alert/lifecycle runbook is
+`docs/operations/scheduler-monitoring-v1.md`.
 
 ## Upgrade and rollback
 

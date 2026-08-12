@@ -82,7 +82,9 @@
       "source_id": "chaosrealmsai-gpt-image-2-gallery",
       "status": "active",
       "sync": {
-        "enabled": false
+        "cadence_seconds": 604800,
+        "enabled": false,
+        "jitter_seconds": 0
       }
     },
     {
@@ -131,7 +133,9 @@
       "source_id": "conardli-gpt-image-2-101",
       "status": "active",
       "sync": {
-        "enabled": true
+        "cadence_seconds": 43200,
+        "enabled": true,
+        "jitter_seconds": 900
       }
     },
     {
@@ -180,7 +184,9 @@
       "source_id": "erickkkyt-awesome-gptimage2-prompts",
       "status": "active",
       "sync": {
-        "enabled": true
+        "cadence_seconds": 43200,
+        "enabled": true,
+        "jitter_seconds": 900
       }
     },
     {
@@ -229,7 +235,9 @@
       "source_id": "freestylefly-awesome-gpt-image-2",
       "status": "active",
       "sync": {
-        "enabled": true
+        "cadence_seconds": 43200,
+        "enabled": true,
+        "jitter_seconds": 900
       }
     },
     {
@@ -278,7 +286,9 @@
       "source_id": "g0dam-work-prompts",
       "status": "active",
       "sync": {
-        "enabled": true
+        "cadence_seconds": 21600,
+        "enabled": true,
+        "jitter_seconds": 900
       }
     },
     {
@@ -327,7 +337,9 @@
       "source_id": "joesai-commercial-prompts",
       "status": "active",
       "sync": {
-        "enabled": true
+        "cadence_seconds": 43200,
+        "enabled": true,
+        "jitter_seconds": 900
       }
     },
     {
@@ -376,7 +388,9 @@
       "source_id": "vigozhao-ai-visual-prompt-cookbook",
       "status": "active",
       "sync": {
-        "enabled": true
+        "cadence_seconds": 43200,
+        "enabled": true,
+        "jitter_seconds": 900
       }
     }
   ]

@@ -76,8 +76,12 @@
                       "const": "continuous"
                     }
                   }
+                },
+                "status": {
+                  "const": "active"
                 }
-              }
+              },
+              "required": ["ingestion", "status"]
             },
             "then": {
               "properties": {
@@ -92,6 +96,27 @@
                   "properties": {
                     "enabled": {
                       "const": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": ["paused", "retired"]
+                }
+              },
+              "required": ["status"]
+            },
+            "then": {
+              "properties": {
+                "sync": {
+                  "properties": {
+                    "enabled": {
+                      "const": false
                     }
                   }
                 }
@@ -358,12 +383,24 @@
           },
           "sync": {
             "properties": {
+              "cadence_seconds": {
+                "maximum": 604800,
+                "minimum": 300,
+                "type": "integer"
+              },
               "enabled": {
                 "type": "boolean"
+              },
+              "jitter_seconds": {
+                "maximum": 3600,
+                "minimum": 0,
+                "type": "integer"
               }
             },
             "required": [
-              "enabled"
+              "enabled",
+              "cadence_seconds",
+              "jitter_seconds"
             ],
             "type": "object"
           }

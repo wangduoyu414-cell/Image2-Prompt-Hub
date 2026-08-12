@@ -41,6 +41,7 @@ class SyncSettings:
     git_data_root: Path
     package_root: Path
     evidence_root: Path
+    s3_region: str = "us-east-1"
 
     def import_settings(self) -> ImportSettings:
         return ImportSettings(
@@ -50,6 +51,7 @@ class SyncSettings:
                 self.s3_bucket,
                 self.s3_access_key_id,
                 self.s3_secret_access_key,
+                self.s3_region,
             ),
             data_root=self.git_data_root,
         )

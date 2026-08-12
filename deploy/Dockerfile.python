@@ -33,6 +33,7 @@ COPY --chown=image2:image2 inventory ./inventory
 COPY --chown=image2:image2 migrations ./migrations
 COPY --chown=image2:image2 reports/source-audit-v2.json ./reports/source-audit-v2.json
 COPY --chown=image2:image2 schemas ./schemas
+COPY --chown=image2:image2 scripts ./scripts
 COPY --chown=image2:image2 sync ./sync
 USER image2
 

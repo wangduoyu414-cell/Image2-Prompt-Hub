@@ -40,6 +40,23 @@ services:
     networks:
       - backend
 
+  redis:
+    image: redis:8.8.0-alpine3.23@sha256:9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec", "--save", "60", "1", "--maxmemory-policy", "noeviction"]
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - backend
+
   migrate:
     <<: *python-image
     init: true
@@ -60,6 +77,42 @@ services:
     networks:
       - backend
 
+  bootstrap-fixed-history:
+    <<: *python-runtime
+    profiles: ["bootstrap"]
+    restart: "no"
+    environment:
+      INVENTORY_DATABASE_URL: ${IMAGE2_DATABASE_URL:?set IMAGE2_DATABASE_URL}
+      INVENTORY_S3_ENDPOINT_URL: ${IMAGE2_S3_ENDPOINT_URL:?set IMAGE2_S3_ENDPOINT_URL}
+      INVENTORY_S3_BUCKET: ${IMAGE2_S3_BUCKET:?set IMAGE2_S3_BUCKET}
+      INVENTORY_S3_ACCESS_KEY: ${IMAGE2_S3_ACCESS_KEY_ID:?set IMAGE2_S3_ACCESS_KEY_ID}
+      INVENTORY_S3_SECRET_KEY: ${IMAGE2_S3_SECRET_ACCESS_KEY:?set IMAGE2_S3_SECRET_ACCESS_KEY}
+      INVENTORY_S3_REGION: ${IMAGE2_S3_REGION:-auto}
+    command:
+      - python
+      - -m
+      - inventory
+      - import-fixed-history
+      - --registry
+      - /app/config/sources-v2.yaml
+      - --audit
+      - /app/reports/source-audit-v2.json
+      - --source-id
+      - chaosrealmsai-gpt-image-2-gallery
+      - --git-data-root
+      - /var/lib/image2/git
+      - --package-root
+      - /var/lib/image2/packages
+      - --json
+    volumes:
+      - sync-runtime:/var/lib/image2
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - egress
+
   public-api:
     <<: *python-runtime
     command: ["uvicorn", "apps.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
@@ -69,6 +122,11 @@ services:
       PUBLIC_API_S3_ACCESS_KEY_ID: ${IMAGE2_S3_ACCESS_KEY_ID:?set IMAGE2_S3_ACCESS_KEY_ID}
       PUBLIC_API_S3_SECRET_ACCESS_KEY: ${IMAGE2_S3_SECRET_ACCESS_KEY:?set IMAGE2_S3_SECRET_ACCESS_KEY}
       PUBLIC_API_S3_REGION: ${IMAGE2_S3_REGION:-auto}
+      IMAGE2_ENVIRONMENT: ${IMAGE2_ENVIRONMENT:-production}
+      IMAGE2_RELEASE: ${IMAGE2_RELEASE:-local}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      OTEL_CONSOLE_EXPORTER: ${OTEL_CONSOLE_EXPORTER:-false}
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -96,6 +154,11 @@ services:
       IMAGE2_ADMIN_ALLOWED_ORIGINS: ${IMAGE2_PUBLIC_ORIGIN:?set IMAGE2_PUBLIC_ORIGIN}
       IMAGE2_ADMIN_SECURE_COOKIES: "true"
       IMAGE2_ADMIN_SOURCE_AUDIT: /app/reports/source-audit-v2.json
+      IMAGE2_ENVIRONMENT: ${IMAGE2_ENVIRONMENT:-production}
+      IMAGE2_RELEASE: ${IMAGE2_RELEASE:-local}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      OTEL_CONSOLE_EXPORTER: ${OTEL_CONSOLE_EXPORTER:-false}
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -108,6 +171,98 @@ services:
     networks:
       - backend
       - egress
+
+  scheduler:
+    <<: *python-runtime
+    command: ["python", "-m", "sync", "run-scheduler", "--json"]
+    environment: &sync-environment
+      SYNC_DATABASE_URL: ${IMAGE2_DATABASE_URL:?set IMAGE2_DATABASE_URL}
+      SYNC_REDIS_URL: redis://redis:6379/0
+      SYNC_S3_ENDPOINT_URL: ${IMAGE2_S3_ENDPOINT_URL:?set IMAGE2_S3_ENDPOINT_URL}
+      SYNC_S3_BUCKET: ${IMAGE2_S3_BUCKET:?set IMAGE2_S3_BUCKET}
+      SYNC_S3_ACCESS_KEY_ID: ${IMAGE2_S3_ACCESS_KEY_ID:?set IMAGE2_S3_ACCESS_KEY_ID}
+      SYNC_S3_SECRET_ACCESS_KEY: ${IMAGE2_S3_SECRET_ACCESS_KEY:?set IMAGE2_S3_SECRET_ACCESS_KEY}
+      SYNC_S3_REGION: ${IMAGE2_S3_REGION:-auto}
+      SYNC_GIT_DATA_ROOT: /var/lib/image2/git
+      SYNC_PACKAGE_ROOT: /var/lib/image2/packages
+      SYNC_EVIDENCE_ROOT: /var/lib/image2/evidence
+      SYNC_INTERVAL_SECONDS: ${SYNC_INTERVAL_SECONDS:-300}
+      SYNC_JITTER_SECONDS: ${SYNC_JITTER_SECONDS:-60}
+      SYNC_MESSAGE_STALE_SECONDS: ${SYNC_MESSAGE_STALE_SECONDS:-18000}
+      IMAGE2_ENVIRONMENT: ${IMAGE2_ENVIRONMENT:-production}
+      IMAGE2_RELEASE: ${IMAGE2_RELEASE:-local}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      OTEL_CONSOLE_EXPORTER: ${OTEL_CONSOLE_EXPORTER:-false}
+    read_only: true
+    volumes:
+      - sync-runtime:/var/lib/image2
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+      - egress
+    healthcheck:
+      test: ["CMD", "python", "-c", "import redis; redis.Redis.from_url('redis://redis:6379/0').ping()"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  worker:
+    <<: *python-runtime
+    command: ["dramatiq", "sync.scheduler", "--processes", "1", "--threads", "2", "--queues", "source-sync"]
+    environment: *sync-environment
+    read_only: true
+    volumes:
+      - sync-runtime:/var/lib/image2
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+      - egress
+    healthcheck:
+      test: ["CMD", "python", "-c", "import redis; redis.Redis.from_url('redis://redis:6379/0').ping()"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  monitor:
+    <<: *python-runtime
+    command: ["python", "-m", "sync", "run-monitor", "--json"]
+    environment:
+      SYNC_DATABASE_URL: ${IMAGE2_DATABASE_URL:?set IMAGE2_DATABASE_URL}
+      SYNC_REDIS_URL: redis://redis:6379/0
+      IMAGE2_PUBLIC_ORIGIN: http://web:3000
+      IMAGE2_ALERT_WEBHOOK_URL: ${IMAGE2_ALERT_WEBHOOK_URL:-}
+      MONITOR_INTERVAL_SECONDS: ${MONITOR_INTERVAL_SECONDS:-300}
+      MONITOR_SYNC_STALE_SECONDS: ${MONITOR_SYNC_STALE_SECONDS:-28800}
+      IMAGE2_ENVIRONMENT: ${IMAGE2_ENVIRONMENT:-production}
+      IMAGE2_RELEASE: ${IMAGE2_RELEASE:-local}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      OTEL_CONSOLE_EXPORTER: ${OTEL_CONSOLE_EXPORTER:-false}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      web:
+        condition: service_healthy
+    networks:
+      - backend
+      - egress
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://web:3000/readyz', timeout=5).read()"]
+      interval: 30s
+      timeout: 6s
+      retries: 5
+      start_period: 20s
 
   web:
     image: image2-web:${IMAGE2_IMAGE_TAG:-local}
@@ -183,5 +338,7 @@ networks:
 
 volumes:
   postgres-data:
+  redis-data:
+  sync-runtime:
   caddy-data:
   caddy-config:

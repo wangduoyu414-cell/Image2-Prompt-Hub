@@ -31,6 +31,7 @@ def _settings_from_environment() -> SyncSettings:
         git_data_root=Path(_required_environment("SYNC_GIT_DATA_ROOT")),
         package_root=Path(_required_environment("SYNC_PACKAGE_ROOT")),
         evidence_root=Path(_required_environment("SYNC_EVIDENCE_ROOT")),
+        s3_region=os.environ.get("SYNC_S3_REGION", "us-east-1"),
     )
 
 
@@ -51,13 +52,39 @@ def parser() -> argparse.ArgumentParser:
     run = subcommands.choices["run-source"]
     run.add_argument("--registry", default=str(REPO_ROOT / "config" / "sources-v2.yaml"))
     run.add_argument("--audit", default=str(REPO_ROOT / "reports" / "source-audit-v2.json"))
+    schedule = subcommands.add_parser("dispatch-cycle")
+    schedule.add_argument("--json", action="store_true")
+    schedule = subcommands.add_parser("run-scheduler")
+    schedule.add_argument("--json", action="store_true")
+    monitor = subcommands.add_parser("monitor-once")
+    monitor.add_argument("--json", action="store_true")
+    monitor = subcommands.add_parser("run-monitor")
+    monitor.add_argument("--json", action="store_true")
     return result
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
-        if args.command == "inspect-source":
+        if args.command == "dispatch-cycle":
+            from .scheduler import dispatch_cycle
+
+            payload = dispatch_cycle()
+        elif args.command == "run-scheduler":
+            from .scheduler import run_forever
+
+            run_forever()
+            return 0
+        elif args.command == "monitor-once":
+            from .monitor import run_once
+
+            payload = run_once()
+        elif args.command == "run-monitor":
+            from .monitor import run_forever
+
+            run_forever()
+            return 0
+        elif args.command == "inspect-source":
             payload = {"status": "inspected", "result": inspect_source(source_id=args.source_id, database_url=_required_environment("SYNC_DATABASE_URL"))}
         else:
             payload = run_source(

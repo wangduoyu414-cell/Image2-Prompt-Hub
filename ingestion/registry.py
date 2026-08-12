@@ -38,6 +38,8 @@ class SourceConfig:
     rights: dict[str, Any]
     ingestion_mode: str = "continuous"
     sync_enabled: bool = True
+    sync_cadence_seconds: int = 21_600
+    sync_jitter_seconds: int = 900
     one_shot_import_only: bool = False
 
     @property
@@ -96,7 +98,7 @@ def _require_string(value: Any, label: str) -> str:
     return value
 
 
-def load_source_config(registry_path: Path | str, source_id: str) -> SourceConfig:
+def load_source_config(registry_path: Path | str, source_id: str, *, require_active: bool = True) -> SourceConfig:
     """Load the one registry entry eligible for this extraction slice."""
     path = Path(registry_path).resolve()
     try:
@@ -110,8 +112,11 @@ def load_source_config(registry_path: Path | str, source_id: str) -> SourceConfi
     if len(matches) != 1:
         raise RegistryError(f"registry must contain exactly one source_id={source_id!r}")
     source = matches[0]
-    if source.get("status") != "active":
+    status = source.get("status")
+    if require_active and status != "active":
         raise RegistryError("source status must be active")
+    if status not in {"candidate", "probation", "active", "paused", "retired", "blocked"}:
+        raise RegistryError("source status is unsupported")
     pilot = _require_mapping(source.get("pilot"), "pilot")
     sync = _require_mapping(source.get("sync"), "sync")
     ingestion_value = source.get("ingestion")
@@ -126,6 +131,17 @@ def load_source_config(registry_path: Path | str, source_id: str) -> SourceConfi
     sync_enabled = sync.get("enabled")
     if not isinstance(sync_enabled, bool):
         raise RegistryError("source sync.enabled must be boolean")
+    sync_cadence_seconds = sync.get("cadence_seconds", 21_600)
+    sync_jitter_seconds = sync.get("jitter_seconds", 900)
+    if (
+        not isinstance(sync_cadence_seconds, int)
+        or isinstance(sync_cadence_seconds, bool)
+        or not 300 <= sync_cadence_seconds <= 604_800
+        or not isinstance(sync_jitter_seconds, int)
+        or isinstance(sync_jitter_seconds, bool)
+        or not 0 <= sync_jitter_seconds <= 3_600
+    ):
+        raise RegistryError("source sync cadence or jitter is invalid")
     if ingestion is None:
         ingestion_mode = "continuous"
         one_shot_import_only = False
@@ -134,8 +150,12 @@ def load_source_config(registry_path: Path | str, source_id: str) -> SourceConfi
         one_shot_import_only = ingestion.get("one_shot_import_only")
         if ingestion_mode not in {"continuous", "fixed_history"} or not isinstance(one_shot_import_only, bool):
             raise RegistryError("source ingestion policy is malformed")
-    if ingestion_mode == "continuous" and (sync_enabled is not True or one_shot_import_only):
-        raise RegistryError("continuous source must enable sync and may not be one-shot only")
+    if ingestion_mode == "continuous" and one_shot_import_only:
+        raise RegistryError("continuous source may not be one-shot only")
+    if ingestion_mode == "continuous" and status == "active" and sync_enabled is not True:
+        raise RegistryError("active continuous source must enable sync")
+    if ingestion_mode == "continuous" and status in {"paused", "retired"} and sync_enabled is not False:
+        raise RegistryError("paused or retired continuous source must disable sync")
     if ingestion_mode == "fixed_history" and (sync_enabled is not False or one_shot_import_only is not True):
         raise RegistryError("fixed-history source must disable sync and require one-shot import")
     if family.get("role") != "canonical":
@@ -163,5 +183,7 @@ def load_source_config(registry_path: Path | str, source_id: str) -> SourceConfi
         rights=rights,
         ingestion_mode=ingestion_mode,
         sync_enabled=sync_enabled,
+        sync_cadence_seconds=sync_cadence_seconds,
+        sync_jitter_seconds=sync_jitter_seconds,
         one_shot_import_only=one_shot_import_only,
     )

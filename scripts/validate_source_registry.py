@@ -19,7 +19,7 @@ from typing import Any
 
 
 JsonObject = dict[str, Any]
-EXPECTED_ACTIVE_SOURCES = {
+EXPECTED_CONTINUOUS_SOURCES = {
     "g0dam-work-prompts": "structured_manifest_json",
     "joesai-commercial-prompts": "markdown_prompt_pages_with_manifest",
     "conardli-gpt-image-2-101": "compiled_multi_category_case_gallery",
@@ -27,6 +27,10 @@ EXPECTED_ACTIVE_SOURCES = {
     "erickkkyt-awesome-gptimage2-prompts": "structured_prompt_image_manifest",
     "vigozhao-ai-visual-prompt-cookbook": "style_json_with_preview_assets",
 }
+EXPECTED_FIXED_HISTORY_SOURCES = {
+    "chaosrealmsai-gpt-image-2-gallery": "meta_json_with_three_webp_outputs",
+}
+EXPECTED_ACTIVE_SOURCES = {**EXPECTED_CONTINUOUS_SOURCES, **EXPECTED_FIXED_HISTORY_SOURCES}
 
 
 def load_json(path: Path) -> Any:
@@ -222,7 +226,13 @@ def validate_semantics(audit: JsonObject, registry: JsonObject) -> tuple[list[st
             continue
         add_error(errors, record.get("candidate_key") == candidate_key, f"registry source {source_id}: candidate_key diverges from audit")
         status = source.get("status")
-        add_error(errors, record.get("recommended_status") == status, f"registry source {source_id}: status diverges from audit")
+        audit_status = record.get("recommended_status")
+        lifecycle_status = status in {"paused", "retired"}
+        add_error(
+            errors,
+            audit_status == status or lifecycle_status and audit_status == "active",
+            f"registry source {source_id}: status diverges from audit or an unsupported lifecycle transition was used",
+        )
         repository = source.get("repository")
         audited_repository = record.get("repository")
         if not isinstance(repository, dict) or not isinstance(audited_repository, dict):
@@ -265,6 +275,9 @@ def validate_semantics(audit: JsonObject, registry: JsonObject) -> tuple[list[st
         restrictive_rights = {"unknown", "review_required", "internal_only", "blocked"}
         if rights.get("prompt_policy") in restrictive_rights or rights.get("asset_policy") in restrictive_rights:
             add_error(errors, publication.get("auto_publish") is False, f"registry source {source_id}: restrictive rights require auto_publish=false")
+        if status in {"paused", "retired"}:
+            sync = source.get("sync")
+            add_error(errors, isinstance(sync, dict) and sync.get("enabled") is False, f"registry source {source_id}: paused or retired source must disable sync")
         if status == "active":
             metrics = record.get("metrics") if isinstance(record.get("metrics"), dict) else {}
             add_error(errors, record.get("audit_scope") == "full_case_audit", f"active source {source_id}: audit scope is not full_case_audit")
@@ -272,7 +285,22 @@ def validate_semantics(audit: JsonObject, registry: JsonObject) -> tuple[list[st
             add_error(errors, role == "canonical", f"active source {source_id}: family role must be canonical")
             add_error(errors, publication.get("ingestion_policy") == "full", f"active source {source_id}: ingestion_policy must be full")
             sync = source.get("sync")
-            add_error(errors, isinstance(sync, dict) and sync.get("enabled") is True, f"active source {source_id}: sync must be enabled")
+            ingestion = source.get("ingestion")
+            if isinstance(ingestion, dict) and ingestion.get("mode") == "fixed_history":
+                add_error(
+                    errors,
+                    source_id in EXPECTED_FIXED_HISTORY_SOURCES
+                    and ingestion.get("one_shot_import_only") is True
+                    and isinstance(sync, dict)
+                    and sync.get("enabled") is False,
+                    f"active source {source_id}: fixed-history source must be one-shot and sync-disabled",
+                )
+            else:
+                add_error(
+                    errors,
+                    source_id in EXPECTED_CONTINUOUS_SOURCES and isinstance(sync, dict) and sync.get("enabled") is True,
+                    f"active source {source_id}: continuous source must enable sync",
+                )
             add_error(errors, nonempty_string(repository.get("repository_id")), f"active source {source_id}: repository_id is required")
             add_error(errors, nonempty_string(repository.get("default_branch")) and nonempty_string(repository.get("verified_commit_sha")), f"active source {source_id}: default branch and fixed commit are required")
             add_error(errors, isinstance(content, dict) and nonempty_string(content.get("adapter_strategy")), f"active source {source_id}: deterministic adapter strategy is required")
@@ -290,7 +318,12 @@ def validate_semantics(audit: JsonObject, registry: JsonObject) -> tuple[list[st
                 result = quality.get("human_review_result")
                 add_error(errors, result in {"pass", "pass_with_publication_restriction"}, f"active source {source_id}: quality sample has no passing human review")
                 unique = metric_value(metrics, "unique_valid_case_count")
-                expected_sample = min(int(unique or 0), 50, max(20, math.ceil(float(unique or 0) * 0.10))) if unique else 0
+                if source_id in EXPECTED_FIXED_HISTORY_SOURCES:
+                    expected_sample = 60
+                elif unique:
+                    expected_sample = min(int(unique), 50, max(20, math.ceil(float(unique) * 0.10)))
+                else:
+                    expected_sample = 0
                 add_error(errors, quality.get("sample_size") == expected_sample, f"active source {source_id}: quality sample size is not Rule-011 compliant")
             else:
                 errors.append(f"active source {source_id}: quality sampling is missing")
@@ -318,7 +351,7 @@ def validate_semantics(audit: JsonObject, registry: JsonObject) -> tuple[list[st
 
     pilot_source_ids: set[str] = set()
     pilot_structures: set[str] = set()
-    add_error(errors, len(pilots) == len(EXPECTED_ACTIVE_SOURCES), "pilot list must cover the six approved active sources")
+    add_error(errors, len(pilots) == len(EXPECTED_ACTIVE_SOURCES), "pilot list must cover the seven approved active sources")
     for index, pilot in enumerate(pilots):
         if not isinstance(pilot, dict):
             errors.append(f"registry.pilots[{index}] is not an object")
@@ -329,7 +362,7 @@ def validate_semantics(audit: JsonObject, registry: JsonObject) -> tuple[list[st
         if source is None:
             errors.append(f"pilot {source_id!r} has no registry source")
             continue
-        add_error(errors, source.get("status") == "active", f"pilot {source_id}: source is not active")
+        add_error(errors, source.get("status") in {"active", "paused", "retired"}, f"pilot {source_id}: source has no admitted lifecycle status")
         pilot_config = source.get("pilot")
         add_error(errors, isinstance(pilot_config, dict) and pilot_config.get("selected") is True, f"pilot {source_id}: source does not opt into pilot selection")
         if source_id in pilot_source_ids:
@@ -343,7 +376,11 @@ def validate_semantics(audit: JsonObject, registry: JsonObject) -> tuple[list[st
     add_error(errors, pilot_source_ids == set(EXPECTED_ACTIVE_SOURCES), "pilot source ids do not equal the approved active source set")
     for source_id, structure in EXPECTED_ACTIVE_SOURCES.items():
         source = source_by_id.get(source_id)
-        add_error(errors, isinstance(source, dict) and source.get("status") == "active", f"approved source {source_id}: source is not active")
+        add_error(
+            errors,
+            isinstance(source, dict) and source.get("status") in {"active", "paused", "retired"},
+            f"approved source {source_id}: source has no admitted lifecycle status",
+        )
         add_error(errors, source_id in pilot_source_ids and structure in pilot_structures, f"approved source {source_id}: pilot structure is missing")
 
     summary = {
@@ -371,9 +408,9 @@ def run_self_tests(audit: JsonObject, registry: JsonObject, audit_schema: JsonOb
     failures: list[str] = []
     source_list = registry.get("sources") if isinstance(registry.get("sources"), list) else []
     active = next((source for source in source_list if isinstance(source, dict) and source.get("status") == "active"), None)
-    mirror = next((source for source in source_list if isinstance(source, dict) and isinstance(source.get("family"), dict) and source["family"].get("role") in {"mirror", "backup", "derived", "translation"}), None)
-    if not isinstance(active, dict) or not isinstance(mirror, dict) or len(source_list) < 2:
-        return ["self-test fixture needs one active, one noncanonical family source, and two registry sources"]
+    fixed_history = next((source for source in source_list if isinstance(source, dict) and isinstance(source.get("ingestion"), dict) and source["ingestion"].get("mode") == "fixed_history"), None)
+    if not isinstance(active, dict) or not isinstance(fixed_history, dict) or len(source_list) < 2:
+        return ["self-test fixture needs one active, one fixed-history source, and two registry sources"]
     duplicate_id = copy.deepcopy(registry)
     duplicate_id["sources"][1]["repository"]["repository_id"] = duplicate_id["sources"][0]["repository"]["repository_id"]
     if validate_documents(audit, duplicate_id, audit_schema, registry_schema)["ok"]:
@@ -382,16 +419,49 @@ def run_self_tests(audit: JsonObject, registry: JsonObject, audit_schema: JsonOb
     missing_audit["records"] = [record for record in missing_audit["records"] if record.get("source_id") != active["source_id"]]
     if validate_documents(missing_audit, registry, audit_schema, registry_schema)["ok"]:
         failures.append("missing active audit mutation did not fail")
-    bad_family = copy.deepcopy(registry)
-    target = next(source for source in bad_family["sources"] if source.get("source_id") == mirror["source_id"])
-    target["publication"]["ingestion_policy"] = "full"
-    if validate_documents(audit, bad_family, audit_schema, registry_schema)["ok"]:
+    bad_fixed_history = copy.deepcopy(registry)
+    target = next(source for source in bad_fixed_history["sources"] if source.get("source_id") == fixed_history["source_id"])
+    target["sync"]["enabled"] = True
+    if validate_documents(audit, bad_fixed_history, audit_schema, registry_schema)["ok"]:
+        failures.append("fixed-history scheduler mutation did not fail")
+    noncanonical_audit = copy.deepcopy(audit)
+    noncanonical_registry = copy.deepcopy(registry)
+    noncanonical_source = copy.deepcopy(noncanonical_registry["sources"][0])
+    noncanonical_record = copy.deepcopy(
+        next(record for record in noncanonical_audit["records"] if record.get("source_id") == noncanonical_source["source_id"])
+    )
+    noncanonical_source["source_id"] = "self-test-derived-source"
+    noncanonical_source["candidate_key"] = "self-test/derived-source"
+    noncanonical_source["repository"]["repository_id"] = "self-test-derived-repository"
+    noncanonical_source["repository"]["url"] = "https://example.com/self-test-derived-source"
+    noncanonical_source["status"] = "probation"
+    noncanonical_source["family"] = {"family_id": "family-self-test", "canonical_source_id": active["source_id"], "role": "derived"}
+    noncanonical_source["publication"]["ingestion_policy"] = "provenance_only"
+    noncanonical_source["audit_ref"]["source_id"] = noncanonical_source["source_id"]
+    noncanonical_registry["sources"].append(noncanonical_source)
+    noncanonical_record["source_id"] = noncanonical_source["source_id"]
+    noncanonical_record["candidate_key"] = noncanonical_source["candidate_key"]
+    noncanonical_record["repository"].update(copy.deepcopy(noncanonical_source["repository"]))
+    noncanonical_record["recommended_status"] = "probation"
+    noncanonical_record["family"] = copy.deepcopy(noncanonical_source["family"])
+    noncanonical_audit["records"].append(noncanonical_record)
+    noncanonical_audit["candidate_coverage"]["unique_repositories"] += 1
+    if not validate_documents(noncanonical_audit, noncanonical_registry, audit_schema, registry_schema)["ok"]:
+        failures.append("valid noncanonical provenance-only fixture did not pass")
+    noncanonical_registry["sources"][-1]["publication"]["ingestion_policy"] = "full"
+    if validate_documents(noncanonical_audit, noncanonical_registry, audit_schema, registry_schema)["ok"]:
         failures.append("noncanonical full-ingestion mutation did not fail")
     bad_rights = copy.deepcopy(registry)
     target = next(source for source in bad_rights["sources"] if source.get("source_id") == active["source_id"])
     target["publication"]["auto_publish"] = True
     if validate_documents(audit, bad_rights, audit_schema, registry_schema)["ok"]:
         failures.append("restrictive-rights public mutation did not fail")
+    bad_lifecycle = copy.deepcopy(registry)
+    target = next(source for source in bad_lifecycle["sources"] if source.get("source_id") == active["source_id"])
+    target["status"] = "paused"
+    target["sync"]["enabled"] = True
+    if validate_documents(audit, bad_lifecycle, audit_schema, registry_schema)["ok"]:
+        failures.append("paused scheduler-enabled mutation did not fail")
     return failures
 
 

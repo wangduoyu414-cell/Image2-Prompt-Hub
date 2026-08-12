@@ -16,6 +16,7 @@ from content.database import ContentDatabaseError, ContentDatabaseSettings
 from content.review import ReviewSubmission
 from content.review_store import RightsReviewStore
 from content.publication_store_v2 import PublicationV2Store
+from sync.status import operations_status
 
 
 class AdminRepositoryError(RuntimeError):
@@ -144,6 +145,13 @@ class AdminReviewRepository:
             raise
         except psycopg.Error as exc:
             raise AdminRepositoryError("admin_database_unavailable", "review database is unavailable") from exc
+
+    def operations_status(self) -> dict[str, Any]:
+        try:
+            return operations_status(database_url=self._settings.database_url)
+        except Exception as exc:
+            error_code = getattr(exc, "error_code", "operations_read_failed")
+            raise AdminRepositoryError(str(error_code), "operations status is unavailable") from exc
 
     def list_queue(self, *, state: str | None, limit: int, offset: int) -> dict[str, Any]:
         try:

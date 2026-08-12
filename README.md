@@ -8,5 +8,6 @@ remains empty until authorized reviewers record sufficient evidence.
 
 - Product and architecture: [`1.md`](1.md)
 - Production deployment: [`docs/operations/production-deployment-v1.md`](docs/operations/production-deployment-v1.md)
+- Scheduler, monitoring, and source lifecycle: [`docs/operations/scheduler-monitoring-v1.md`](docs/operations/scheduler-monitoring-v1.md)
 - Local PostgreSQL/MinIO development stack: [`compose.yaml`](compose.yaml)
 - Production stack: [`compose.prod.yaml`](compose.prod.yaml)

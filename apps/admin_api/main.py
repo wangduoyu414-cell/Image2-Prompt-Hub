@@ -30,6 +30,7 @@ from .auth import (
     SESSION_COOKIE,
 )
 from .repository import AdminRepositoryError, AdminReviewRepository
+from apps.observability import configure_observability
 
 
 class AdminRepository(Protocol):
@@ -45,6 +46,7 @@ class AdminRepository(Protocol):
     def activate_publication_v2(self, version_id: int) -> dict[str, Any]: ...
     def rollback_publication_v2(self, version_id: int) -> dict[str, Any]: ...
     def record_takedown_v2(self, **facts: Any) -> dict[str, Any]: ...
+    def operations_status(self) -> dict[str, Any]: ...
 
 
 class LoginRequest(BaseModel):
@@ -218,7 +220,7 @@ def create_app(
             "publication_v2_active_takedown", "publication_v2_stale_review", "publication_v2_stale_revision",
         }:
             return _error(409, error.error_code, str(error))
-        if error.error_code in {"admin_database_unavailable", "content_schema_not_migrated"}:
+        if error.error_code in {"admin_database_unavailable", "content_schema_not_migrated", "operations_database_unavailable", "operations_schema_not_migrated", "operations_read_failed"}:
             return _error(503, error.error_code, "Review administration is temporarily unavailable.")
         return _error(422, error.error_code, str(error))
 
@@ -294,6 +296,13 @@ def create_app(
         admin: AdminRepository = Depends(get_repository),
     ) -> dict[str, Any]:
         return admin.list_queue(state=state, limit=limit, offset=offset)
+
+    @app.get("/api/admin/v1/operations")
+    def operations(
+        _: AdminPrincipal = Depends(get_principal),
+        admin: AdminRepository = Depends(get_repository),
+    ) -> dict[str, Any]:
+        return admin.operations_status()
 
     @app.get("/api/admin/v1/review-subjects/{source_case_version_id}")
     def review_subject(
@@ -418,6 +427,7 @@ def create_app(
             requested_at=datetime.now(timezone.utc),
         )
 
+    configure_observability("image2-admin-api", app=app)
     return app
 
 

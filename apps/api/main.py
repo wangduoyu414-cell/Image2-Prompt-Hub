@@ -27,6 +27,7 @@ from .repository import (
     PublicationUnavailable,
 )
 from .repository_v2 import ContentPublicationV2Repository, PublicationV2Reader, PublicReadRepositoryV2
+from apps.observability import configure_observability
 
 
 def _error(status_code: int, code: str, message: str) -> JSONResponse:
@@ -255,6 +256,7 @@ def create_app(
             },
         )
 
+    configure_observability("image2-public-api", app=app)
     return app
 
 

@@ -22,7 +22,15 @@ jobs:
           python -m pip install --disable-pip-version-check uv==0.11.28
           uv sync --frozen
       - name: Run Python tests
-        run: uv run python -m pytest -q
+        run: |
+          uv run python -m pytest -q
+          uv run python scripts/validate_source_registry.py \
+            --audit reports/source-audit-v2.json \
+            --registry config/sources-v2.yaml \
+            --audit-schema schemas/source-audit-v2.schema.json \
+            --registry-schema schemas/source-registry-v2.schema.json \
+            --self-test --determinism-check --json
+          uv run python scripts/validate_chaos_fixed_history.py --json
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: "24.14.0"

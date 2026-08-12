@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { parseAdminSession, parseReviewQueue, parseReviewSubject } from "../lib/admin";
+import { parseAdminSession, parseOperationsStatus, parseReviewQueue, parseReviewSubject } from "../lib/admin";
 
 test("admin parsers preserve authenticated identity and explicit review facts", () => {
   const session = parseAdminSession({
@@ -68,6 +68,40 @@ test("admin parsers preserve authenticated identity and explicit review facts", 
   });
   assert.equal(subject.case_facts.generations[0].outputs[0].generation_output_id, 11);
   assert.equal(subject.review_defaults.repository_license, "MIT");
+});
+
+test("operations parser preserves the seven-source runtime boundary", () => {
+  const status = parseOperationsStatus({
+    status: "ready",
+    observed_at: "2026-08-12T00:00:00Z",
+    registry_sha256: "a".repeat(64),
+    eligible_source_count: 6,
+    latest_cycle: null,
+    review_queue: { subject_count: 3973, output_count: 9310, state_counts: { pending: 3973 } },
+    sources: [{
+      source_id: "chaosrealmsai-gpt-image-2-gallery",
+      status: "active",
+      ingestion_mode: "fixed_history",
+      sync_enabled: false,
+      cadence_seconds: 604800,
+      jitter_seconds: 0,
+      registered_revision_sha: "b".repeat(40),
+      latest_candidate_revision_sha: null,
+      latest_sync_state: null,
+      latest_sync_reason_code: null,
+      latest_sync_error_code: null,
+      latest_sync_updated_at: null,
+      latest_scheduler_state: null,
+      latest_scheduler_finished_at: null,
+      eligible: false,
+    }],
+    open_alerts: [],
+  });
+  assert.equal(status.eligible_source_count, 6);
+  assert.equal(status.sources[0].sync_enabled, false);
+  assert.equal(status.sources[0].eligible, false);
+  assert.equal(status.review_queue.subject_count, 3973);
+  assert.throws(() => parseOperationsStatus({ ...status, sources: [{ ...status.sources[0], eligible: "false" }] }));
 });
 
 test("admin parsers reject public-looking unauthenticated or malformed data", () => {

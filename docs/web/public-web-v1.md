@@ -85,7 +85,8 @@ Set-Location D:\image2
 uv run --frozen --no-sync python -B scripts\validate_public_web.py --json
 ```
 
-The real three-source inventory currently has no explicit Content Core public
-rights review. Its empty directory therefore remains the correct fail-closed
-production result; the non-empty browser flow is tested only against the local
-synthetic API.
+The historical v1 acceptance baseline used three internal sources. The current
+project has seven internal sources and Public API/Web v2 is the active consumer
+contract, but no real public rights approval has been recorded. The empty v1
+compatibility directory therefore remains the correct fail-closed result; its
+non-empty browser flow is tested only against the local synthetic API.

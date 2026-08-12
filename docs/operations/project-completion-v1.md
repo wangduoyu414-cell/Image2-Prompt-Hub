@@ -32,7 +32,7 @@ scheduled sources plus one fixed-history source, and zero real public cases.
 
 ## Final acceptance evidence
 
-- Python: `250 passed, 1 skipped` with the required test runtime outside the
+- Python: `251 passed, 1 skipped` with the required test runtime outside the
   repository security boundary.
 - Web: 12 tests passed, TypeScript passed, and the Next.js production build
   completed.
@@ -66,6 +66,7 @@ The following are operating actions, not unfinished implementation:
 - admit, pause, replace, or retire sources through the documented governance
   process.
 
-`documentation_impact`: synchronized in `1.md`, `README.md`, production and
-scheduler runbooks, and this completion record. Historical phase documents
-remain unchanged because they describe their original bounded snapshots.
+`documentation_impact`: synchronized in `1.md`, `README.md`, the current content,
+API, Web, production and scheduler runbooks, and this completion record.
+Historical phase documents remain unchanged because they describe their original
+bounded snapshots.

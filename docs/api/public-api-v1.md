@@ -7,8 +7,10 @@ current immutable snapshot through Content Core; the API never joins inventory
 tables or recalculates rights or publication eligibility.
 
 When no active Publication Version exists, the public directory is intentionally
-empty. This is a normal \`200\` response, including for the real three-source
-inventory before an explicit Content Core review event exists.
+empty. This is a normal \`200\` response. The historical v1 acceptance baseline
+used three internal sources; the current project has seven internal sources, but
+the v1 compatibility current remains empty because no real public approval has
+been recorded.
 
 ## Configuration
 

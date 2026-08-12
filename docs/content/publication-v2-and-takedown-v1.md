@@ -4,8 +4,8 @@
 
 Publication v2 is the immutable public snapshot for reviewed Public Case
 Candidate v2 documents. It is additive: Publication v1 and its current pointer
-remain unchanged, and Public API/Web v1 continue to read only v1 until the v2
-consumer stage is activated explicitly.
+remain unchanged for compatibility, while the current public API/Web v2 consumer
+reads only the independently activated v2 pointer.
 
 The write path is:
 
@@ -84,8 +84,10 @@ python -m content record-takedown-v2 ... --json
 python -m content list-takedowns-v2 --json
 ```
 
-The next stage adds authenticated publication/takedown controls and the read-only
-Public API/Web v2 consumer. It does not manufacture the first real approval.
+Authenticated publication/takedown controls and the read-only Public API/Web v2
+consumer are implemented. This boundary still does not manufacture the first
+real approval: without evidence-backed human decisions, a build remains empty
+and no public content is activated.
 
 The isolated migration/fail-closed validator is:
 

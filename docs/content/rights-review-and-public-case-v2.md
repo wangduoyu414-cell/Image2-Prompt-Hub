@@ -104,7 +104,9 @@ provide all authority fields and all output decisions explicitly.
 the external runtime environment. Viewer/reviewer/admin roles, signed HttpOnly
 sessions, exact-origin CSRF checks, and server-bound reviewer identity protect all
 review data and writes. The browser cannot supply its own reviewer or reviewed-at
-value, and the admin API has no Publication activation endpoint.
+value. Publication activation remains a separate admin-only responsibility
+exposed through the authenticated `/admin/publication` console and explicit v2
+endpoints; review submission never activates content automatically.
 
 ## Validation evidence
 
@@ -114,18 +116,22 @@ The live validator is:
 uv run --frozen --no-sync python -B scripts/validate_rights_review_queue.py --json
 ```
 
-It rebuilds the six fixed-Commit sources in an isolated PostgreSQL/object-store
-runtime and verifies 1513 queue subjects, 1930 outputs, single- and multi-output
-reviews, Candidate v2 schema/redaction, idempotent replay, conflicting replay,
-stale expected-latest, one-winner concurrency, rollback, append-only triggers,
-CLI output, and unchanged Content/API/Web v1 with 0 real public cases. Synthetic
-review rows exist only in the temporary validation database and are destroyed
-during cleanup.
+This historical Phase 2.5 validator rebuilds the six continuous fixed-Commit
+sources in an isolated PostgreSQL/object-store runtime and verifies the frozen
+1,513-subject/1,930-output baseline, single- and multi-output reviews, Candidate
+v2 schema/redaction, idempotent replay, conflicting replay, stale
+expected-latest, one-winner concurrency, rollback, append-only triggers, CLI
+output, and unchanged Content/API/Web v1 with 0 real public cases. The later
+Chaos activation validator closes the current seven-source inventory at 3,973
+subjects and 9,310 outputs. Synthetic review rows exist only in temporary
+validation databases and are destroyed during cleanup.
 
 ## Handoff
 
-Authenticated review administration and the immutable Publication v2/takedown
-write boundary are implemented. The next product slice is read-only API/Web v2
-consumption, multi-image public presentation and authenticated activation controls,
-followed by deployment, scheduling, and monitoring. No real approval is invented;
-without explicit evidence the v2 build remains an empty fail-closed publication.
+Authenticated review administration, immutable Publication v2/takedown writes,
+read-only API/Web v2 consumption, multi-image public presentation, authenticated
+activation controls, deployment, scheduling, and monitoring are implemented.
+The remaining work is operational: authorized reviewers must record real
+evidence-backed decisions before an administrator can activate a non-empty
+publication. No real approval is invented; without explicit evidence the v2
+catalog remains empty and fail-closed.

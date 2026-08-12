@@ -4,16 +4,45 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+from pathlib import Path
 
 import httpx
 
 from apps.internal_preview.main import create_app
-from apps.internal_preview.repository import InternalPreviewRepository, PreviewAssetLocator
+from apps.internal_preview.repository import (
+    CURRENT_SOURCE_IDS,
+    EXPECTED_CASE_COUNT,
+    EXPECTED_OUTPUT_COUNT,
+    InternalPreviewRepository,
+    PreviewAssetLocator,
+)
 
 
 PNG_BYTES = b"\x89PNG\r\n\x1a\n" + b"internal-preview" * 40
 PNG_HASH = hashlib.sha256(PNG_BYTES).hexdigest()
 ASSET_ID = "a" * 64
+
+
+def test_current_internal_preview_contract_is_the_seven_source_v2_baseline() -> None:
+    assert len(CURRENT_SOURCE_IDS) == 7
+    assert "chaosrealmsai-gpt-image-2-gallery" in CURRENT_SOURCE_IDS
+    assert (EXPECTED_CASE_COUNT, EXPECTED_OUTPUT_COUNT) == (3973, 9310)
+
+    repository_root = Path(__file__).resolve().parents[2]
+    runbook = (repository_root / "docs" / "content" / "internal-review-preview.md").read_text(encoding="utf-8")
+    page = (repository_root / "apps" / "web" / "app" / "internal-preview" / "page.tsx").read_text(
+        encoding="utf-8"
+    )
+    for expected in (
+        "seven approved",
+        "3,973",
+        "9,310",
+        "six-source v1 cache",
+        "chaosrealmsai-gpt-image-2-gallery` | 2,460 | 7,380",
+        "UV_PROJECT_ENVIRONMENT",
+    ):
+        assert expected in runbook
+    assert "全部七个来源" in page
 
 
 def repository(*, content: bytes = PNG_BYTES) -> InternalPreviewRepository:
@@ -110,4 +139,3 @@ def test_internal_preview_unknown_asset_fails_closed() -> None:
     response = asyncio.run(request(app, "GET", f"/api/internal-preview/v1/assets/{'f' * 64}"))
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "preview_asset_not_found"
-

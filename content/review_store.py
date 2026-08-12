@@ -393,7 +393,7 @@ class RightsReviewStore:
     def _case_facts(conn: psycopg.Connection[Any], source_case_version_id: int) -> dict[str, Any]:
         row = conn.execute(
             """
-            SELECT version.source_case_version_id, project.source_id, project.repository_id,
+            SELECT version.source_case_version_id, version.adapter_record, project.source_id, project.repository_id,
                    revision.revision_sha, source_case.source_case_key,
                    prompt.prompt_id, prompt.raw_text, prompt.language,
                    prompt_file.source_path, prompt_file.source_url
@@ -482,6 +482,7 @@ class RightsReviewStore:
             )
         return {
             "source_case_version_id": int(row["source_case_version_id"]),
+            "public_tags": [str(value) for value in _mapping(row["adapter_record"]).get("raw_tags", []) if isinstance(value, str)],
             "source": {
                 "source_id": str(row["source_id"]),
                 "repository_id": str(row["repository_id"]),

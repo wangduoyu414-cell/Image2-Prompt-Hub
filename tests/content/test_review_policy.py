@@ -23,6 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 def case_facts() -> dict:
     return {
         "source_case_version_id": 7,
+        "public_tags": ["studio", "multi-output"],
         "source": {
             "source_id": "source-a",
             "repository_id": "github:1",
@@ -154,6 +155,7 @@ def test_candidate_v2_preserves_source_roles_and_redacts_hidden_outputs() -> Non
         "evidence_status": "source_claimed",
         "model_raw": "gpt-image-2",
     }
+    assert candidate["tags"] == ["multi-output", "studio"]
     assert "object_key" not in repr(candidate)
 
     hidden_review = copy.deepcopy(review)

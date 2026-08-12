@@ -40,6 +40,7 @@ def freeze_candidate(candidate: Mapping[str, Any]) -> dict[str, Any]:
         raise PublicationV2PolicyError("only publishable Candidate v2 documents may be frozen")
     source_case = _mapping(document.get("source_case"), "candidate.source_case")
     prompt = _mapping(document.get("prompt"), "candidate.prompt")
+    tags = [_text(value, "candidate tag") for value in _sequence(document.get("tags"), "candidate.tags")]
     review = _mapping(document.get("rights_review"), "candidate.rights_review")
     members = [_mapping(item, "candidate.generation_members item") for item in _sequence(document.get("generation_members"), "candidate.generation_members")]
     if not members:
@@ -74,15 +75,24 @@ def freeze_candidate(candidate: Mapping[str, Any]) -> dict[str, Any]:
             "source_case_key": _text(source_case.get("source_case_key"), "source_case.source_case_key"),
         }
     )
+    public_source_case = {key: value for key, value in source_case.items() if key != "source_case_version_id"}
+    public_review = {key: value for key, value in review.items() if key not in {"rights_review_batch_id", "reviewer"}}
+    public_members = [
+        {
+            key: value
+            for key, value in member.items()
+            if key != "generation_example_row_id"
+        }
+        for member in members
+    ]
     return {
         "schema_version": "public-case-publication-entry/v2",
         "public_case_key": public_case_key,
-        "source_case_version_id": source_case_version_id,
-        "rights_review_batch_id": review_batch_id,
-        "source_case": source_case,
+        "source_case": public_source_case,
         "prompt": prompt,
-        "generation_members": members,
-        "rights_review": review,
+        "tags": tags,
+        "generation_members": public_members,
+        "rights_review": public_review,
         "candidate_content_digest": candidate_digest,
     }
 

@@ -20,6 +20,7 @@ ASSET_HASH = hashlib.sha256(ASSET_BYTES).hexdigest()
 @dataclass
 class FakeRepository:
     submitted: ReviewSubmission | None = None
+    publication_action: str | None = None
 
     def readiness(self) -> str:
         return "ready"
@@ -98,6 +99,29 @@ class FakeRepository:
         assert generation_output_id == 11
         return AssetLocator(ASSET_HASH, "bucket", f"sha256/{ASSET_HASH}", "image/webp", len(ASSET_BYTES))
 
+    def publication_v2_status(self) -> dict[str, Any]:
+        return {
+            "current": {"state": "no_current"},
+            "takedowns": {"total": 0, "items": []},
+            "revision_selection": {"source": "a" * 40},
+        }
+
+    def build_publication_v2(self, *, actor: str, idempotency_key: str) -> dict[str, Any]:
+        self.publication_action = f"build:{actor}:{idempotency_key}"
+        return {"publication_version_v2_id": 9, "state": "ready", "included_count": 0}
+
+    def activate_publication_v2(self, version_id: int) -> dict[str, Any]:
+        self.publication_action = f"activate:{version_id}"
+        return {"publication_version_v2_id": version_id, "state": "active"}
+
+    def rollback_publication_v2(self, version_id: int) -> dict[str, Any]:
+        self.publication_action = f"rollback:{version_id}"
+        return {"publication_version_v2_id": version_id, "state": "active"}
+
+    def record_takedown_v2(self, **facts: Any) -> dict[str, Any]:
+        self.publication_action = f"takedown:{facts['requested_by']}:{facts['scope_type']}:{facts['action']}"
+        return {"status": "recorded", "takedown_request_v2_id": 4}
+
 
 class FakeAssetStore:
     def read(self, locator: AssetLocator) -> AssetDelivery:
@@ -111,6 +135,7 @@ def _auth() -> AdminAuthService:
             users=(
                 AdminUser("reviewer", "reviewer", hash_password("reviewer-password-123", salt=b"r" * 16)),
                 AdminUser("viewer", "viewer", hash_password("viewer-password-12345", salt=b"v" * 16)),
+                AdminUser("admin", "admin", hash_password("admin-password-123456", salt=b"a" * 16)),
             ),
             session_secret=b"session-secret-for-admin-tests-1234",
             allowed_origins=frozenset({"http://testserver"}),
@@ -205,3 +230,48 @@ def test_viewer_cannot_submit_and_logout_clears_session() -> None:
     )
     assert logged_out.status_code == 200
     assert client.get("/api/admin/v1/session").status_code == 401
+
+
+def test_publication_and_takedown_operations_require_admin_and_bind_actor() -> None:
+    repository = FakeRepository()
+    client = TestClient(create_app(auth_service=_auth(), repository=repository, asset_store=FakeAssetStore()))
+    reviewer_csrf = _login(client, "reviewer", "reviewer-password-123")
+    denied = client.post(
+        "/api/admin/v1/publication-v2/build",
+        headers={"Origin": "http://testserver", "X-CSRF-Token": reviewer_csrf},
+        json={"idempotency_key": "build-1"},
+    )
+    assert denied.status_code == 403
+    client.post(
+        "/api/admin/v1/session/logout",
+        headers={"Origin": "http://testserver", "X-CSRF-Token": reviewer_csrf},
+    )
+    admin_csrf = _login(client, "admin", "admin-password-123456")
+    status = client.get("/api/admin/v1/publication-v2")
+    assert status.status_code == 200 and status.json()["current"]["state"] == "no_current"
+    built = client.post(
+        "/api/admin/v1/publication-v2/build",
+        headers={"Origin": "http://testserver", "X-CSRF-Token": admin_csrf},
+        json={"idempotency_key": "build-1"},
+    )
+    assert built.status_code == 200 and repository.publication_action == "build:admin:build-1"
+    activated = client.post(
+        "/api/admin/v1/publication-v2/activate",
+        headers={"Origin": "http://testserver", "X-CSRF-Token": admin_csrf},
+        json={"publication_version_v2_id": 9},
+    )
+    assert activated.status_code == 200 and repository.publication_action == "activate:9"
+    takedown = client.post(
+        "/api/admin/v1/takedowns-v2",
+        headers={"Origin": "http://testserver", "X-CSRF-Token": admin_csrf},
+        json={
+            "idempotency_key": "take-1",
+            "scope_type": "case",
+            "scope_key": "source:case",
+            "action": "remove",
+            "reason_code": "request",
+            "evidence_url": "https://example.com/evidence",
+            "note": "Remove after verified request.",
+        },
+    )
+    assert takedown.status_code == 200 and repository.publication_action == "takedown:admin:case:remove"

@@ -95,6 +95,13 @@ def _sequence(value: Any, label: str) -> list[Any]:
     return list(value)
 
 
+def _public_tags(value: Any) -> list[str]:
+    tags = sorted({_public_identity_text(item, "public tag") for item in _sequence(value, "public_tags")})
+    if len(tags) > 100 or any(len(item) > 128 for item in tags):
+        raise ReviewPolicyError("public tags exceed the bounded Candidate v2 contract")
+    return tags
+
+
 def _reject_forbidden_keys(value: Any, *, path: str = "root") -> None:
     if isinstance(value, Mapping):
         for key, item in value.items():
@@ -408,6 +415,7 @@ def build_public_case_candidate(case_facts: Mapping[str, Any], review: Mapping[s
     source = _mapping(case_facts.get("source"), "source")
     prompt = _mapping(case_facts.get("prompt"), "prompt")
     generations = _sequence(case_facts.get("generations"), "generations")
+    public_tags = _public_tags(case_facts.get("public_tags", []))
     if not generations:
         raise ReviewPolicyError("generations must be nonempty")
 
@@ -536,6 +544,7 @@ def build_public_case_candidate(case_facts: Mapping[str, Any], review: Mapping[s
             "raw_text": _text(prompt.get("raw_text"), "raw_text"),
             "language": _public_identity_text(prompt.get("language"), "language"),
         },
+        "tags": public_tags,
         "generations": sorted(digest_generations, key=lambda item: item["generation_example_id"]),
         "review": None
         if review_summary is None
@@ -556,5 +565,6 @@ def build_public_case_candidate(case_facts: Mapping[str, Any], review: Mapping[s
         },
         "generation_members": sorted(members, key=lambda item: item["generation_example_id"]),
         "rights_review": review_summary,
+        "tags": public_tags,
         "candidate_content_digest": json_digest(digest_document),
     }

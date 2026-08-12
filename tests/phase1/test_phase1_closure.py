@@ -116,8 +116,8 @@ def test_phase1_closure_documents_keep_internal_public_and_deployment_states_dis
     design = (Path(__file__).resolve().parents[2] / "1.md").read_text(encoding="utf-8")
     closure_doc = (Path(__file__).resolve().parents[2] / "docs" / "phase1" / "phase1-closure-v1.md").read_text(encoding="utf-8")
     for phrase in (
-            "文档版本：v1.7",
-            "Phase 2 七来源内部接入、案例级审核、认证后台和 Publication v2/下架写侧已完成",
+            "文档版本：v1.8",
+            "七来源内部接入、审核、Publication/API/Web v2 和发布运营入口已完成",
         "312",
         "1513",
         "1930",

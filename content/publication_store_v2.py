@@ -483,8 +483,8 @@ class PublicationV2Store:
                     (
                         version_id,
                         entry["public_case_key"],
-                        entry["source_case_version_id"],
-                        entry["rights_review_batch_id"],
+                        source_case_version_id,
+                        int(candidate["rights_review"]["rights_review_batch_id"]),
                         stable_json(entry),
                         snapshot_digest(entry),
                     ),

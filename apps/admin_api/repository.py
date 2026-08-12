@@ -15,6 +15,7 @@ from apps.api.repository import AssetLocator
 from content.database import ContentDatabaseError, ContentDatabaseSettings
 from content.review import ReviewSubmission
 from content.review_store import RightsReviewStore
+from content.publication_store_v2 import PublicationV2Store
 
 
 class AdminRepositoryError(RuntimeError):
@@ -106,6 +107,7 @@ class AdminReviewRepository:
         self._settings = settings
         self._store = store
         self._authority = authority
+        self._publication_v2 = PublicationV2Store(settings)
 
     @classmethod
     def from_environment(cls) -> "AdminReviewRepository":
@@ -223,6 +225,48 @@ class AdminReviewRepository:
             media_type=str(row["media_type"]),
             byte_size=int(row["byte_size"]),
         )
+
+    def publication_v2_status(self) -> dict[str, Any]:
+        try:
+            current = self._publication_v2.inspect_current()
+            current_summary: dict[str, Any] = {"state": current.get("state")}
+            if current.get("state") == "active" and isinstance(current.get("publication_version"), dict):
+                current_summary["publication_version"] = current["publication_version"]
+            return {
+                "current": current_summary,
+                "takedowns": self._publication_v2.inspect_takedowns(limit=100, offset=0),
+                "revision_selection": self._store.latest_ready_revision_selection(),
+            }
+        except ContentDatabaseError as exc:
+            raise AdminRepositoryError(exc.error_code, str(exc)) from exc
+
+    def build_publication_v2(self, *, actor: str, idempotency_key: str) -> dict[str, Any]:
+        try:
+            return self._publication_v2.build_publication(
+                revision_selection=self._store.latest_ready_revision_selection(),
+                created_by=actor,
+                idempotency_key=idempotency_key,
+            )
+        except ContentDatabaseError as exc:
+            raise AdminRepositoryError(exc.error_code, str(exc)) from exc
+
+    def activate_publication_v2(self, version_id: int) -> dict[str, Any]:
+        try:
+            return self._publication_v2.activate_publication(version_id)
+        except ContentDatabaseError as exc:
+            raise AdminRepositoryError(exc.error_code, str(exc)) from exc
+
+    def rollback_publication_v2(self, version_id: int) -> dict[str, Any]:
+        try:
+            return self._publication_v2.rollback_publication(version_id)
+        except ContentDatabaseError as exc:
+            raise AdminRepositoryError(exc.error_code, str(exc)) from exc
+
+    def record_takedown_v2(self, **facts: Any) -> dict[str, Any]:
+        try:
+            return self._publication_v2.record_takedown(**facts)
+        except ContentDatabaseError as exc:
+            raise AdminRepositoryError(exc.error_code, str(exc)) from exc
 
 
 __all__ = [

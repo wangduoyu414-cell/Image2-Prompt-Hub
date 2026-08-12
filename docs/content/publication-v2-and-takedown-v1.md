@@ -31,9 +31,11 @@ Migration `0006_publication_v2_and_takedown.sql` adds:
 - one immutable exclusion row for every selected case that is not published;
 - an append-only takedown/restore timeline and version-bound application rows.
 
-The public snapshot contains the full original Prompt, the reviewed public
-output subset, redacted hidden-output and reference-input counts, source/Commit,
-model claim and review evidence. It contains no bucket, object key or credential.
+The public snapshot contains the full original Prompt, source `raw_tags`, the
+reviewed public output subset, redacted hidden-output and reference-input counts,
+source/Commit, model claim and public review evidence. Internal database row ids,
+review batch id and reviewer login identity stay outside the public JSON. It also
+contains no bucket, object key or credential.
 Mirrorable object locators exist only in the private asset manifest and database
 triggers verify them against immutable inventory and the public output facts.
 

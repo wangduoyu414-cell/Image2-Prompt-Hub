@@ -157,3 +157,89 @@ class HealthResponse(PublicModel):
 class ReadinessResponse(PublicModel):
     status: Literal["ready"]
     state: Literal["no_current", "active"]
+
+
+class V2PublicOutput(PublicModel):
+    content_sha256: str
+    media_type: str
+    byte_size: int = Field(gt=0)
+    ordinal: int = Field(ge=0)
+    source_role: str
+    public_display_role: Literal["public_primary", "public_gallery"]
+    source_path: str
+    source_url: str
+    display_policy: Literal["mirror_allowed", "attribution_required", "link_only"]
+
+
+class V2CaseSummary(PublicModel):
+    public_case_key: str
+    prompt_preview: str
+    source_id: str
+    display_policies: list[str]
+    has_reference: bool
+    public_output_count: int = Field(ge=1)
+    tags: list[str]
+    primary_output: V2PublicOutput
+
+
+class V2CaseFacets(PublicModel):
+    sources: list[FacetValue]
+    display_policies: list[FacetValue]
+    has_reference: list[BooleanFacetValue]
+    tags: list[FacetValue]
+
+
+class V2CaseListResponse(PublicModel):
+    publication: PublicationResponse
+    total: int = Field(ge=0)
+    page: int = Field(ge=1)
+    page_size: int = Field(ge=1)
+    cases: list[V2CaseSummary]
+    facets: V2CaseFacets
+
+
+class V2Prompt(PublicModel):
+    prompt_id: str
+    raw_text: str
+    language: str
+    source_path: str
+    source_url: str
+
+
+class V2Source(PublicModel):
+    source_id: str
+    repository_id: str
+    revision_sha: str
+    source_case_key: str
+
+
+class V2Rights(PublicModel):
+    repository_license: str
+    prompt_rights: Literal["approved"]
+    author: str
+    original_url: str
+    evidence_url: str
+    reviewed_at: str
+
+
+class V2GenerationMember(PublicModel):
+    generation_example_id: str
+    source_claim: dict[str, Any]
+    reference_input_count: int = Field(ge=0)
+    hidden_output_count: int = Field(ge=0)
+    public_outputs: list[V2PublicOutput]
+
+
+class V2Case(PublicModel):
+    public_case_key: str
+    prompt: V2Prompt
+    source: V2Source
+    rights: V2Rights
+    tags: list[str]
+    generation_members: list[V2GenerationMember]
+    candidate_content_digest: str
+
+
+class V2CaseDetailResponse(PublicModel):
+    publication: PublicationResponse
+    case: V2Case

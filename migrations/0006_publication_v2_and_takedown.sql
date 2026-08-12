@@ -204,8 +204,12 @@ BEGIN
     END IF;
     IF NEW.snapshot->>'schema_version' <> 'public-case-publication-entry/v2'
        OR NEW.snapshot->>'public_case_key' <> NEW.public_case_key
-       OR (NEW.snapshot->>'source_case_version_id')::bigint <> NEW.source_case_version_id
-       OR (NEW.snapshot->>'rights_review_batch_id')::bigint <> NEW.rights_review_batch_id THEN
+       OR NEW.snapshot ? 'source_case_version_id'
+       OR NEW.snapshot ? 'rights_review_batch_id'
+       OR NEW.snapshot->'source_case' ? 'source_case_version_id'
+       OR NEW.snapshot->'rights_review' ? 'rights_review_batch_id'
+       OR NEW.snapshot->'rights_review' ? 'reviewer'
+       OR jsonb_path_exists(NEW.snapshot, '$.generation_members[*].generation_example_row_id') THEN
         RAISE EXCEPTION 'publication v2 entry columns do not match its frozen snapshot' USING ERRCODE='integrity_constraint_violation';
     END IF;
     RETURN NEW;

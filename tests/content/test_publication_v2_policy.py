@@ -24,7 +24,12 @@ def test_freeze_candidate_preserves_multi_output_authority_and_redacted_input_co
     assert entry["schema_version"] == "public-case-publication-entry/v2"
     assert entry["public_case_key"] != candidate["candidate_content_digest"]
     assert len(entry["public_case_key"]) == 64
-    assert entry["rights_review_batch_id"] == candidate["rights_review"]["rights_review_batch_id"]
+    assert entry["rights_review"]["reviewed_at"] == candidate["rights_review"]["reviewed_at"]
+    assert "source_case_version_id" not in entry
+    assert "rights_review_batch_id" not in entry
+    assert "reviewer" not in repr(entry)
+    assert "generation_example_row_id" not in repr(entry)
+    assert entry["tags"] == ["multi-output", "studio"]
     assert sum(len(member["public_outputs"]) for member in entry["generation_members"]) == 2
     assert sum(len(member["reference_inputs"]) for member in entry["generation_members"]) == 0
     assert sum(

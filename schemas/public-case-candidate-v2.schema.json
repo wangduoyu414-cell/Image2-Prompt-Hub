@@ -4,7 +4,7 @@
   "title": "Public Case Candidate v2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "state", "source_case", "prompt", "generation_members", "rights_review", "candidate_content_digest"],
+  "required": ["schema_version", "state", "source_case", "prompt", "tags", "generation_members", "rights_review", "candidate_content_digest"],
   "properties": {
     "schema_version": {"const": "public-case-candidate/v2"},
     "state": {"enum": ["pending", "review_required", "publishable", "internal_only", "blocked"]},
@@ -31,6 +31,12 @@
         "source_path": {"$ref": "#/$defs/sourcePath"},
         "source_url": {"$ref": "#/$defs/publicHttpsUrl"}
       }
+    },
+    "tags": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {"allOf": [{"$ref": "#/$defs/publicIdentityText"}, {"maxLength": 128}]}
     },
     "generation_members": {
       "type": "array",

@@ -15,6 +15,8 @@ from .models import (
     HealthResponse,
     PublicationResponse,
     ReadinessResponse,
+    V2CaseDetailResponse,
+    V2CaseListResponse,
 )
 from .repository import (
     AssetNotAuthorized,
@@ -24,6 +26,7 @@ from .repository import (
     PublicationSnapshotInvalid,
     PublicationUnavailable,
 )
+from .repository_v2 import ContentPublicationV2Repository, PublicationV2Reader, PublicReadRepositoryV2
 
 
 def _error(status_code: int, code: str, message: str) -> JSONResponse:
@@ -38,17 +41,22 @@ def _asset_store_provider() -> AssetStore:
     return S3AssetStore.from_environment()
 
 
+def _repository_v2_provider() -> PublicReadRepositoryV2:
+    return PublicReadRepositoryV2(ContentPublicationV2Repository.from_environment())
+
+
 def create_app(
     *,
     repository: PublicReadRepository | None = None,
+    repository_v2: PublicReadRepositoryV2 | None = None,
     asset_store: AssetStore | None = None,
 ) -> FastAPI:
     """Create a side-effect-free app; no DB/S3 connection occurs at startup."""
 
     app = FastAPI(
         title="Image2 Public Publication API",
-        version="v1",
-        description="Read-only projection of the active immutable publication snapshot.",
+        version="v1+v2",
+        description="Read-only projections of the independent v1 and v2 immutable publication snapshots.",
     )
 
     def get_repository() -> PublicReadRepository:
@@ -56,6 +64,9 @@ def create_app(
 
     def get_asset_store() -> AssetStore:
         return asset_store if asset_store is not None else _asset_store_provider()
+
+    def get_repository_v2() -> PublicReadRepositoryV2:
+        return repository_v2 if repository_v2 is not None else _repository_v2_provider()
 
     @app.exception_handler(PublicationUnavailable)
     async def publication_unavailable(_: Request, __: PublicationUnavailable) -> JSONResponse:
@@ -129,6 +140,53 @@ def create_app(
         )
 
     @app.get(
+        "/api/v2/publication",
+        response_model=PublicationResponse,
+        responses={503: {"model": ErrorResponse}},
+    )
+    def publication_v2(publications: PublicReadRepositoryV2 = Depends(get_repository_v2)) -> dict[str, object]:
+        return publications.publication()
+
+    @app.get(
+        "/api/v2/cases",
+        response_model=V2CaseListResponse,
+        responses={422: {"model": ErrorResponse}, 503: {"model": ErrorResponse}},
+    )
+    def list_cases_v2(
+        publications: Annotated[PublicReadRepositoryV2, Depends(get_repository_v2)],
+        q: Annotated[str | None, Query(max_length=256)] = None,
+        source: Annotated[str | None, Query(min_length=1, max_length=128)] = None,
+        display_policy: Annotated[str | None, Query(pattern="^(mirror_allowed|attribution_required|link_only)$")] = None,
+        tag: Annotated[str | None, Query(min_length=1, max_length=128)] = None,
+        has_reference: bool | None = None,
+        page: Annotated[int, Query(ge=1, le=10_000)] = 1,
+        page_size: Annotated[int, Query(ge=1, le=100)] = 20,
+    ) -> dict[str, object]:
+        return publications.list_cases(
+            q=q,
+            source=source,
+            display_policy=display_policy,
+            tag=tag,
+            has_reference=has_reference,
+            page=page,
+            page_size=page_size,
+        )
+
+    @app.get(
+        "/api/v2/cases/{public_case_key}",
+        response_model=V2CaseDetailResponse,
+        responses={404: {"model": ErrorResponse}, 503: {"model": ErrorResponse}},
+    )
+    def case_detail_v2(
+        public_case_key: Annotated[str, Path(pattern="^[0-9a-f]{64}$")],
+        publications: Annotated[PublicReadRepositoryV2, Depends(get_repository_v2)],
+    ) -> dict[str, object]:
+        try:
+            return publications.case_detail(public_case_key)
+        except CaseNotFound:
+            return _error(404, "case_not_found", "The requested case is not in the current publication.")  # type: ignore[return-value]
+
+    @app.get(
         "/api/v1/cases/{canonical_key}",
         response_model=CaseDetailResponse,
         responses={404: {"model": ErrorResponse}, 503: {"model": ErrorResponse}},
@@ -155,6 +213,31 @@ def create_app(
     def asset(
         content_sha256: Annotated[str, Path(pattern="^[0-9a-f]{64}$")],
         publications: Annotated[PublicReadRepository, Depends(get_repository)],
+    ) -> StreamingResponse | JSONResponse:
+        try:
+            locator = publications.locate_current_asset(content_sha256)
+        except AssetNotAuthorized:
+            return _error(404, "asset_not_found", "The requested asset is not in the current mirrorable publication.")
+        store = asset_store if asset_store is not None else get_asset_store()
+        delivery = store.read(locator)
+        return StreamingResponse(
+            io.BytesIO(delivery.content),
+            media_type=delivery.media_type,
+            headers={
+                "ETag": f'"{delivery.content_sha256}"',
+                "Content-Length": str(len(delivery.content)),
+                "Cache-Control": "public, max-age=31536000, immutable",
+            },
+        )
+
+    @app.get(
+        "/api/v2/assets/{content_sha256}",
+        response_model=None,
+        responses={404: {"model": ErrorResponse}, 422: {"model": ErrorResponse}, 502: {"model": ErrorResponse}, 503: {"model": ErrorResponse}},
+    )
+    def asset_v2(
+        content_sha256: Annotated[str, Path(pattern="^[0-9a-f]{64}$")],
+        publications: Annotated[PublicReadRepositoryV2, Depends(get_repository_v2)],
     ) -> StreamingResponse | JSONResponse:
         try:
             locator = publications.locate_current_asset(content_sha256)

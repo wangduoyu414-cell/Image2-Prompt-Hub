@@ -40,6 +40,11 @@ class AdminRepository(Protocol):
     def inspect_batch(self, batch_id: int) -> dict[str, Any]: ...
     def preview_candidate(self, source_case_version_id: int) -> dict[str, Any]: ...
     def locate_output(self, generation_output_id: int): ...
+    def publication_v2_status(self) -> dict[str, Any]: ...
+    def build_publication_v2(self, *, actor: str, idempotency_key: str) -> dict[str, Any]: ...
+    def activate_publication_v2(self, version_id: int) -> dict[str, Any]: ...
+    def rollback_publication_v2(self, version_id: int) -> dict[str, Any]: ...
+    def record_takedown_v2(self, **facts: Any) -> dict[str, Any]: ...
 
 
 class LoginRequest(BaseModel):
@@ -72,6 +77,27 @@ class ReviewRequest(BaseModel):
     evidence_url: str = Field(min_length=1, max_length=2000)
     output_decisions: list[OutputDecisionRequest] = Field(min_length=1, max_length=100)
     review_note: str = Field(min_length=1, max_length=5000)
+
+
+class BuildPublicationV2Request(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    idempotency_key: str = Field(min_length=1, max_length=200)
+
+
+class VersionActionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    publication_version_v2_id: int = Field(gt=0)
+
+
+class TakedownV2Request(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    idempotency_key: str = Field(min_length=1, max_length=200)
+    scope_type: Literal["asset", "prompt", "case", "source"]
+    scope_key: str = Field(min_length=1, max_length=1000)
+    action: Literal["remove", "restore"]
+    reason_code: str = Field(min_length=1, max_length=200)
+    evidence_url: str = Field(min_length=1, max_length=2000)
+    note: str = Field(min_length=1, max_length=5000)
 
 
 def _error(status_code: int, code: str, message: str) -> JSONResponse:
@@ -150,6 +176,17 @@ def create_app(
         auth.assert_role(principal, "reviewer", "admin")
         return principal
 
+    def get_admin(
+        request: Request,
+        principal: AdminPrincipal = Depends(get_principal),
+        auth: AdminAuthService = Depends(get_auth),
+        csrf_token: Annotated[str | None, Header(alias="X-CSRF-Token")] = None,
+    ) -> AdminPrincipal:
+        auth.assert_origin(request.headers.get("origin"))
+        auth.assert_csrf(principal, csrf_token)
+        auth.assert_role(principal, "admin")
+        return principal
+
     @app.middleware("http")
     async def admin_security_headers(request: Request, call_next):  # type: ignore[no-untyped-def]
         response = await call_next(request)
@@ -175,7 +212,11 @@ def create_app(
     async def repository_error(_: Request, error: AdminRepositoryError) -> JSONResponse:
         if error.error_code in {"rights_review_v2_target_missing", "rights_review_v2_batch_missing", "admin_asset_not_found"}:
             return _error(404, error.error_code, str(error))
-        if error.error_code in {"rights_review_v2_stale", "rights_review_v2_idempotency_conflict"}:
+        if error.error_code in {
+            "rights_review_v2_stale", "rights_review_v2_idempotency_conflict",
+            "publication_v2_idempotency_conflict", "publication_v2_public_loss",
+            "publication_v2_active_takedown", "publication_v2_stale_review", "publication_v2_stale_revision",
+        }:
             return _error(409, error.error_code, str(error))
         if error.error_code in {"admin_database_unavailable", "content_schema_not_migrated"}:
             return _error(503, error.error_code, "Review administration is temporarily unavailable.")
@@ -327,6 +368,55 @@ def create_app(
         )
         result = admin.submit_review(submission)
         return {**result, "authenticated_reviewer": principal.username}
+
+    @app.get("/api/admin/v1/publication-v2")
+    def publication_v2_status(
+        _: AdminPrincipal = Depends(get_principal),
+        admin: AdminRepository = Depends(get_repository),
+    ) -> dict[str, Any]:
+        return admin.publication_v2_status()
+
+    @app.post("/api/admin/v1/publication-v2/build")
+    def build_publication_v2(
+        body: BuildPublicationV2Request,
+        principal: AdminPrincipal = Depends(get_admin),
+        admin: AdminRepository = Depends(get_repository),
+    ) -> dict[str, Any]:
+        return admin.build_publication_v2(actor=principal.username, idempotency_key=body.idempotency_key)
+
+    @app.post("/api/admin/v1/publication-v2/activate")
+    def activate_publication_v2(
+        body: VersionActionRequest,
+        _: AdminPrincipal = Depends(get_admin),
+        admin: AdminRepository = Depends(get_repository),
+    ) -> dict[str, Any]:
+        return admin.activate_publication_v2(body.publication_version_v2_id)
+
+    @app.post("/api/admin/v1/publication-v2/rollback")
+    def rollback_publication_v2(
+        body: VersionActionRequest,
+        _: AdminPrincipal = Depends(get_admin),
+        admin: AdminRepository = Depends(get_repository),
+    ) -> dict[str, Any]:
+        return admin.rollback_publication_v2(body.publication_version_v2_id)
+
+    @app.post("/api/admin/v1/takedowns-v2")
+    def record_takedown_v2(
+        body: TakedownV2Request,
+        principal: AdminPrincipal = Depends(get_admin),
+        admin: AdminRepository = Depends(get_repository),
+    ) -> dict[str, Any]:
+        return admin.record_takedown_v2(
+            idempotency_key=body.idempotency_key,
+            scope_type=body.scope_type,
+            scope_key=body.scope_key,
+            action=body.action,
+            reason_code=body.reason_code,
+            evidence_url=body.evidence_url,
+            note=body.note,
+            requested_by=principal.username,
+            requested_at=datetime.now(timezone.utc),
+        )
 
     return app
 

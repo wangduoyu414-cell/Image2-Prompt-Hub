@@ -96,6 +96,12 @@ export interface ReviewSubmissionPayload {
   review_note: string;
 }
 
+export interface PublicationAdminStatus {
+  current: Record<string, unknown>;
+  takedowns: { total: number; items: Array<Record<string, unknown>> };
+  revision_selection: Record<string, string>;
+}
+
 export class AdminApiError extends Error {
   constructor(
     readonly code: string,
@@ -300,4 +306,32 @@ export async function submitReview(payload: ReviewSubmissionPayload, csrfToken: 
 
 export async function getCandidatePreview(sourceCaseVersionId: number): Promise<Record<string, unknown>> {
   return record(await request(`review-subjects/${sourceCaseVersionId}/candidate`));
+}
+
+export async function getPublicationV2Status(): Promise<PublicationAdminStatus> {
+  const item = record(await request("publication-v2"));
+  const takedowns = record(item.takedowns);
+  const selection = record(item.revision_selection);
+  return {
+    current: record(item.current),
+    takedowns: { total: number(takedowns.total), items: array(takedowns.items).map(record) },
+    revision_selection: Object.fromEntries(Object.entries(selection).map(([key, value]) => [key, text(value)])),
+  };
+}
+
+async function mutatePublication(path: string, body: Record<string, unknown>, csrfToken: string): Promise<Record<string, unknown>> {
+  return record(await request(path, { method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken }, body: JSON.stringify(body) }));
+}
+
+export function buildPublicationV2(idempotencyKey: string, csrfToken: string) {
+  return mutatePublication("publication-v2/build", { idempotency_key: idempotencyKey }, csrfToken);
+}
+export function activatePublicationV2(versionId: number, csrfToken: string) {
+  return mutatePublication("publication-v2/activate", { publication_version_v2_id: versionId }, csrfToken);
+}
+export function rollbackPublicationV2(versionId: number, csrfToken: string) {
+  return mutatePublication("publication-v2/rollback", { publication_version_v2_id: versionId }, csrfToken);
+}
+export function recordTakedownV2(payload: Record<string, unknown>, csrfToken: string) {
+  return mutatePublication("takedowns-v2", payload, csrfToken);
 }

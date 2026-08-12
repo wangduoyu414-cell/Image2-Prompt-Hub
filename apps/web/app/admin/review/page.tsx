@@ -122,6 +122,7 @@ export default function ReviewQueuePage() {
         <div className="admin-identity">
           <span>{session.user.username}</span>
           <small>{session.user.role}</small>
+          {session.user.role === "admin" ? <Link className="text-link" href="/admin/publication">发布控制台</Link> : null}
           <button className="button-secondary" onClick={signOut} type="button">退出</button>
         </div>
       </header>

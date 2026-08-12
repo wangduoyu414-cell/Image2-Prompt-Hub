@@ -85,6 +85,7 @@ reviewer session, read a 2460-subject/7380-output queue, inspected a three-outpu
 case, streamed and verified its private WebP, and built a pending Candidate v2.
 The check left `rights_review_batches_v2=0` and `publication_entries=0`.
 
-No real approval has been invented. The next product stage is Public API/Web v2
-consumption of explicitly publishable Candidate v2 records, including multi-image
-display, revision re-review, and case/asset takedown behavior.
+No real approval has been invented. The same authenticated application now also
+provides `/admin/publication`: only the `admin` role can build, activate or roll
+back Publication v2 and append case/Prompt/asset/source remove/restore events.
+Public API/Web v2 consume only the independently activated immutable v2 current.

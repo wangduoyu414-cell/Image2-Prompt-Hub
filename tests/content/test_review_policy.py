@@ -168,6 +168,20 @@ def test_candidate_v2_preserves_source_roles_and_redacts_hidden_outputs() -> Non
     assert only["public_display_role"] == "public_primary"
 
 
+def test_public_identity_scheme_guard_does_not_match_scheme_text_inside_a_normal_id() -> None:
+    facts = case_facts()
+    facts["generations"][0]["generation_example_id"] = "generation:topic/profile:01-primary"
+    candidate = build_public_case_candidate(facts, stored_review())
+    schema = __import__("json").loads(
+        (REPO_ROOT / "schemas" / "public-case-candidate-v2.schema.json").read_text(encoding="utf-8")
+    )
+    jsonschema.Draft202012Validator(schema).validate(candidate)
+    assert any(
+        member["generation_example_id"].endswith("profile:01-primary")
+        for member in candidate["generation_members"]
+    )
+
+
 def test_candidate_states_and_forbidden_locator_fail_closed() -> None:
     assert build_public_case_candidate(case_facts(), None)["state"] == "pending"
     review = stored_review()

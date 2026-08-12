@@ -58,7 +58,9 @@ authority, and a deterministic content digest.
 
 Hidden outputs are represented only by `{redacted: true}` placeholders. They do not expose output ids,
 paths, URLs, object keys, buckets, or credentials. Candidate v2 never writes
-Publication v1 and is not consumed by Public API/Web v1. Raw model parameters are
+Publication v1 and is not consumed by Public API/Web v1. Publication v2 now
+freezes only validated publishable candidates through the separate contract in
+`publication-v2-and-takedown-v1.md`. Raw model parameters are
 also excluded from the public candidate: only the validated evidence status and
 model label are projected, and locator-like keys fail closed. The digest excludes
 the database-generated review batch id while the visible review summary retains
@@ -122,8 +124,8 @@ during cleanup.
 
 ## Handoff
 
-Authenticated review administration is now implemented. The next product slice is
-Candidate v2 API/Web consumption, multi-image public presentation, case/asset
-takedown and revision re-review behavior, followed by deployment, scheduling, and
-monitoring. No real approval or public activation occurs until explicit evidence
-has been entered through the authenticated review workflow.
+Authenticated review administration and the immutable Publication v2/takedown
+write boundary are implemented. The next product slice is read-only API/Web v2
+consumption, multi-image public presentation and authenticated activation controls,
+followed by deployment, scheduling, and monitoring. No real approval is invented;
+without explicit evidence the v2 build remains an empty fail-closed publication.

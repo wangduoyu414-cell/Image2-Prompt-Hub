@@ -115,7 +115,7 @@
       "allOf": [
         {"pattern": "^(?!\\s)(?![a-zA-Z][a-zA-Z0-9+.-]*://)(?!//)(?!.*\\s$).+$"},
         {"not": {"pattern": "://"}},
-        {"not": {"pattern": "(?:[hH][tT][tT][pP][sS]?:|[fF][tT][pP][sS]?:|[wW][sS][sS]?:|[dD][aA][tT][aA]:|[jJ][aA][vV][aA][sS][cC][rR][iI][pP][tT]:|[bB][lL][oO][bB]:|[fF][iI][lL][eE][sS][yY][sS][tT][eE][mM]:|[vV][iI][eE][wW]-[sS][oO][uU][rR][cC][eE]:|[sS]3:|[gG][sS]:|[fF][iI][lL][eE]:|[pP][rR][iI][vV][aA][tT][eE]:|[mM][iI][nN][iI][oO]:|[aA][zZ][uU][rR][eE]:|[aA][rR][nN]:[aA][wW][sS]:[sS]3)"}},
+        {"not": {"pattern": "(?:^|[^A-Za-z0-9+.-])(?:[hH][tT][tT][pP][sS]?:|[fF][tT][pP][sS]?:|[wW][sS][sS]?:|[dD][aA][tT][aA]:|[jJ][aA][vV][aA][sS][cC][rR][iI][pP][tT]:|[bB][lL][oO][bB]:|[fF][iI][lL][eE][sS][yY][sS][tT][eE][mM]:|[vV][iI][eE][wW]-[sS][oO][uU][rR][cC][eE]:|[sS]3:|[gG][sS]:|[fF][iI][lL][eE]:|[pP][rR][iI][vV][aA][tT][eE]:|[mM][iI][nN][iI][oO]:|[aA][zZ][uU][rR][eE]:|[aA][rR][nN]:[aA][wW][sS]:[sS]3)"}},
         {"not": {"pattern": "(?:[sS]3\\.[a-zA-Z0-9.-]*[aA][mM][aA][zZ][oO][nN][aA][wW][sS]\\.[cC][oO][mM]|[sS][tT][oO][rR][aA][gG][eE]\\.[gG][oO][oO][gG][lL][eE][aA][pP][iI][sS]\\.[cC][oO][mM]|[bB][lL][oO][bB]\\.[cC][oO][rR][eE]\\.[wW][iI][nN][dD][oO][wW][sS]\\.[nN][eE][tT]|[dD][iI][gG][iI][tT][aA][lL][oO][cC][eE][aA][nN][sS][pP][aA][cC][eE][sS]\\.[cC][oO][mM]|[rR]2\\.[cC][lL][oO][uU][dD][fF][lL][aA][rR][eE][sS][tT][oO][rR][aA][gG][eE]\\.[cC][oO][mM])"}},
         {"not": {"pattern": "(?:[xX]-[aA][mM][zZ]-(?:[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL]|[sS][iI][gG][nN][aA][tT][uU][rR][eE]|[sS][eE][cC][uU][rR][iI][tT][yY]-[tT][oO][kK][eE][nN])|[xX]-[gG][oO][oO][gG]-(?:[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL]|[sS][iI][gG][nN][aA][tT][uU][rR][eE])|[aA][wW][sS][aA][cC][cC][eE][sS][sS][kK][eE][yY][iI][dD])="}}
       ]
@@ -170,11 +170,20 @@
     "generationMember": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["generation_example_row_id", "generation_example_id", "source_claim", "public_outputs", "hidden_outputs"],
+      "required": ["generation_example_row_id", "generation_example_id", "source_claim", "reference_inputs", "public_outputs", "hidden_outputs"],
       "properties": {
         "generation_example_row_id": {"type": "integer", "minimum": 1},
         "generation_example_id": {"$ref": "#/$defs/publicIdentityText"},
         "source_claim": {"$ref": "#/$defs/sourceClaim"},
+        "reference_inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["redacted"],
+            "properties": {"redacted": {"const": true}}
+          }
+        },
         "public_outputs": {
           "type": "array",
           "items": {"$ref": "#/$defs/publicOutput"},

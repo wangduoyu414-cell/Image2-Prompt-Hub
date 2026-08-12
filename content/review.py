@@ -6,6 +6,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import ipaddress
+import re
 from pathlib import PurePosixPath
 from typing import Any
 from urllib.parse import urlparse
@@ -59,6 +60,10 @@ UNSAFE_IDENTITY_SCHEMES = frozenset(
 SENSITIVE_CREDENTIAL_MARKERS = (
     "x-amz-credential=", "x-amz-signature=", "x-amz-security-token=",
     "x-goog-credential=", "x-goog-signature=", "awsaccesskeyid=",
+)
+UNSAFE_IDENTITY_SCHEME_RE = re.compile(
+    r"(?:^|[^A-Za-z0-9+.-])(?:" + "|".join(re.escape(value) for value in sorted(UNSAFE_IDENTITY_SCHEMES)) + r"):" ,
+    re.IGNORECASE,
 )
 
 
@@ -197,7 +202,7 @@ def _public_identity_text(value: Any, label: str) -> str:
         "://" in text
         or text.startswith("//")
         or parsed.scheme.lower() in UNSAFE_IDENTITY_SCHEMES
-        or any(f"{scheme}:" in lowered for scheme in UNSAFE_IDENTITY_SCHEMES)
+        or UNSAFE_IDENTITY_SCHEME_RE.search(text) is not None
         or lowered.startswith(opaque_private_prefixes)
         or any(suffix in lowered for suffix in OBJECT_STORAGE_HOST_SUFFIXES)
         or any(marker in lowered for marker in SENSITIVE_CREDENTIAL_MARKERS)
@@ -496,6 +501,10 @@ def build_public_case_candidate(case_facts: Mapping[str, Any], review: Mapping[s
                 "generation_example_row_id": generation_row_id,
                 "generation_example_id": generation_id,
                 "source_claim": claim,
+                "reference_inputs": [
+                    {"redacted": True}
+                    for _ in _sequence(generation.get("inputs", []), "generation.inputs")
+                ],
                 "public_outputs": sorted(member_outputs, key=lambda item: (item["ordinal"], item["generation_output_id"])),
                 "hidden_outputs": [{"redacted": True} for _ in range(member_hidden)],
             }
@@ -504,6 +513,7 @@ def build_public_case_candidate(case_facts: Mapping[str, Any], review: Mapping[s
             {
                 "generation_example_id": generation_id,
                 "source_claim": claim,
+                "reference_input_count": len(_sequence(generation.get("inputs", []), "generation.inputs")),
                 "outputs": sorted(digest_outputs, key=lambda item: (item["ordinal"], item["generation_output_id"])),
             }
         )

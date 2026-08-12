@@ -3,9 +3,10 @@
 ## Status and boundary
 
 This module provides the internal, case-level foundation for human rights review.
-It does not record any real approval, activate a publication, expose an HTTP
-endpoint, or change Public API/Web v1. The verified six-source inventory remains
-1513 internal source cases, 1930 generation outputs, and 0 real public cases.
+It does not infer or record any real approval, activate a publication, or change
+Public API/Web v1. An authenticated HTTP/browser operator layer now consumes it
+without replacing its transaction boundary. The current seven-source inventory is
+3973 internal source cases, 9310 generation outputs, and 0 real public cases.
 
 The authoritative review subject is one immutable
 `inventory.source_case_versions.source_case_version_id`. A submission must cover
@@ -94,6 +95,15 @@ There is deliberately no approve-all command and no inferred license, author,
 rights status, display policy, or public primary. Review submission JSON must
 provide all authority fields and all output decisions explicitly.
 
+## Authenticated administration
+
+`apps.admin_api` and `/admin/review` provide the real operator entry described in
+`docs/content/authenticated-review-admin-v1.md`. Users and password hashes stay in
+the external runtime environment. Viewer/reviewer/admin roles, signed HttpOnly
+sessions, exact-origin CSRF checks, and server-bound reviewer identity protect all
+review data and writes. The browser cannot supply its own reviewer or reviewed-at
+value, and the admin API has no Publication activation endpoint.
+
 ## Validation evidence
 
 The live validator is:
@@ -112,9 +122,8 @@ during cleanup.
 
 ## Handoff
 
-The next product slice is not another ingestion expansion. It is the real
-operator and public-consumer layer: authenticated review administration, real
-review decisions, Candidate v2 API/Web consumption, case-level takedown and
-re-review behavior, followed by deployment, scheduling, and monitoring. Those
-changes require separate authorization and must not weaken the existing
-current-only Publication v1 boundary.
+Authenticated review administration is now implemented. The next product slice is
+Candidate v2 API/Web consumption, multi-image public presentation, case/asset
+takedown and revision re-review behavior, followed by deployment, scheduling, and
+monitoring. No real approval or public activation occurs until explicit evidence
+has been entered through the authenticated review workflow.

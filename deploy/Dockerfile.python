@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1.7
+FROM ghcr.io/astral-sh/uv:0.11.28@sha256:0f36cb9361a3346885ca3677e3767016687b5a170c1a6b88465ec14aefec90aa AS uv
+
+FROM python:3.12.10-slim-bookworm@sha256:fd95fa221297a88e1cf49c55ec1828edd7c5a428187e67b5d1805692d11588db AS runtime
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_PROJECT_ENVIRONMENT=/opt/image2-venv \
+    PATH=/opt/image2-venv/bin:$PATH
+
+RUN sed -i 's|http://deb.debian.org|https://deb.debian.org|g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get -o Acquire::Retries=5 update \
+    && apt-get -o Acquire::Retries=5 install --no-install-recommends -y ca-certificates git \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --gid 10001 image2 \
+    && useradd --uid 10001 --gid image2 --create-home --home-dir /home/image2 image2 \
+    && mkdir -p /app /var/lib/image2 \
+    && chown -R image2:image2 /app /var/lib/image2
+
+COPY --from=uv /uv /usr/local/bin/uv
+WORKDIR /app
+COPY --chown=image2:image2 pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
+COPY --chown=image2:image2 apps ./apps
+COPY --chown=image2:image2 config ./config
+COPY --chown=image2:image2 content ./content
+COPY --chown=image2:image2 ingestion ./ingestion
+COPY --chown=image2:image2 inventory ./inventory
+COPY --chown=image2:image2 migrations ./migrations
+COPY --chown=image2:image2 reports/source-audit-v2.json ./reports/source-audit-v2.json
+COPY --chown=image2:image2 schemas ./schemas
+COPY --chown=image2:image2 sync ./sync
+USER image2
+
+EXPOSE 8000
+CMD ["uvicorn", "apps.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]

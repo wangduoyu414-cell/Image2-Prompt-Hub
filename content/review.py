@@ -414,6 +414,11 @@ def build_public_case_candidate(case_facts: Mapping[str, Any], review: Mapping[s
     source_case_version_id = _integer(case_facts.get("source_case_version_id"), "source_case_version_id")
     source = _mapping(case_facts.get("source"), "source")
     prompt = _mapping(case_facts.get("prompt"), "prompt")
+    quality = _mapping(case_facts.get("quality"), "quality")
+    quality_verdict = str(quality.get("verdict"))
+    if quality_verdict not in {"eligible", "blocked", "duplicate_only"}:
+        raise ReviewPolicyError("content quality verdict is unsupported")
+    _public_identity_text(quality.get("reason_code"), "quality reason_code")
     generations = _sequence(case_facts.get("generations"), "generations")
     public_tags = _public_tags(case_facts.get("public_tags", []))
     if not generations:
@@ -448,6 +453,8 @@ def build_public_case_candidate(case_facts: Mapping[str, Any], review: Mapping[s
         }
 
     state = effective_review_state(review)
+    if quality_verdict in {"blocked", "duplicate_only"}:
+        state = "blocked"
     seen_outputs: set[int] = set()
     members: list[dict[str, Any]] = []
     public_outputs_flat: list[dict[str, Any]] = []

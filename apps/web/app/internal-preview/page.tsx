@@ -65,16 +65,20 @@ function Header({ listing }: { listing: InternalPreviewList }) {
       <p className="internal-warning">{listing.disclaimer}</p>
       <dl className="publication-summary">
         <div>
-          <dt>真实提示词案例</dt>
+          <dt>去重 Prompt 组</dt>
+          <dd>{listing.prompt_group_count}</dd>
+        </div>
+        <div>
+          <dt>质量可见效果图</dt>
+          <dd>{listing.visible_output_count}</dd>
+        </div>
+        <div>
+          <dt>原始来源记录</dt>
           <dd>{listing.case_count}</dd>
         </div>
         <div>
-          <dt>对应效果图</dt>
-          <dd>{listing.output_count}</dd>
-        </div>
-        <div>
-          <dt>固定来源</dt>
-          <dd>{listing.sources.length}</dd>
+          <dt>已隔离异常</dt>
+          <dd>{listing.quality_exclusion_count}</dd>
         </div>
       </dl>
       <p>
@@ -130,7 +134,7 @@ export default async function InternalPreviewPage({ searchParams }: { searchPara
             <h1 id="internal-preview-title">真实提示词与对应效果图</h1>
           </div>
           <p className="result-count">
-            共 {listing.total} 个案例，第 {listing.page} / {pageCount} 页
+            共 {listing.total} 个去重 Prompt 组，第 {listing.page} / {pageCount} 页
           </p>
         </div>
         {listing.cases.length === 0 ? (

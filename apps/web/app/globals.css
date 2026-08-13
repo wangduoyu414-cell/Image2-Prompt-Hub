@@ -785,6 +785,26 @@ h3 {
   padding: 0.28rem 0.55rem;
 }
 
+.internal-preview-badges .quality-blocked-badge {
+  background: #fff0f0;
+  border-color: #d77;
+  color: #8b1d1d;
+}
+
+.quality-exclusion-list {
+  background: #fff6f6;
+  border: 1px solid #e3b6b6;
+  border-radius: 0.55rem;
+  color: #7a1f1f;
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+}
+
+.quality-exclusion-list ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
 .internal-prompt-preview {
   display: -webkit-box;
   min-height: 7.5rem;

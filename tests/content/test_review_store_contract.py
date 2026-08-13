@@ -44,6 +44,8 @@ def test_latest_review_queue_selection_uses_persisted_inventory_run_order() -> N
     assert "inventory.rights_records" in source
     assert "candidate_run.source_adapter_run_id" in source
     assert "image2-ready-review-project-v2" in source
+    assert 'state = "blocked"' in source
+    assert 'raise ContentDatabaseError("content_quality_invalid"' in source
 
 
 def test_submission_mapping_requires_explicit_complete_fields() -> None:

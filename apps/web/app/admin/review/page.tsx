@@ -161,6 +161,7 @@ export default function ReviewQueuePage() {
               <span className={`review-state state-${item.state}`}>{STATE_LABELS[item.state]}</span>
               <span>{item.output_count} 张图</span>
               <span>{item.source_id}</span>
+              {item.quality.verdict !== "eligible" ? <span>质量阻断：{item.quality.reason_code}</span> : null}
             </div>
             <p>{item.prompt_preview}</p>
             <small>{item.source_case_key}</small>

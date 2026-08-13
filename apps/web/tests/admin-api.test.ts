@@ -28,6 +28,7 @@ test("admin parsers preserve authenticated identity and explicit review facts", 
         output_count: 3,
         state: "pending",
         latest_batch_id: null,
+        quality: { verdict: "eligible", reason_code: "not_blocked" },
       },
     ],
     limit: 50,
@@ -42,6 +43,7 @@ test("admin parsers preserve authenticated identity and explicit review facts", 
       source: { source_id: "source", repository_id: "1", revision_sha: "a".repeat(40), source_case_key: "source:case" },
       prompt: { prompt_id: "prompt:1", raw_text: "Prompt", language: "en", source_path: "meta.json", source_url: "https://example.com/meta.json" },
       existing_rights_evidence: { prompt_rights_status: "unknown" },
+      quality: { verdict: "eligible", reason_code: "not_blocked" },
       generations: [
         {
           generation_example_row_id: 9,
@@ -67,6 +69,7 @@ test("admin parsers preserve authenticated identity and explicit review facts", 
     review_defaults: { repository_license: "MIT", original_url: "https://example.com/meta.json", evidence_url: "https://example.com/LICENSE", author: null },
   });
   assert.equal(subject.case_facts.generations[0].outputs[0].generation_output_id, 11);
+  assert.equal(subject.case_facts.quality.verdict, "eligible");
   assert.equal(subject.review_defaults.repository_license, "MIT");
 });
 

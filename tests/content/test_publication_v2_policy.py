@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+from pathlib import Path
 
 import pytest
 
@@ -60,6 +61,7 @@ def test_freeze_candidate_rejects_nonpublishable_or_primary_drift() -> None:
         freeze_candidate(rights_drift)
 
 
+
 def test_takedown_matching_covers_asset_prompt_case_digest_case_version_and_source() -> None:
     candidate = _publishable_candidate()
     primary = next(
@@ -89,6 +91,25 @@ def test_takedown_matching_covers_asset_prompt_case_digest_case_version_and_sour
         assert PublicationV2Store._takedown_reason(
             candidate, {(scope_type, scope_key): {"action": "restore"}}
         ) is None
+
+
+def test_publication_builder_has_distinct_quality_exclusion_reason() -> None:
+    source = Path(__file__).resolve().parents[2] / "content" / "publication_store_v2.py"
+    text = source.read_text(encoding="utf-8")
+    assert 'quality = facts.get("quality")' in text
+    assert 'reason = f"quality_{quality[\'reason_code\']}"' in text
+    migration = (Path(__file__).resolve().parents[2] / "migrations" / "0009_content_quality_exclusions.sql").read_text(
+        encoding="utf-8"
+    )
+    for reason_code in (
+        "quality_non_result_capture",
+        "quality_prompt_output_mismatch",
+        "quality_near_identical_cross_source_render",
+        "quality_exact_prompt_output_subset",
+    ):
+        assert reason_code in migration
+    assert "has_quality_exclusion_domain" in text
+    assert "self.assert_migrated()" in text
 
 
 def test_publication_v2_migration_declares_immutable_snapshot_asset_and_takedown_boundaries() -> None:

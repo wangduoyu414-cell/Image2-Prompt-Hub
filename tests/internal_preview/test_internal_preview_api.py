@@ -13,6 +13,9 @@ from apps.internal_preview.repository import (
     CURRENT_SOURCE_IDS,
     EXPECTED_CASE_COUNT,
     EXPECTED_OUTPUT_COUNT,
+    EXPECTED_PROMPT_GROUP_COUNT,
+    EXPECTED_QUALITY_EXCLUSION_COUNT,
+    EXPECTED_VISIBLE_OUTPUT_COUNT,
     InternalPreviewRepository,
     PreviewAssetLocator,
 )
@@ -27,6 +30,7 @@ def test_current_internal_preview_contract_is_the_seven_source_v2_baseline() -> 
     assert len(CURRENT_SOURCE_IDS) == 7
     assert "chaosrealmsai-gpt-image-2-gallery" in CURRENT_SOURCE_IDS
     assert (EXPECTED_CASE_COUNT, EXPECTED_OUTPUT_COUNT) == (3973, 9310)
+    assert (EXPECTED_PROMPT_GROUP_COUNT, EXPECTED_VISIBLE_OUTPUT_COUNT, EXPECTED_QUALITY_EXCLUSION_COUNT) == (3933, 9286, 24)
 
     repository_root = Path(__file__).resolve().parents[2]
     runbook = (repository_root / "docs" / "content" / "internal-review-preview.md").read_text(encoding="utf-8")
@@ -46,7 +50,22 @@ def test_current_internal_preview_contract_is_the_seven_source_v2_baseline() -> 
 
 
 def repository(*, content: bytes = PNG_BYTES) -> InternalPreviewRepository:
-    cases = [
+    cases = fixture_cases()
+    locator = PreviewAssetLocator(
+        asset_id=ASSET_ID,
+        source_id="source-a",
+        revision_sha="b" * 40,
+        source_path="images/one.png",
+        content_sha256=PNG_HASH,
+        media_type="image/png",
+        byte_size=len(PNG_BYTES),
+        role="output_primary",
+    )
+    return InternalPreviewRepository(cases=cases, assets={ASSET_ID: locator}, asset_reader=lambda _: content)
+
+
+def fixture_cases() -> list[dict[str, object]]:
+    return [
         {
             "case_id": "1" * 64,
             "source_id": "source-a",
@@ -84,21 +103,20 @@ def repository(*, content: bytes = PNG_BYTES) -> InternalPreviewRepository:
             "prompt_rights_status": "unknown",
             "asset_rights_status": "unknown",
             "review_state": "review_required",
-            "outputs": [{"asset_id": "d" * 64}],
+            "outputs": [
+                {
+                    "asset_id": "d" * 64,
+                    "ordinal": 0,
+                    "role": "output_primary",
+                    "media_type": "image/png",
+                    "byte_size": len(PNG_BYTES),
+                    "content_sha256": "e" * 64,
+                    "source_url": "https://example.invalid/source-b/two.png",
+                }
+            ],
             "output_count": 1,
         },
     ]
-    locator = PreviewAssetLocator(
-        asset_id=ASSET_ID,
-        source_id="source-a",
-        revision_sha="b" * 40,
-        source_path="images/one.png",
-        content_sha256=PNG_HASH,
-        media_type="image/png",
-        byte_size=len(PNG_BYTES),
-        role="output_primary",
-    )
-    return InternalPreviewRepository(cases=cases, assets={ASSET_ID: locator}, asset_reader=lambda _: content)
 
 
 async def request(app, method: str, path: str) -> httpx.Response:
@@ -115,9 +133,52 @@ def test_internal_preview_list_is_review_required_searchable_and_paginated() -> 
     assert "不得作为公开发布结果" in body["disclaimer"]
     assert body["total"] == 1
     assert body["case_count"] == 2
+    assert body["prompt_group_count"] == 2
+    assert body["visible_output_count"] == 2
+    assert body["quality_exclusion_count"] == 0
     assert body["cases"][0]["review_state"] == "review_required"
     assert body["cases"][0]["outputs"][0]["asset_id"] == ASSET_ID
+    assert body["cases"][0]["member_count"] == 1
     assert body["sources"] == [{"value": "source-a", "count": 1}, {"value": "source-b", "count": 1}]
+
+
+def test_internal_preview_groups_exact_prompts_and_deduplicates_output_hashes() -> None:
+    first = dict(fixture_cases()[0])
+    duplicate = {
+        **first,
+        "case_id": "3" * 64,
+        "source_id": "source-c",
+        "revision_sha": "d" * 40,
+        "source_case_key": "source-c:three",
+        "source_url": "https://example.invalid/source-c/three",
+    }
+    locator = PreviewAssetLocator(
+        asset_id=ASSET_ID,
+        source_id="source-a",
+        revision_sha="b" * 40,
+        source_path="images/one.png",
+        content_sha256=PNG_HASH,
+        media_type="image/png",
+        byte_size=len(PNG_BYTES),
+        role="output_primary",
+    )
+    grouped = InternalPreviewRepository(
+        cases=[first, duplicate],
+        assets={ASSET_ID: locator},
+        asset_reader=lambda _: PNG_BYTES,
+    ).list_cases(q=None, source=None, page=1, page_size=24)
+    assert grouped["case_count"] == 2
+    assert grouped["prompt_group_count"] == 1
+    assert grouped["cases"][0]["member_count"] == 2
+    assert grouped["cases"][0]["output_count"] == 1
+    assert grouped["cases"][0]["outputs"][0]["source_ids"] == ["source-a", "source-c"]
+    source_filtered = InternalPreviewRepository(
+        cases=[first, duplicate],
+        assets={ASSET_ID: locator},
+        asset_reader=lambda _: PNG_BYTES,
+    ).list_cases(q=None, source="source-c", page=1, page_size=24)
+    assert source_filtered["total"] == 1
+    assert source_filtered["cases"][0]["output_count"] == 1
 
 
 def test_internal_preview_asset_is_private_no_store_and_hash_checked() -> None:

@@ -23,6 +23,7 @@ from .publication_v2 import (
 )
 from .review import ReviewPolicyError, build_public_case_candidate
 from .review_store import RightsReviewStore
+from .quality import ContentQualityError, load_content_quality_ledger
 
 
 COMMIT_SHA = re.compile(r"^[0-9a-f]{40}$")
@@ -84,16 +85,37 @@ class PublicationV2Store:
             conn.close()
 
     def assert_migrated(self) -> None:
+        try:
+            load_content_quality_ledger()
+        except ContentQualityError as exc:
+            raise ContentDatabaseError("content_quality_invalid", str(exc)) from exc
         conn = self._connect(autocommit=True)
         try:
             row = conn.execute(
                 """
                 SELECT to_regclass('content.publication_versions_v2') AS versions,
                        to_regclass('content.publication_entries_v2') AS entries,
-                       to_regclass('content.takedown_requests_v2') AS takedowns
+                       to_regclass('content.takedown_requests_v2') AS takedowns,
+                       EXISTS (
+                           SELECT 1
+                           FROM pg_constraint constraint_record
+                           JOIN pg_class relation ON relation.oid=constraint_record.conrelid
+                           JOIN pg_namespace namespace ON namespace.oid=relation.relnamespace
+                           WHERE namespace.nspname='content'
+                             AND relation.relname='publication_exclusions_v2'
+                             AND constraint_record.contype='c'
+                             AND strpos(pg_get_constraintdef(constraint_record.oid), 'quality_non_result_capture') > 0
+                             AND strpos(pg_get_constraintdef(constraint_record.oid), 'quality_prompt_output_mismatch') > 0
+                             AND strpos(pg_get_constraintdef(constraint_record.oid), 'quality_near_identical_cross_source_render') > 0
+                             AND strpos(pg_get_constraintdef(constraint_record.oid), 'quality_exact_prompt_output_subset') > 0
+                       ) AS has_quality_exclusion_domain
                 """
             ).fetchone()
-            if not row or any(row.get(name) is None for name in ("versions", "entries", "takedowns")):
+            if (
+                not row
+                or any(row.get(name) is None for name in ("versions", "entries", "takedowns"))
+                or row.get("has_quality_exclusion_domain") is not True
+            ):
                 raise ContentDatabaseError("content_schema_not_migrated", "publication v2 migration has not been applied")
         except psycopg.Error as exc:
             raise ContentDatabaseError("content_schema_not_migrated", "publication v2 migration has not been applied") from exc
@@ -308,6 +330,7 @@ class PublicationV2Store:
     ) -> dict[str, Any]:
         if failure_point not in {None, "before_ready"}:
             raise ContentDatabaseError("publication_v2_failure_point_invalid", "unsupported publication v2 failure point")
+        self.assert_migrated()
         selected = self._normalize_selection(revision_selection)
         actor = _text(created_by, "created_by", maximum=200)
         request_key = _text(idempotency_key, "idempotency_key", maximum=200)
@@ -440,7 +463,15 @@ class PublicationV2Store:
                     )
                     continue
                 if candidate["state"] != "publishable":
-                    reason = f"review_{candidate['state']}"
+                    quality = facts.get("quality")
+                    if (
+                        candidate["state"] == "blocked"
+                        and isinstance(quality, Mapping)
+                        and quality.get("verdict") in {"blocked", "duplicate_only"}
+                    ):
+                        reason = f"quality_{quality['reason_code']}"
+                    else:
+                        reason = f"review_{candidate['state']}"
                     reasons[reason] += 1
                     conn.execute(
                         """

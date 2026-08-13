@@ -38,6 +38,8 @@ EXIT_CODES = {
     "rights_review_v2_candidate_invalid": 96,
     "rights_review_v2_read_failed": 97,
     "rights_review_v2_database_failed": 98,
+    "content_quality_invalid": 99,
+    "content_quality_blocked": 99,
     "publication_v2_invalid": 100,
     "publication_v2_selection_invalid": 101,
     "publication_v2_candidate_invalid": 102,

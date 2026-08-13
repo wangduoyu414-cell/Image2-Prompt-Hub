@@ -24,6 +24,7 @@ def case_facts() -> dict:
     return {
         "source_case_version_id": 7,
         "public_tags": ["studio", "multi-output"],
+        "quality": {"verdict": "eligible", "reason_code": "not_blocked"},
         "source": {
             "source_id": "source-a",
             "repository_id": "github:1",
@@ -192,6 +193,18 @@ def test_candidate_states_and_forbidden_locator_fail_closed() -> None:
     blocked = build_public_case_candidate(case_facts(), review)
     assert blocked["state"] == "blocked"
     assert all(member["public_outputs"] == [] for member in blocked["generation_members"])
+
+    quality_blocked = case_facts()
+    quality_blocked["quality"] = {"verdict": "blocked", "reason_code": "prompt_output_mismatch"}
+    quality_candidate = build_public_case_candidate(quality_blocked, stored_review())
+    assert quality_candidate["state"] == "blocked"
+    assert all(member["public_outputs"] == [] for member in quality_candidate["generation_members"])
+    schema = jsonschema.Draft202012Validator(
+        __import__("json").loads(
+            (REPO_ROOT / "schemas" / "public-case-candidate-v2.schema.json").read_text(encoding="utf-8")
+        )
+    )
+    schema.validate(quality_candidate)
 
     facts = case_facts()
     facts["generations"][0]["outputs"][0]["object_key"] = "sha256/private"

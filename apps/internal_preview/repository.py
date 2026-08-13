@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import tempfile
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
@@ -23,12 +24,17 @@ from ingestion.contracts import (
 )
 from ingestion.git_snapshot import fixed_snapshot
 from ingestion.registry import SourceConfig, ensure_external_root, load_source_config, repo_root
+from content.quality import ContentQualityError, content_quality_decision
+from content.publication import normalize_prompt
 
 
 INDEX_SCHEMA = "internal-preview-index/v2"
 LEGACY_INDEX_SCHEMA = "internal-preview-index/v1"
 EXPECTED_CASE_COUNT = 3973
 EXPECTED_OUTPUT_COUNT = 9310
+EXPECTED_PROMPT_GROUP_COUNT = 3933
+EXPECTED_VISIBLE_OUTPUT_COUNT = 9286
+EXPECTED_QUALITY_EXCLUSION_COUNT = 24
 SOURCE_IDS = (
     "g0dam-work-prompts",
     "joesai-commercial-prompts",
@@ -114,6 +120,8 @@ def _cache_key(registry_path: Path, audit_path: Path, configs: Sequence[SourceCo
         "adapter_version": ADAPTER_VERSION,
         "registry_sha256": _sha256_file(registry_path),
         "audit_sha256": _sha256_file(audit_path),
+        "quality_ledger_sha256": _sha256_file(repo_root().resolve() / "config" / "content-quality-v1.json"),
+        "quality_schema_sha256": _sha256_file(repo_root().resolve() / "schemas" / "content-quality-v1.schema.json"),
         "sources": [
             {
                 "source_id": config.source_id,
@@ -247,6 +255,120 @@ def _case_from_document(
     )
 
 
+def _prompt_group_id(prompt: str) -> str:
+    return hashlib.sha256(normalize_prompt(prompt).encode("utf-8")).hexdigest()
+
+
+def _quality_decision_for_case(case: Mapping[str, Any]):
+    try:
+        return content_quality_decision(
+            source_id=str(case["source_id"]),
+            revision_sha=str(case["revision_sha"]),
+            source_case_key=str(case["source_case_key"]),
+            raw_prompt=str(case["prompt"]),
+            output_content_sha256=[str(item["content_sha256"]) for item in case["outputs"]],
+        )
+    except (KeyError, TypeError, ContentQualityError) as exc:
+        raise InternalPreviewError("preview_quality_invalid", "content quality authority does not match preview facts") from exc
+
+
+def _group_cases(cases: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    by_prompt: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for raw_case in cases:
+        case = dict(raw_case)
+        by_prompt[_prompt_group_id(str(case["prompt"]))].append(case)
+    groups: list[dict[str, Any]] = []
+    for prompt_group_id, raw_members in by_prompt.items():
+        members = sorted(raw_members, key=lambda item: (str(item["source_id"]), str(item["source_case_key"])))
+        eligible_members: list[dict[str, Any]] = []
+        excluded_members: list[dict[str, Any]] = []
+        for case in members:
+            decision = _quality_decision_for_case(case)
+            member = {
+                "case_id": str(case["case_id"]),
+                "source_id": str(case["source_id"]),
+                "revision_sha": str(case["revision_sha"]),
+                "source_case_key": str(case["source_case_key"]),
+                "source_url": str(case["source_url"]),
+                "output_count": int(case["output_count"]),
+                "quality_verdict": "eligible" if decision is None else decision.verdict,
+                "quality_reason_code": None if decision is None else decision.reason_code,
+            }
+            if decision is not None and decision.blocks_publication:
+                excluded_members.append(member)
+            else:
+                eligible_members.append(member)
+        if not eligible_members:
+            continue
+        eligible_case_ids = {str(item["case_id"]) for item in eligible_members}
+        representative = next(case for case in members if str(case["case_id"]) in eligible_case_ids)
+        outputs: list[dict[str, Any]] = []
+        outputs_by_content: dict[str, dict[str, Any]] = {}
+        excluded_case_ids = {str(item["case_id"]) for item in excluded_members}
+        for case in members:
+            if str(case["case_id"]) in excluded_case_ids:
+                continue
+            for raw_output in case["outputs"]:
+                content_sha256 = str(raw_output["content_sha256"])
+                existing_output = outputs_by_content.get(content_sha256)
+                if existing_output is not None:
+                    source_id = str(case["source_id"])
+                    source_case_key = str(case["source_case_key"])
+                    if source_id not in existing_output["source_ids"]:
+                        existing_output["source_ids"].append(source_id)
+                        existing_output["source_ids"].sort()
+                    if source_case_key not in existing_output["source_case_keys"]:
+                        existing_output["source_case_keys"].append(source_case_key)
+                        existing_output["source_case_keys"].sort()
+                    continue
+                output = dict(raw_output)
+                output["ordinal"] = len(outputs)
+                output["source_id"] = str(case["source_id"])
+                output["source_case_key"] = str(case["source_case_key"])
+                output["source_ids"] = [str(case["source_id"])]
+                output["source_case_keys"] = [str(case["source_case_key"])]
+                outputs_by_content[content_sha256] = output
+                outputs.append(output)
+        if not outputs:
+            raise InternalPreviewError("preview_quality_invalid", "quality projection removed every output from a prompt group")
+        source_ids = sorted({str(item["source_id"]) for item in members})
+        model_claims = sorted(
+            {
+                str(value)
+                for item in members
+                if str(item["case_id"]) in eligible_case_ids
+                for value in item.get("model_claims", [])
+            }
+        )
+        languages = sorted({str(item.get("language", "unknown")) for item in members})
+        groups.append(
+            {
+                "case_id": prompt_group_id,
+                "prompt_group_id": prompt_group_id,
+                "prompt": str(representative["prompt"]),
+                "language": languages[0] if len(languages) == 1 else "mixed",
+                "model_claims": model_claims,
+                "prompt_rights_status": "review_required",
+                "asset_rights_status": "review_required",
+                "review_state": "review_required",
+                "source_ids": source_ids,
+                "source_id": source_ids[0] if len(source_ids) == 1 else "multiple_sources",
+                "source_url": str(eligible_members[0]["source_url"]),
+                "source_case_key": str(eligible_members[0]["source_case_key"]),
+                "revision_sha": str(eligible_members[0]["revision_sha"]),
+                "member_count": len(members),
+                "eligible_member_count": len(eligible_members),
+                "excluded_member_count": len(excluded_members),
+                "members": eligible_members,
+                "excluded_members": excluded_members,
+                "outputs": outputs,
+                "output_count": len(outputs),
+            }
+        )
+    groups.sort(key=lambda item: str(item["prompt_group_id"]))
+    return groups
+
+
 def _build_index(
     *,
     repo: Path,
@@ -306,8 +428,18 @@ class InternalPreviewRepository:
         asset_reader: AssetReader,
     ) -> None:
         self._cases = tuple(dict(item) for item in cases)
+        self._groups = tuple(_group_cases(self._cases))
         self._assets = dict(assets)
         self._asset_reader = asset_reader
+        if len(self._cases) == EXPECTED_CASE_COUNT:
+            visible_outputs = sum(int(item["output_count"]) for item in self._groups)
+            excluded_members = sum(int(item["excluded_member_count"]) for item in self._groups)
+            if (
+                len(self._groups) != EXPECTED_PROMPT_GROUP_COUNT
+                or visible_outputs != EXPECTED_VISIBLE_OUTPUT_COUNT
+                or excluded_members != EXPECTED_QUALITY_EXCLUSION_COUNT
+            ):
+                raise InternalPreviewError("preview_quality_invalid", "quality projection differs from the approved baseline")
 
     @classmethod
     def from_environment(cls) -> "InternalPreviewRepository":
@@ -378,6 +510,9 @@ class InternalPreviewRepository:
             "mode": "internal_review_required",
             "case_count": len(self._cases),
             "output_count": sum(int(item["output_count"]) for item in self._cases),
+            "prompt_group_count": len(self._groups),
+            "visible_output_count": sum(int(item["output_count"]) for item in self._groups),
+            "quality_exclusion_count": sum(int(item["excluded_member_count"]) for item in self._groups),
             "source_count": len({str(item["source_id"]) for item in self._cases}),
         }
 
@@ -390,17 +525,41 @@ class InternalPreviewRepository:
         page_size: int,
     ) -> dict[str, Any]:
         query = (q or "").strip().casefold()
-        filtered = [
-            item
-            for item in self._cases
-            if (source is None or item["source_id"] == source)
-            and (
-                not query
-                or query in str(item["prompt"]).casefold()
-                or query in str(item["source_id"]).casefold()
-                or query in str(item["source_case_key"]).casefold()
-            )
-        ]
+        filtered = []
+        for item in self._groups:
+            members = [member for member in item["members"] if source is None or member["source_id"] == source]
+            excluded_members = [
+                member for member in item["excluded_members"] if source is None or member["source_id"] == source
+            ]
+            searchable = " ".join(
+                [
+                    str(item["prompt"]),
+                    *[str(member["source_id"]) for member in members + excluded_members],
+                    *[str(member["source_case_key"]) for member in members + excluded_members],
+                ]
+            ).casefold()
+            if query and query not in searchable:
+                continue
+            if not members:
+                continue
+            outputs = [
+                output
+                for output in item["outputs"]
+                if source is None or source in output.get("source_ids", [])
+            ]
+            if not outputs:
+                continue
+            projected = dict(item)
+            projected["members"] = members
+            projected["excluded_members"] = excluded_members
+            projected["member_count"] = len(members) + len(excluded_members)
+            projected["eligible_member_count"] = len(members)
+            projected["excluded_member_count"] = len(excluded_members)
+            projected["source_ids"] = sorted({str(member["source_id"]) for member in members + excluded_members})
+            projected["source_id"] = projected["source_ids"][0] if len(projected["source_ids"]) == 1 else "multiple_sources"
+            projected["outputs"] = outputs
+            projected["output_count"] = len(outputs)
+            filtered.append(projected)
         total = len(filtered)
         start = (page - 1) * page_size
         sources: dict[str, int] = {}
@@ -415,6 +574,9 @@ class InternalPreviewRepository:
             "page_size": page_size,
             "case_count": len(self._cases),
             "output_count": sum(int(item["output_count"]) for item in self._cases),
+            "prompt_group_count": len(self._groups),
+            "visible_output_count": sum(int(item["output_count"]) for item in self._groups),
+            "quality_exclusion_count": sum(int(item["excluded_member_count"]) for item in self._groups),
             "cases": filtered[start : start + page_size],
             "sources": [{"value": key, "count": sources[key]} for key in sorted(sources)],
         }

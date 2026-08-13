@@ -220,7 +220,7 @@ def create_app(
             "publication_v2_active_takedown", "publication_v2_stale_review", "publication_v2_stale_revision",
         }:
             return _error(409, error.error_code, str(error))
-        if error.error_code in {"admin_database_unavailable", "content_schema_not_migrated", "operations_database_unavailable", "operations_schema_not_migrated", "operations_read_failed"}:
+        if error.error_code in {"admin_database_unavailable", "content_schema_not_migrated", "content_quality_invalid", "operations_database_unavailable", "operations_schema_not_migrated", "operations_read_failed"}:
             return _error(503, error.error_code, "Review administration is temporarily unavailable.")
         return _error(422, error.error_code, str(error))
 

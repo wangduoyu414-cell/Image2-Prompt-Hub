@@ -12,14 +12,16 @@ The write path is:
 ```text
 latest ready source revision
 → latest complete case-level rights review
+→ fixed-revision content-quality gate
 → validated publishable Candidate v2
 → active takedown projection
 → immutable Publication v2 version
 → explicit atomic activation or rollback
 ```
 
-No review is inferred. A case with no latest publishable batch is recorded as an
-exclusion. The real seven-source inventory therefore still produces zero public
+No review is inferred. A case with no latest publishable batch or with a
+`blocked`/`duplicate_only` quality decision is recorded as an
+exclusion with a stable `quality_<reason_code>` count. The real seven-source inventory therefore still produces zero public
 entries until authorized reviewers enter evidence-backed decisions.
 
 ## Immutable authority
@@ -30,6 +32,11 @@ Migration `0006_publication_v2_and_takedown.sql` adds:
 - a private asset delivery manifest separate from the public JSON snapshot;
 - one immutable exclusion row for every selected case that is not published;
 - an append-only takedown/restore timeline and version-bound application rows.
+
+Migration `0009_content_quality_exclusions.sql` extends only the exclusion
+reason domain so a Publication v2 build can persist the four versioned
+`quality_<reason_code>` outcomes. It does not change inclusion, activation, or
+takedown semantics.
 
 The public snapshot contains the full original Prompt, source `raw_tags`, the
 reviewed public output subset, redacted hidden-output and reference-input counts,

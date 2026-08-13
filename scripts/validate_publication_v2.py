@@ -238,6 +238,51 @@ def _seed_publishable_case(database_url: str) -> dict[str, Any]:
     }
 
 
+def _assert_quality_exclusion_domain(database_url: str) -> None:
+    accepted = (
+        "quality_non_result_capture",
+        "quality_prompt_output_mismatch",
+        "quality_near_identical_cross_source_render",
+        "quality_exact_prompt_output_subset",
+    )
+    with psycopg.connect(database_url) as conn:
+        version_id = int(
+            conn.execute(
+                "INSERT INTO content.publication_versions_v2(state, created_by) VALUES ('building','quality-domain-validator') RETURNING publication_version_v2_id"
+            ).fetchone()[0]
+        )
+        selected = conn.execute(
+            """
+            SELECT project.source_project_id, revision.source_revision_id, version.source_case_version_id
+            FROM inventory.source_projects project
+            JOIN inventory.source_revisions revision ON revision.source_project_id=project.source_project_id
+            JOIN inventory.source_case_versions version ON version.source_revision_id=revision.source_revision_id
+            WHERE project.source_id='synthetic-source'
+            """
+        ).fetchone()
+        conn.execute(
+            "INSERT INTO content.publication_revision_selections_v2(publication_version_v2_id, source_project_id, source_revision_id) VALUES (%s,%s,%s)",
+            (version_id, selected[0], selected[1]),
+        )
+        case_version_id = int(selected[2])
+        for reason in accepted:
+            with conn.transaction(force_rollback=True):
+                conn.execute(
+                    "INSERT INTO content.publication_exclusions_v2(publication_version_v2_id, source_case_version_id, reason_code) VALUES (%s,%s,%s)",
+                    (version_id, case_version_id, reason),
+                )
+        try:
+            with conn.transaction(force_rollback=True):
+                conn.execute(
+                    "INSERT INTO content.publication_exclusions_v2(publication_version_v2_id, source_case_version_id, reason_code) VALUES (%s,%s,'quality_unbounded_reason')",
+                    (version_id, case_version_id),
+                )
+        except psycopg.errors.CheckViolation:
+            pass
+        else:
+            raise ValidationFailure("quality exclusion reason domain accepted an unbounded value")
+
+
 def validate() -> dict[str, Any]:
     RUNTIME_ROOT.mkdir(parents=True, exist_ok=True)
     suffix = uuid.uuid4().hex[:10]
@@ -288,6 +333,8 @@ def validate() -> dict[str, Any]:
         required = "0006_publication_v2_and_takedown"
         if required not in versions:
             raise ValidationFailure("migration authority does not include Publication v2")
+        if "0009_content_quality_exclusions" not in versions:
+            raise ValidationFailure("migration authority does not include content-quality exclusions")
         if any(item["status"] != "verified_existing" for item in replay["migrations"]):
             raise ValidationFailure("migration replay is not idempotent")
 
@@ -298,6 +345,7 @@ def validate() -> dict[str, Any]:
         if takedowns.get("result", {}).get("total") != 0:
             raise ValidationFailure("fresh takedown timeline is not empty")
         seeded = _seed_publishable_case(database_url)
+        _assert_quality_exclusion_domain(database_url)
         selection = json.dumps({"synthetic-source": seeded["revision_sha"]}, separators=(",", ":"))
         built = _json_command(
             [
@@ -414,6 +462,7 @@ def validate() -> dict[str, Any]:
             "gallery_restore": "restored",
             "case_takedown": "authorized_empty",
             "rollback_under_active_takedown": "rejected",
+            "quality_exclusion_domain": "closed",
         }
     finally:
         _run(["docker", "compose", "-p", project, "down", "-v"], environment=compose_environment)

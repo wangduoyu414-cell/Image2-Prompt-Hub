@@ -134,6 +134,9 @@ class AdminReviewRepository:
 
     def readiness(self) -> str:
         try:
+            if hasattr(self._store, "assert_migrated"):
+                self._store.assert_migrated()  # type: ignore[attr-defined]
+            self._publication_v2.assert_migrated()
             with self._connect() as conn:
                 row = conn.execute(
                     "SELECT to_regclass('content.rights_review_batches_v2') AS batches"
@@ -143,6 +146,8 @@ class AdminReviewRepository:
             return "ready"
         except AdminRepositoryError:
             raise
+        except ContentDatabaseError as exc:
+            raise AdminRepositoryError(exc.error_code, str(exc)) from exc
         except psycopg.Error as exc:
             raise AdminRepositoryError("admin_database_unavailable", "review database is unavailable") from exc
 

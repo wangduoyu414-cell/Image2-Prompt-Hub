@@ -18,11 +18,11 @@ import {
 
 type Decision = ReviewSubmissionPayload["output_decisions"][number];
 
-function initialDecision(output: ReviewOutput): Decision {
+function initialDecision(output: ReviewOutput, qualityBlocked = false): Decision {
   return {
     generation_output_id: output.generation_output_id,
-    asset_rights: "unknown",
-    display_policy: "internal_only",
+    asset_rights: qualityBlocked ? "blocked" : "unknown",
+    display_policy: qualityBlocked ? "blocked" : "internal_only",
     public_display_role: "hidden",
     decision_note: "",
   };
@@ -58,10 +58,15 @@ export default function ReviewSubjectPage() {
         setSession(activeSession);
         setSubject(activeSubject);
         setRepositoryLicense(activeSubject.review_defaults.repository_license ?? "");
+        if (activeSubject.case_facts.quality.verdict !== "eligible") setPromptRights("blocked");
         setAuthor(activeSubject.review_defaults.author ?? "");
         setOriginalUrl(activeSubject.review_defaults.original_url);
         setEvidenceUrl(activeSubject.review_defaults.evidence_url);
-        setDecisions(activeSubject.case_facts.generations.flatMap((generation) => generation.outputs).map(initialDecision));
+        setDecisions(
+          activeSubject.case_facts.generations
+            .flatMap((generation) => generation.outputs)
+            .map((output) => initialDecision(output, activeSubject.case_facts.quality.verdict !== "eligible")),
+        );
       })
       .catch((cause) => setError(cause instanceof Error ? cause.message : "审核单加载失败。"));
   }, [sourceCaseVersionId]);
@@ -112,6 +117,7 @@ export default function ReviewSubjectPage() {
   if (!subject || !session) return <main className="admin-shell"><p className="admin-loading">正在读取完整审核证据…</p></main>;
 
   const canSubmit = session.user.role === "reviewer" || session.user.role === "admin";
+  const qualityBlocked = subject.case_facts.quality.verdict !== "eligible";
   const primaryCount = decisions.filter((item) => item.public_display_role === "public_primary").length;
 
   return (
@@ -122,6 +128,7 @@ export default function ReviewSubjectPage() {
           <p className="eyebrow">SOURCE CASE VERSION {sourceCaseVersionId}</p>
           <h1>完整案例审核单</h1>
           <p>{subject.case_facts.source.source_id} · {outputs.length} 个输出 · 当前状态 {subject.state}</p>
+          {qualityBlocked ? <p className="admin-primary-warning invalid">内容质量已阻断：{subject.case_facts.quality.reason_code}。该固定版本不能再提交新的权利审核。</p> : null}
         </div>
         <div className="admin-identity"><span>{session.user.username}</span><small>{session.user.role}</small></div>
       </header>
@@ -155,17 +162,17 @@ export default function ReviewSubjectPage() {
               </div>
               <div className="admin-output-decisions">
                 <label>图片权利
-                  <select onChange={(event) => updateDecision(output.generation_output_id, { asset_rights: event.target.value as Decision["asset_rights"] })} value={decision.asset_rights}>
+                  <select disabled={qualityBlocked} onChange={(event) => updateDecision(output.generation_output_id, { asset_rights: event.target.value as Decision["asset_rights"] })} value={decision.asset_rights}>
                     <option value="unknown">unknown</option><option value="approved">approved</option><option value="internal_only">internal_only</option><option value="blocked">blocked</option>
                   </select>
                 </label>
                 <label>展示策略
-                  <select onChange={(event) => updateDecision(output.generation_output_id, { display_policy: event.target.value as Decision["display_policy"] })} value={decision.display_policy}>
+                  <select disabled={qualityBlocked} onChange={(event) => updateDecision(output.generation_output_id, { display_policy: event.target.value as Decision["display_policy"] })} value={decision.display_policy}>
                     <option value="internal_only">internal_only</option><option value="blocked">blocked</option><option value="mirror_allowed">mirror_allowed</option><option value="attribution_required">attribution_required</option><option value="link_only">link_only</option>
                   </select>
                 </label>
                 <label>公开角色
-                  <select onChange={(event) => updateDecision(output.generation_output_id, { public_display_role: event.target.value as Decision["public_display_role"] })} value={decision.public_display_role}>
+                  <select disabled={qualityBlocked} onChange={(event) => updateDecision(output.generation_output_id, { public_display_role: event.target.value as Decision["public_display_role"] })} value={decision.public_display_role}>
                     <option value="hidden">hidden</option><option value="public_primary">public_primary</option><option value="public_gallery">public_gallery</option>
                   </select>
                 </label>
@@ -183,7 +190,7 @@ export default function ReviewSubjectPage() {
         <div className="admin-form-grid">
           <label>Repository license<input maxLength={500} onChange={(event) => setRepositoryLicense(event.target.value)} required value={repositoryLicense} /></label>
           <label>Prompt rights
-            <select onChange={(event) => setPromptRights(event.target.value as ReviewSubmissionPayload["prompt_rights"])} value={promptRights}>
+            <select disabled={qualityBlocked} onChange={(event) => setPromptRights(event.target.value as ReviewSubmissionPayload["prompt_rights"])} value={qualityBlocked ? "blocked" : promptRights}>
               <option value="unknown">unknown</option><option value="approved">approved</option><option value="internal_only">internal_only</option><option value="blocked">blocked</option>
             </select>
           </label>
@@ -195,7 +202,9 @@ export default function ReviewSubjectPage() {
         <div className={`admin-primary-warning ${primaryCount > 1 ? "invalid" : ""}`}>当前选择 {primaryCount} 张 public_primary；可公开候选必须恰好 1 张，且所有公开图都需 approved + 公开展示策略。</div>
         {error ? <p className="admin-error">{error}</p> : null}
         {notice ? <p className="admin-success">{notice}</p> : null}
-        <button disabled={!canSubmit || submitting} type="submit">{canSubmit ? (submitting ? "正在原子写入…" : "提交完整审核批次") : "当前账号仅可查看"}</button>
+        <button disabled={!canSubmit || qualityBlocked || submitting} type="submit">
+          {qualityBlocked ? "内容质量已阻断" : canSubmit ? (submitting ? "正在原子写入…" : "提交完整审核批次") : "当前账号仅可查看"}
+        </button>
       </form>
 
       {candidate ? <section className="admin-candidate"><h2>Candidate v2 预览</h2><pre>{JSON.stringify(candidate, null, 2)}</pre></section> : null}

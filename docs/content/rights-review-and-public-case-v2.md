@@ -48,13 +48,23 @@ Derived queue states are:
 - `internal_only`: the effective decision keeps the case internal.
 - `blocked`: the Prompt or complete output decision blocks use.
 
+The queue also evaluates the fixed-revision content-quality authority in
+`config/content-quality-v1.json`. A `blocked` or `duplicate_only` source case is
+shown as blocked before rights approval. The transaction boundary rejects any
+new rights-review submission for that fixed source-case version. Existing
+historical review rows remain immutable, but they cannot make the quality-blocked
+subject publishable.
+
 ## Candidate v2
 
 `schemas/public-case-candidate-v2.schema.json` defines a non-activating preview.
 It preserves source-case identity, Prompt provenance, all Generation members,
 source roles, the authorized public output subset, redacted hidden-output
-placeholders whose array length is the count, review
-authority, and a deterministic content digest.
+placeholders whose array length is the count, review authority, and a
+deterministic content digest. The quality gate runs before Candidate
+construction and forces blocked/duplicate-only subjects to a non-publishable
+state with no public outputs; the stable quality facts remain in the private
+review subject rather than expanding the frozen public Candidate contract.
 
 Hidden outputs are represented only by `{redacted: true}` placeholders. They do not expose output ids,
 paths, URLs, object keys, buckets, or credentials. Candidate v2 never writes

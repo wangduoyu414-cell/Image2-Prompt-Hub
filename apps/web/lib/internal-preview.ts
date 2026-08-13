@@ -6,6 +6,21 @@ export interface InternalPreviewAsset {
   byte_size: number;
   content_sha256: string;
   source_url: string | null;
+  source_id: string;
+  source_case_key: string;
+  source_ids: string[];
+  source_case_keys: string[];
+}
+
+export interface InternalPreviewMember {
+  case_id: string;
+  source_id: string;
+  revision_sha: string;
+  source_case_key: string;
+  source_url: string;
+  output_count: number;
+  quality_verdict: "eligible" | "blocked" | "duplicate_only";
+  quality_reason_code: string | null;
 }
 
 export interface InternalPreviewCase {
@@ -20,6 +35,13 @@ export interface InternalPreviewCase {
   prompt_rights_status: string;
   asset_rights_status: string;
   review_state: "review_required";
+  prompt_group_id: string;
+  source_ids: string[];
+  member_count: number;
+  eligible_member_count: number;
+  excluded_member_count: number;
+  members: InternalPreviewMember[];
+  excluded_members: InternalPreviewMember[];
   outputs: InternalPreviewAsset[];
   output_count: number;
 }
@@ -32,6 +54,9 @@ export interface InternalPreviewList {
   page_size: number;
   case_count: number;
   output_count: number;
+  prompt_group_count: number;
+  visible_output_count: number;
+  quality_exclusion_count: number;
   cases: InternalPreviewCase[];
   sources: Array<{ value: string; count: number }>;
 }
@@ -103,6 +128,26 @@ function mapAsset(value: unknown): InternalPreviewAsset {
     byte_size: number(item.byte_size),
     content_sha256: hash(item.content_sha256),
     source_url: optionalUrl(item.source_url),
+    source_id: string(item.source_id),
+    source_case_key: string(item.source_case_key),
+    source_ids: array(item.source_ids).map(string),
+    source_case_keys: array(item.source_case_keys).map(string),
+  };
+}
+
+function mapMember(value: unknown): InternalPreviewMember {
+  const item = record(value);
+  const verdict = string(item.quality_verdict);
+  if (!['eligible', 'blocked', 'duplicate_only'].includes(verdict)) throw new Error('invalid quality verdict');
+  return {
+    case_id: hash(item.case_id),
+    source_id: string(item.source_id),
+    revision_sha: string(item.revision_sha),
+    source_case_key: string(item.source_case_key),
+    source_url: externalUrl(item.source_url),
+    output_count: number(item.output_count),
+    quality_verdict: verdict as InternalPreviewMember['quality_verdict'],
+    quality_reason_code: item.quality_reason_code === null ? null : string(item.quality_reason_code),
   };
 }
 
@@ -113,9 +158,19 @@ function mapCase(value: unknown): InternalPreviewCase {
   const outputs = array(item.outputs).map(mapAsset);
   const outputCount = number(item.output_count);
   if (outputs.length !== outputCount || outputs.length === 0) throw new Error("internal preview output count mismatch");
+  const members = array(item.members).map(mapMember);
+  const excludedMembers = array(item.excluded_members).map(mapMember);
+  const memberCount = number(item.member_count);
+  const eligibleMemberCount = number(item.eligible_member_count);
+  const excludedMemberCount = number(item.excluded_member_count);
+  if (members.length !== eligibleMemberCount || excludedMembers.length !== excludedMemberCount || memberCount !== eligibleMemberCount + excludedMemberCount) {
+    throw new Error("internal preview member count mismatch");
+  }
   return {
     case_id: hash(item.case_id),
+    prompt_group_id: hash(item.prompt_group_id),
     source_id: string(item.source_id),
+    source_ids: array(item.source_ids).map(string),
     revision_sha: string(item.revision_sha),
     source_case_key: string(item.source_case_key),
     source_url: externalUrl(item.source_url),
@@ -125,6 +180,11 @@ function mapCase(value: unknown): InternalPreviewCase {
     prompt_rights_status: string(item.prompt_rights_status),
     asset_rights_status: string(item.asset_rights_status),
     review_state: reviewState,
+    member_count: memberCount,
+    eligible_member_count: eligibleMemberCount,
+    excluded_member_count: excludedMemberCount,
+    members,
+    excluded_members: excludedMembers,
     outputs,
     output_count: outputCount,
   };
@@ -142,6 +202,9 @@ export function parseInternalPreviewList(value: unknown): InternalPreviewList {
     page_size: number(item.page_size),
     case_count: number(item.case_count),
     output_count: number(item.output_count),
+    prompt_group_count: number(item.prompt_group_count),
+    visible_output_count: number(item.visible_output_count),
+    quality_exclusion_count: number(item.quality_exclusion_count),
     cases: array(item.cases).map(mapCase),
     sources: array(item.sources).map((source) => {
       const facet = record(source);
@@ -171,4 +234,3 @@ export async function getInternalPreviewCases(filters: InternalPreviewFilters): 
     clearTimeout(timeout);
   }
 }
-

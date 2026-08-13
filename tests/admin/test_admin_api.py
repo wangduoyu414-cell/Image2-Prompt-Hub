@@ -44,6 +44,7 @@ class FakeRepository:
                     "output_count": 1,
                     "state": "pending",
                     "latest_batch_id": None,
+                    "quality": {"verdict": "eligible", "reason_code": "not_blocked"},
                 }
             ],
             "limit": limit,
@@ -58,6 +59,7 @@ class FakeRepository:
                 "source": {"source_id": "source", "source_case_key": "source:case", "revision_sha": "a" * 40},
                 "prompt": {"raw_text": "Prompt", "source_url": "https://example.com/prompt"},
                 "existing_rights_evidence": {"prompt_rights_status": "unknown", "asset_rights_status": "unknown"},
+                "quality": {"verdict": "eligible", "reason_code": "not_blocked"},
                 "generations": [
                     {
                         "generation_example_id": "generation:1",

@@ -17,6 +17,7 @@ export interface ReviewQueueItem {
   output_count: number;
   state: ReviewState;
   latest_batch_id: number | null;
+  quality: { verdict: "eligible" | "blocked" | "duplicate_only"; reason_code: string };
 }
 
 export interface ReviewQueue {
@@ -66,6 +67,7 @@ export interface ReviewSubject {
       source_url: string;
     };
     existing_rights_evidence: Record<string, unknown>;
+    quality: { verdict: "eligible" | "blocked" | "duplicate_only"; reason_code: string };
     generations: ReviewGeneration[];
   };
   latest_review: Record<string, unknown> | null;
@@ -181,6 +183,13 @@ function reviewState(value: unknown): ReviewState {
   return state as ReviewState;
 }
 
+function qualityState(value: unknown): { verdict: "eligible" | "blocked" | "duplicate_only"; reason_code: string } {
+  const item = record(value);
+  const verdict = text(item.verdict);
+  if (!["eligible", "blocked", "duplicate_only"].includes(verdict)) throw new Error("invalid content quality state");
+  return { verdict: verdict as "eligible" | "blocked" | "duplicate_only", reason_code: text(item.reason_code) };
+}
+
 async function request(path: string, init?: RequestInit): Promise<unknown> {
   const response = await fetch(`/admin-backend/${path.replace(/^\//, "")}`, {
     ...init,
@@ -239,6 +248,7 @@ export function parseReviewQueue(value: unknown): ReviewQueue {
         output_count: number(row.output_count),
         state: reviewState(row.state),
         latest_batch_id: nullableNumber(row.latest_batch_id),
+        quality: qualityState(row.quality),
       };
     }),
     limit: number(item.limit),
@@ -270,6 +280,7 @@ export function parseReviewSubject(value: unknown): ReviewSubject {
         source_url: text(prompt.source_url),
       },
       existing_rights_evidence: record(facts.existing_rights_evidence),
+      quality: qualityState(facts.quality),
       generations: array(facts.generations).map((value) => {
         const generation = record(value);
         return {

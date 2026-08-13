@@ -1,0 +1,289 @@
+{
+  "schema_version": "content-quality-ledger/v1",
+  "generated_at": "2026-08-12T00:00:00Z",
+  "scope": {
+    "description": "Manual visual review decisions for fixed-revision Prompt/output pairs. Source inventory remains immutable; these decisions only constrain review and publication projections.",
+    "normalization": "NFC, CRLF/CR to LF, trim trailing whitespace per line, trim document edges",
+    "reviewed_exact_prompt_group_count": 29,
+    "reviewed_source_case_count": 69,
+    "reviewed_output_reference_count": 78
+  },
+  "decisions": [
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:49",
+      "prompt_sha256": "041533e82c02330fa5ebad284ac93b5aab327db9bf02920f27a73510d06edad7",
+      "output_content_sha256": [
+        "456436ac2f6f95e36166b812c5e84eb98d2ff585f065461af69e077e5ca11042"
+      ],
+      "verdict": "blocked",
+      "reason_code": "non_result_capture",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "The asset is a ChatGPT conversation screenshot containing a generated image preview, not the prompt's clean output image."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:108",
+      "prompt_sha256": "6d758e728562ef41e146c2f7027d23fd1252e6e6ebc085153423ebecbdc8aa4c",
+      "output_content_sha256": [
+        "01f8b86c17252ac4ed1c493c60c4822878e109f71dc6b7c2b4f1aafcc544012b"
+      ],
+      "verdict": "blocked",
+      "reason_code": "non_result_capture",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "The asset is a workflow/chat screenshot with embedded result thumbnails rather than a clean generated livestream result."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:145",
+      "prompt_sha256": "854297911370d1351a1ba7bfbd3dc0a5108117758572399c958f9b8cea4620be",
+      "output_content_sha256": [
+        "2b090f2eb2a95d4bcd99f5d3a1b0609b5cedd889a668aaf37afefe184a3abb15"
+      ],
+      "verdict": "blocked",
+      "reason_code": "prompt_output_mismatch",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "The prompt requests a Taobao T-800 product detail page, but the asset is a Trump/Kim Douyin battle livestream."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:146",
+      "prompt_sha256": "854297911370d1351a1ba7bfbd3dc0a5108117758572399c958f9b8cea4620be",
+      "output_content_sha256": [
+        "b59e4fee310125ade43b0a4e76fc4b98bb7479ce54a8c827efdb537daaf9a0ad"
+      ],
+      "verdict": "blocked",
+      "reason_code": "prompt_output_mismatch",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "The prompt requests a Taobao T-800 product detail page, but the asset is a social-profile page for a female creator."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:147",
+      "prompt_sha256": "854297911370d1351a1ba7bfbd3dc0a5108117758572399c958f9b8cea4620be",
+      "output_content_sha256": [
+        "e3542611ae1e6bacf25ee2a9a22bae2fe1fd07300b76a4da512c34f8b500b018"
+      ],
+      "verdict": "blocked",
+      "reason_code": "prompt_output_mismatch",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "The prompt requests a Taobao T-800 product detail page, but the asset is a classroom blackboard photograph."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:272",
+      "prompt_sha256": "55234219fe8b79736688b309fb002a9cae3d702460a6b6126370e3d852107600",
+      "output_content_sha256": [
+        "61e640ee3ecd7f57c01fd571f25847be3ed74f6193c97c8f7581b9e5f436b3e0"
+      ],
+      "verdict": "duplicate_only",
+      "reason_code": "near_identical_cross_source_render",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "The same prompt and near-identical render are already represented by erickkkyt-awesome-gptimage2-prompts:x-2045092449803284923; normalized-frame SSIM is 0.995108."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:433",
+      "prompt_sha256": "19dc3c592d16bb3c4b3c78068288d841351a7c892d85a1d7a63f8179930d9da4",
+      "output_content_sha256": ["2f1f1c8872aa6d1cfcfe468713491b827f9558f4af22e66bcb6344c02796770d"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output subset of the richer Erick record x-2055492435862773978; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:421",
+      "prompt_sha256": "3173bb08fffa063c78eb15b04484d55751a5f187b0f80f05764ebcdcdb6394d0",
+      "output_content_sha256": ["a0e47b696f4566b6a9c7c4ad204876e630b469a3b077ad2c938e864f55c07af8"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output subset of the richer Erick record x-2053535379618423118; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:19",
+      "prompt_sha256": "967d370c120d9c00fca6f63a92b1321b6288c4131a086253829b301ab9a94d25",
+      "output_content_sha256": ["ae055aecfc7cc0b25ccf5d0d1ac06dacfd98b67f560c079edc2cedcd103a0de5"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output subset of the richer Erick Momotaro explainer record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:20",
+      "prompt_sha256": "967d370c120d9c00fca6f63a92b1321b6288c4131a086253829b301ab9a94d25",
+      "output_content_sha256": ["d1e1422e33801ca5bf7d0f6601ff90d3b149b4884e82998eeed50180e5e868c3"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output subset of the richer Erick Momotaro explainer record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:21",
+      "prompt_sha256": "363d73743173c96c7b90233f66c33db70d50036eb76c282df4440f6caf1a9bc6",
+      "output_content_sha256": ["748f3854ab3e5d319e9f85df4a7834b63811b143c6badc60db58b2ebfcb52873"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the Erick e-commerce livestream record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:23",
+      "prompt_sha256": "36ef962401201ffc4379428239105e5578a573d71c420064cac3d1b4ab649845",
+      "output_content_sha256": ["b5d39f7c4ecb3f14e5dc65bbf19299a85e62b3a62ffc408a1691b5e238263e05"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick evolution infographic record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:17",
+      "prompt_sha256": "5920dad88a72defe38e676f8f6a75a0cd0c1846c92ab0822a7cebd374a43f84f",
+      "output_content_sha256": ["97e848f6ad45cdd5b2c9f62c43725953afdcd52f3f2c261ec5869de92a730e85"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick VR exploded-view record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:131",
+      "prompt_sha256": "67a499ded6e666230718827bd37970ece3d1f96b96233188db54b84f9a42eb00",
+      "output_content_sha256": ["f0603f0296866d341edaa772b5d949f45b58d024038c597a84f06a0a9f2c72b4"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick dark-mode marketing record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:91",
+      "prompt_sha256": "681ba0b69ea163be14e7ad5700da5b17662e51a5b2dcbcbe281d49d7e07bd9c9",
+      "output_content_sha256": ["8b50a7972298f6c8c1227376652ea5338e1563bd8700e28ad36bed80c3bd5594"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick voxel-game record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:93",
+      "prompt_sha256": "7c30dd3bb3d8d124cce34b6670e79894af0d4a3ba4f719f13cc6ba14e605503e",
+      "output_content_sha256": ["30aa8696001823fd7a36fc0d6e72547dd44792fdb994ff77bd7836b87867f710"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick VTuber chat record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:130",
+      "prompt_sha256": "9f0f61b561d86a673304ac261f8c6f656f6275dd0b1fba5029b7bff9003921b0",
+      "output_content_sha256": ["daa9e8b6c87cc62e59a42230ed13723f3c698b48b99a1ba1094d24d7a0175769"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick merchandise board record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:132",
+      "prompt_sha256": "a0778fb0b06fbd8a729bcc198d77f3a8d65468942d7f32563080fb3ccb570d6a",
+      "output_content_sha256": ["5ce6eb1298f4df7c8551f1ec3e0ab5a47f1e8aa053f5624904484c731a12f066"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick mascot identity record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:22",
+      "prompt_sha256": "beaf94ef291fb049acffa8e9388cee5a29b0bb2295785fc198ed80ba196912b6",
+      "output_content_sha256": ["49ee6eec972f7e5327f06f4808579651912f5609d16b3e748c666f689c9b5d3a"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick anime battle record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:346",
+      "prompt_sha256": "bf6185e28eafab24e9bd7e540452bb6fdf9a31cbf94cb65f31a713fd9dbebf24",
+      "output_content_sha256": ["f5b4a6aeea2b73c430344c1edfe4ab24bef1ebba2045f4163423c4a00fe01527"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick embroidery record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:420",
+      "prompt_sha256": "c45726fa837d3ec03ce423f7b3f6b738d5c31f26f65286c56cfa199c744d611a",
+      "output_content_sha256": ["37d0d5b77ec8baf63fca2de03746771c0bdfbf6ad87c4ced94052bc7dc7092a9"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick outdoor portrait record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:47",
+      "prompt_sha256": "ce18a244b9280c261d437e0b75c0ad7bf9db32b433f7e7ed23a8b2cfbb981a7a",
+      "output_content_sha256": ["d330b451aa6900ae4a781c7f044a67fe877eba8b85b5e1f510579e8d43f71745"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick Japanese ad-grid record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:92",
+      "prompt_sha256": "d18a84b2e4e6890afd5104e06e6a745b0f75c4225407552574dcf96998ccf04b",
+      "output_content_sha256": ["d1c3bfaa2c895fc3631a2bf4dfb397a5493a3f70c31bd8d78af9e1a40af00aec"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick VTuber thumbnail record; provenance remains preserved but this member must not create a second public case."
+    },
+    {
+      "source_id": "freestylefly-awesome-gpt-image-2",
+      "revision_sha": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+      "source_case_key": "freestylefly-awesome-gpt-image-2:419",
+      "prompt_sha256": "e7a6a2a6d628bed2d3c2d607188ef06769f94039d69860de72652ac116be8d85",
+      "output_content_sha256": ["b5b83e4423af8550ed50bc9251e3fe3e397822f8b5936162ef1a1ff11c92777f"],
+      "verdict": "duplicate_only",
+      "reason_code": "exact_prompt_output_subset",
+      "review_method": "manual_visual_exact_prompt_group_v1",
+      "review_note": "Exact Prompt/output duplicate of the richer Erick croissant storyboard record; provenance remains preserved but this member must not create a second public case."
+    }
+  ]
+}

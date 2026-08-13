@@ -13,6 +13,12 @@ import psycopg
 from psycopg.rows import dict_row
 
 from .database import ContentDatabaseError, ContentDatabaseSettings
+from .quality import (
+    ContentQualityError,
+    assert_quality_submission_compatible,
+    load_content_quality_ledger,
+    quality_state_for_facts,
+)
 from .review import (
     OutputReviewDecision,
     ReviewPolicyError,
@@ -84,6 +90,10 @@ class RightsReviewStore:
             conn.close()
 
     def assert_migrated(self) -> None:
+        try:
+            load_content_quality_ledger()
+        except ContentQualityError as exc:
+            raise ContentDatabaseError("content_quality_invalid", str(exc)) from exc
         conn = self._connect(autocommit=True)
         try:
             row = conn.execute(
@@ -288,12 +298,26 @@ class RightsReviewStore:
                     )
                 review = self.inspect_batch(int(existing["rights_review_batch_id"]), connection=conn)
                 return {"status": "verified_existing", "review": review}
+            try:
+                case_facts = self._case_facts(conn, submission.source_case_version_id)
+            except ContentDatabaseError:
+                raise
+            quality = case_facts["quality"]
+            if quality["verdict"] in {"blocked", "duplicate_only"}:
+                raise ContentDatabaseError(
+                    "content_quality_blocked",
+                    "quality-blocked source cases cannot receive a new rights review; the immutable quality decision is the authority",
+                )
             output_ids = self._output_ids(conn, submission.source_case_version_id, require_latest=True)
             if not output_ids:
                 raise ContentDatabaseError(
                     "rights_review_v2_target_missing", "rights review target is not the latest ready source case version"
                 )
             normalized = submission.normalized(expected_output_ids=output_ids, now=datetime.now(timezone.utc))
+            try:
+                assert_quality_submission_compatible(case_facts, normalized)
+            except ContentQualityError as exc:
+                raise ContentDatabaseError("content_quality_blocked", str(exc)) from exc
             digest = submission_digest(normalized)
             latest = self._latest_review(conn, submission.source_case_version_id)
             latest_id = int(latest["rights_review_batch_id"]) if latest is not None else None
@@ -480,7 +504,7 @@ class RightsReviewStore:
                     ],
                 }
             )
-        return {
+        facts = {
             "source_case_version_id": int(row["source_case_version_id"]),
             "public_tags": [str(value) for value in _mapping(row["adapter_record"]).get("raw_tags", []) if isinstance(value, str)],
             "source": {
@@ -505,14 +529,22 @@ class RightsReviewStore:
             },
             "generations": generations,
         }
+        try:
+            facts["quality"] = quality_state_for_facts(facts)
+        except ContentQualityError as exc:
+            raise ContentDatabaseError("content_quality_invalid", str(exc)) from exc
+        return facts
 
     def inspect_subject(self, source_case_version_id: int) -> dict[str, Any]:
         conn = self._connect(autocommit=True)
         try:
             facts = self._case_facts(conn, source_case_version_id)
             review = self._latest_review(conn, source_case_version_id)
+            state = effective_review_state(review)
+            if facts["quality"]["verdict"] in {"blocked", "duplicate_only"}:
+                state = "blocked"
             return {
-                "state": effective_review_state(review),
+                "state": state,
                 "case_facts": facts,
                 "latest_review": review,
             }
@@ -593,6 +625,13 @@ class RightsReviewStore:
                 params,
             ).fetchall()
             items = []
+            try:
+                quality_by_identity = {
+                    (item.source_id, item.revision_sha, item.source_case_key): item.public_facts()
+                    for item in load_content_quality_ledger()
+                }
+            except ContentQualityError as exc:
+                raise ContentDatabaseError("content_quality_invalid", str(exc)) from exc
             state_counts = {name: 0 for name in ("pending", "review_required", "publishable", "internal_only", "blocked")}
             total_outputs = 0
             for row in rows:
@@ -602,7 +641,13 @@ class RightsReviewStore:
                         "prompt_rights": str(row["prompt_rights"]),
                         "output_decisions": _list(row["output_decisions"]),
                     }
+                quality = quality_by_identity.get(
+                    (str(row["source_id"]), str(row["revision_sha"]), str(row["source_case_key"])),
+                    {"verdict": "eligible", "reason_code": "not_blocked"},
+                )
                 item_state = effective_review_state(review)
+                if quality["verdict"] in {"blocked", "duplicate_only"}:
+                    item_state = "blocked"
                 state_counts[item_state] += 1
                 total_outputs += int(row["output_count"])
                 if state is not None and item_state != state:
@@ -616,6 +661,7 @@ class RightsReviewStore:
                         "prompt_preview": str(row["raw_text"])[:280],
                         "output_count": int(row["output_count"]),
                         "state": item_state,
+                        "quality": quality,
                         "latest_batch_id": int(row["rights_review_batch_id"])
                         if row.get("rights_review_batch_id") is not None
                         else None,
